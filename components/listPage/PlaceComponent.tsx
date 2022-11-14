@@ -18,7 +18,10 @@ export default function PlaceComponent ({ colors, place }: Props) {
     place.placeType.slice(0, 1).toUpperCase() + place.placeType.slice(1)
   return (
     <React.Fragment>
-      <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
+      <Pressable
+        onPress={() => setExtend(!extend)}
+        style={{ ...styles.container, backgroundColor: colors.darkColor }}
+      >
         <View style={{ ...styles.textHolder }}>
           <Text style={{ ...styles.name, color: colors.lightColor }}>
             {place.name}
@@ -28,18 +31,15 @@ export default function PlaceComponent ({ colors, place }: Props) {
             "{place.notes}"
           </Text>
         </View>
-        <Pressable
-          style={{ ...styles.arrowHolder }}
-          onPress={() => setExtend(!extend)}
-        >
+        <View style={{ ...styles.arrowHolder }}>
           <AnIcon
             name={extend ? 'down' : 'right'}
             size={iconSize}
             color={colors.lightColor}
             style={styles.arrow}
           />
-        </Pressable>
-      </View>
+        </View>
+      </Pressable>
       {extend ? (
         <View
           style={{ ...styles.extended, backgroundColor: colors.midColor }}

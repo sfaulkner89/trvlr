@@ -51,7 +51,7 @@ export default function Toolbar ({ colors, page, setPage, setProfile }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    height: winHeight * 0.1,
+    height: winHeight * 0.12,
     width: winWidth,
     flexDirection: 'row',
     opacity: 0.7
