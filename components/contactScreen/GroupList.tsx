@@ -3,6 +3,7 @@ import React from 'react'
 import { Colors } from '../../types/colors'
 import { Group } from '../../types/Group'
 import MemberListItem from './MemberListItem'
+import { Member } from '../../types/Member'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -10,9 +11,16 @@ const winWidth = Dimensions.get('window').width
 type Props = {
   colors: Colors
   group: Group
+  setContact: (member: Member) => void
+  setProfilePage: (active: boolean) => void
 }
 
-export default function GroupList ({ group, colors }: Props) {
+export default function GroupList ({
+  group,
+  colors,
+  setContact,
+  setProfilePage
+}: Props) {
   return (
     <View style={styles.container}>
       <View style={{ ...styles.nameHolder, backgroundColor: colors.darkColor }}>
@@ -21,7 +29,15 @@ export default function GroupList ({ group, colors }: Props) {
         </Text>
       </View>
       {group.members.map((member, i) => {
-        return <MemberListItem member={member} colors={colors} key={i} />
+        return (
+          <MemberListItem
+            member={member}
+            colors={colors}
+            key={i}
+            setContact={setContact}
+            setProfilePage={setProfilePage}
+          />
+        )
       })}
     </View>
   )

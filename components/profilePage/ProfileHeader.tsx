@@ -5,11 +5,13 @@ import { winHeight, winWidth } from '../../assets/height-width'
 import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
 import { default as FaIcon } from 'react-native-vector-icons/FontAwesome5'
 import { Member } from '../../types/Member'
+import { List } from '../../types/List'
 
 type Props = {
   colors: Colors
-  profile: Member
+  profile: Member | List
   setProfilePage: (active: boolean) => void
+  icon: string
 }
 
 const buttonSize = winWidth * 0.05
@@ -17,7 +19,8 @@ const buttonSize = winWidth * 0.05
 export default function ProfileHeader ({
   colors,
   profile,
-  setProfilePage
+  setProfilePage,
+  icon
 }: Props) {
   return (
     <View style={styles.container}>
@@ -26,10 +29,10 @@ export default function ProfileHeader ({
       </Pressable>
 
       <Text style={{ ...styles.handle, color: colors.lightColor }}>
-        {profile.handle}
+        {profile.name}
       </Text>
       <Pressable style={styles.button}>
-        <FaIcon name='user-edit' size={buttonSize} color={colors.lightColor} />
+        <FaIcon name={icon} size={buttonSize} color={colors.lightColor} />
       </Pressable>
     </View>
   )

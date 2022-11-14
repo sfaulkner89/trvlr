@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native'
 import Map from './components/map/Map'
 import Toolbar from './components/toolbar/Toolbar'
 import Search from './components/search/Search'
-import ListScreen from './components/contactScreen/ContactScreen'
+import ContactScreen from './components/contactScreen/ContactScreen'
 import HeaderBar from './components/headerBar/HeaderBar'
 import ProfilePage from './components/profilePage/ProfilePage'
 import userProfile from './assets/currentUserData'
@@ -21,7 +21,7 @@ export default function App () {
   const pages = [
     <Map colors={colors} />,
     <Search colors={colors} />,
-    <ListScreen colors={colors} />
+    <ContactScreen colors={colors} />
   ]
 
   return (

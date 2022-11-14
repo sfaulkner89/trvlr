@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native'
 import React from 'react'
 import { default as EnIcon } from 'react-native-vector-icons/Entypo'
 import { default as FaIcon } from 'react-native-vector-icons/FontAwesome'
+import { default as FafIcon } from 'react-native-vector-icons/FontAwesome5'
 import { Colors } from '../../types/colors'
 
 const winHeight = Dimensions.get('window').height
@@ -33,8 +34,8 @@ export default function Toolbar ({ colors, page, setPage }: Props) {
         />
       </Pressable>
       <Pressable style={styles.button} onPress={() => setPage(2)}>
-        <FaIcon
-          name='list'
+        <FafIcon
+          name='user-friends'
           size={iconSize}
           color={page === 2 ? colors.selectedColor : colors.lightColor}
         />

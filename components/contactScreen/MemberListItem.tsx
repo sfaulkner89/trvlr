@@ -16,9 +16,21 @@ const winWidth = Dimensions.get('window').width
 type Props = {
   member: Member
   colors: Colors
+  setContact: (contact: Member) => void
+  setProfilePage: (active: boolean) => void
 }
 
-export default function MemberListItem ({ member, colors }: Props) {
+export default function MemberListItem ({
+  member,
+  colors,
+  setContact,
+  setProfilePage
+}: Props) {
+  const contactHandler = () => {
+    setContact(member)
+    setProfilePage(true)
+  }
+
   return (
     <Pressable
       style={{
@@ -26,6 +38,7 @@ export default function MemberListItem ({ member, colors }: Props) {
         backgroundColor: colors.midColor,
         borderBottomColor: colors.darkColor
       }}
+      onPress={contactHandler}
     >
       <Image style={styles.profilePicture} source={member.profilePicture} />
       <View style={styles.dataHolder}>

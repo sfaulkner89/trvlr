@@ -7,6 +7,10 @@ import ProfileMap from './ProfileMap'
 import ProfileTopLine from './ProfileTopLine'
 import ProfileHeader from './ProfileHeader'
 import { Member } from '../../types/Member'
+import ProfileListPage from './profileList/ProfileListPage'
+import { Place } from '../../types/Place'
+import { List } from '../../types/List'
+import ListPage from '../listPage/ListPage'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -24,10 +28,25 @@ export default function ProfilePage ({
   setProfilePage
 }: Props) {
   const [selection, setSelection] = useState(0)
+  const [selectedList, setSelectedList] = useState<List | undefined>()
 
-  const buttonMap = [<ProfileMap />, <View />, <View />]
+  const buttonMap = [
+    <ProfileMap />,
+    <ProfileListPage
+      colors={colors}
+      member={profile}
+      setSelectedList={setSelectedList}
+    />,
+    <View />
+  ]
 
-  return (
+  return selectedList ? (
+    <ListPage
+      colors={colors}
+      list={selectedList}
+      setSelectedList={setSelectedList}
+    />
+  ) : (
     <View
       style={{
         ...styles.container,
@@ -38,6 +57,7 @@ export default function ProfilePage ({
         colors={colors}
         profile={profile}
         setProfilePage={setProfilePage}
+        icon='user-edit'
       />
       <ProfileTopLine colors={colors} profile={profile} />
       <Text style={{ ...styles.username, color: colors.lightColor }}>
@@ -70,8 +90,7 @@ const styles = StyleSheet.create({
   },
 
   selectionHolder: {
-    height: winHeight * 0.5,
-    width: winWidth,
+    flex: 1,
     marginTop: winHeight * 0.02
   }
 })

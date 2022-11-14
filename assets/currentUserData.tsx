@@ -1,6 +1,6 @@
 export default {
   username: 'Sam',
-  handle: 'samDogChamillionaire',
+  name: 'samDogChamillionaire',
   profilePicture: require('./profilePics/sam.jpeg'),
   countries: 68,
   worldCovered: 57.5,
@@ -8,6 +8,8 @@ export default {
   lists: [
     {
       name: 'Boston Weekend Party List',
+      city: 'Boston',
+      country: 'USA',
       location: {
         lat: 42.3601,
         lng: -71.0589
