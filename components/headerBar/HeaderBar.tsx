@@ -11,36 +11,23 @@ const size = winWidth * 0.06
 
 type Props = {
   colors: Colors
-  setProfile: (show: boolean) => void
 }
 
-export default function HeaderBar ({ colors, setProfile }: Props) {
+export default function HeaderBar ({ colors }: Props) {
   const [search, setSearch] = useState(false)
 
   return (
     <View style={{ ...styles.container, backgroundColor: 'transparent' }}>
+      <MapSearch colors={colors} search={search} setSearch={setSearch} />
       {search ? (
         <View />
       ) : (
-        <React.Fragment>
-          <Pressable
-            style={{ ...styles.button, backgroundColor: colors.darkColor }}
-          >
-            <FeIcon
-              name='message-circle'
-              size={size}
-              color={colors.lightColor}
-            />
-          </Pressable>
-          <Pressable
-            style={{ ...styles.button, backgroundColor: colors.darkColor }}
-            onPress={() => setProfile(true)}
-          >
-            <IoIcon name='person' size={size} color={colors.lightColor} />
-          </Pressable>
-        </React.Fragment>
+        <Pressable
+          style={{ ...styles.button, backgroundColor: colors.darkColor }}
+        >
+          <FeIcon name='message-circle' size={size} color={colors.lightColor} />
+        </Pressable>
       )}
-      <MapSearch colors={colors} search={search} setSearch={setSearch} />
     </View>
   )
 }

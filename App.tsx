@@ -34,13 +34,14 @@ export default function App () {
         />
       ) : (
         <React.Fragment>
-          {page === 0 ? (
-            <HeaderBar colors={colors} setProfile={setProfilePage} />
-          ) : (
-            <View />
-          )}
+          {page === 0 ? <HeaderBar colors={colors} /> : <View />}
           <View style={styles.contentHolder}>{pages[page]}</View>
-          <Toolbar colors={colors} page={page} setPage={setPage} />
+          <Toolbar
+            colors={colors}
+            page={page}
+            setPage={setPage}
+            setProfile={setProfilePage}
+          />
         </React.Fragment>
       )}
     </View>
