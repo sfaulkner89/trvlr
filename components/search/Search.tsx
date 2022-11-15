@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import SearchSelector from './Selector'
-import { searchCriteria } from '../../assets/searchCriteria'
+import { searchCriteria } from '../../assets/variables/searchCriteria'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width

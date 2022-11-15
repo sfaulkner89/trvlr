@@ -6,9 +6,9 @@ import Search from './components/search/Search'
 import ContactScreen from './components/contactScreen/ContactScreen'
 import HeaderBar from './components/headerBar/HeaderBar'
 import ProfilePage from './components/profilePage/ProfilePage'
-import userProfile from './assets/currentUserData'
+import userProfile from './assets/data/currentUserData'
 
-const colors = {
+export const colors = {
   darkColor: '#34333a',
   midColor: '#4b4a54',
   lightColor: '#cccccc',

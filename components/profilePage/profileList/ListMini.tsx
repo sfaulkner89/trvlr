@@ -3,7 +3,7 @@ import React from 'react'
 import { Colors } from '../../../types/colors'
 import { List } from '../../../types/List'
 import MapView from 'react-native-maps'
-import { winHeight, winWidth } from '../../../assets/height-width'
+import { winHeight, winWidth } from '../../../assets/variables/height-width'
 import { default as FaIcon } from 'react-native-vector-icons/FontAwesome'
 import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
 

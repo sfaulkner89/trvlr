@@ -1,7 +1,7 @@
 export default {
   username: 'Sam',
   name: 'samDogChamillionaire',
-  profilePicture: require('./profilePics/sam.jpeg'),
+  profilePicture: require('../profilePics/sam.jpeg'),
   countries: 68,
   worldCovered: 57.5,
   friends: 342,
@@ -11,8 +11,8 @@ export default {
       city: 'Boston',
       country: 'USA',
       location: {
-        lat: 42.3601,
-        lng: -71.0589
+        latitude: 42.3601,
+        longitude: -71.0589
       },
       dateCreated: new Date('00-06-2018'),
       dateModified: new Date('03-05-2020'),
@@ -21,8 +21,8 @@ export default {
           name: 'Saltie Girl',
           placeType: 'restaurant',
           location: {
-            lat: 42.351229,
-            lng: -71.077677
+            latitude: 42.351229,
+            longitude: -71.077677
           },
           dateCreated: new Date('00-06-2018'),
           dateModified: new Date('03-05-2020'),
@@ -33,8 +33,8 @@ export default {
           name: 'Boston Common',
           placeType: 'landmark',
           location: {
-            lat: 42.3551,
-            lng: -71.0657
+            latitude: 42.3551,
+            longitude: -71.0657
           },
           dateCreated: new Date('00-06-2018'),
           dateModified: new Date('00-06-2018'),

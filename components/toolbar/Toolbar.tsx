@@ -8,7 +8,7 @@ import { Colors } from '../../types/colors'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
-const iconSize = winWidth * 0.1
+const iconSize = winWidth * 0.08
 
 type Props = {
   colors: Colors
@@ -51,7 +51,7 @@ export default function Toolbar ({ colors, page, setPage, setProfile }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    height: winHeight * 0.12,
+    height: winHeight * 0.08,
     width: winWidth,
     flexDirection: 'row',
     opacity: 0.7
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: winHeight * 0.02
   }
 })

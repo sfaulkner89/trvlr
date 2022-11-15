@@ -2,26 +2,27 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import { Place } from '../../types/Place'
-import { winHeight, winWidth } from '../../assets/height-width'
-import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
+import { winHeight, winWidth } from '../../assets/variables/height-width'
+import { default as EnIcon } from 'react-native-vector-icons/Entypo'
 
 type Props = {
   colors: Colors
   place: Place
+  setPlaceSelection: (place: Place) => void
 }
 
 const iconSize = winWidth * 0.04
 
-export default function PlaceComponent ({ colors, place }: Props) {
-  const [extend, setExtend] = useState(false)
+export default function PlaceComponent ({
+  colors,
+  place,
+  setPlaceSelection
+}: Props) {
   const placeTypeDisplay =
     place.placeType.slice(0, 1).toUpperCase() + place.placeType.slice(1)
   return (
     <React.Fragment>
-      <Pressable
-        onPress={() => setExtend(!extend)}
-        style={{ ...styles.container, backgroundColor: colors.darkColor }}
-      >
+      <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
         <View style={{ ...styles.textHolder }}>
           <Text style={{ ...styles.name, color: colors.lightColor }}>
             {place.name}
@@ -31,22 +32,18 @@ export default function PlaceComponent ({ colors, place }: Props) {
             "{place.notes}"
           </Text>
         </View>
-        <View style={{ ...styles.arrowHolder }}>
-          <AnIcon
-            name={extend ? 'down' : 'right'}
+        <Pressable
+          style={{ ...styles.arrowHolder }}
+          onPress={() => setPlaceSelection(place)}
+        >
+          <EnIcon
+            name='dots-three-horizontal'
             size={iconSize}
             color={colors.lightColor}
             style={styles.arrow}
           />
-        </View>
-      </Pressable>
-      {extend ? (
-        <View
-          style={{ ...styles.extended, backgroundColor: colors.midColor }}
-        ></View>
-      ) : (
-        <View />
-      )}
+        </Pressable>
+      </View>
     </React.Fragment>
   )
 }

@@ -1,8 +1,8 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../types/colors'
-import { winHeight, winWidth } from '../../assets/height-width'
-import profileStats from '../../assets/profileStats'
+import { winHeight, winWidth } from '../../assets/variables/height-width'
+import profileStats from '../../assets/variables/profileStats'
 import StatHolder from './StatHolder'
 import { Member } from '../../types/Member'
 

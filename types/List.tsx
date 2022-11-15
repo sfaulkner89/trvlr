@@ -1,10 +1,11 @@
+import { LatLng } from 'react-native-maps'
 import { Location } from './Location'
 import { Place } from './Place'
 
 export type List = {
   name: string
   photo?: ImageData
-  location: Location
+  location: LatLng
   city: string
   country: string
   dateCreated: Date

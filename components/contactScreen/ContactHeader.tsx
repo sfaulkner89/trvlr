@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { winHeight, winWidth } from '../../assets/height-width'
+import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
 import { Colors } from '../../types/colors'
 

@@ -4,8 +4,8 @@ export default [
     members: [
       {
         username: 'Fat Freddy',
-        handle: 'funtimefreddy',
-        profilePicture: require('./profilePics/tats.jpeg'),
+        name: 'funtimefreddy',
+        profilePicture: require('../profilePics/tats.jpeg'),
         countries: 23,
         worldCovered: 57.5,
         friends: 342,
@@ -18,8 +18,8 @@ export default [
     members: [
       {
         username: 'Big Freedia',
-        handle: 'friedafuxxx4000',
-        profilePicture: require('./profilePics/big-freedia.jpeg'),
+        name: 'friedafuxxx4000',
+        profilePicture: require('../profilePics/big-freedia.jpeg'),
         countries: 23,
         worldCovered: 57.5,
         friends: 342,
@@ -27,8 +27,8 @@ export default [
       },
       {
         username: 'Tiny Punisher',
-        handle: 'stinkboxdaddy',
-        profilePicture: require('./profilePics/dumb.jpeg'),
+        name: 'stinkboxdaddy',
+        profilePicture: require('../profilePics/dumb.jpeg'),
         countries: 23,
         worldCovered: 57.5,
         friends: 342,

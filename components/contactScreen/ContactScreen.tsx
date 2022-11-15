@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
-import groupData from '../../assets/groupdata'
+import groupData from '../../assets/data/groupdata'
 import GroupList from './GroupList'
 import ContactHeader from './ContactHeader'
 import ProfilePage from '../profilePage/ProfilePage'

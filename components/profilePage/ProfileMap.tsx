@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import MapView from 'react-native-maps'
-import { winHeight, winWidth } from '../../assets/height-width'
+import { winHeight, winWidth } from '../../assets/variables/height-width'
 
 export default function ProfileMap () {
   return (
