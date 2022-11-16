@@ -31,6 +31,7 @@ export default function App () {
           colors={colors}
           profile={userProfile}
           setProfilePage={setProfilePage}
+          currentUser={true}
         />
       ) : (
         <React.Fragment>

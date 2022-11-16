@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@geo-maps/earth-coastlines-1km": "^0.6.0",
     "@reduxjs/toolkit": "^1.9.0",
     "@types/react": "~18.0.24",
     "@types/react-native": "^0.70.6",

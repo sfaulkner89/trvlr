@@ -1,8 +1,16 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
-import React from 'react'
-import MapView, { Geojson } from 'react-native-maps'
+import React, { useState } from 'react'
+import MapView, {
+  Callout,
+  Geojson,
+  LatLng,
+  Marker,
+  Overlay
+} from 'react-native-maps'
 import { Colors } from '../../types/colors'
-//import worldJson from '../../assets/countries.json'
+import worldJson from '../../assets/110m.json'
+import CountryPopUp from './CountryPopUp'
+const jb = require('../../assets/download.jpg')
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -12,15 +20,30 @@ type Props = {
 }
 
 export default function Map ({ colors }: Props) {
+  const [country, setCountry] = useState<string | undefined>()
+  const [clickCoords, setClickCoords] = useState<LatLng | undefined>()
   return (
     <View style={styles.container}>
-      <MapView style={styles.map}>
-        {/* <Geojson
+      <MapView
+        style={styles.map}
+        onPress={e => setClickCoords(e.nativeEvent.coordinate)}
+      >
+        <Geojson
           geojson={worldJson}
-          strokeColor='red'
-          fillColor='green'
+          strokeColor='transparent'
+          fillColor={null}
           strokeWidth={2}
-        /> */}
+          onPress={e => setCountry(e.feature.properties.NAME)}
+        />
+        {country && clickCoords ? (
+          <Marker coordinate={clickCoords}>
+            <Callout tooltip>
+              <CountryPopUp colors={colors} country={country} />
+            </Callout>
+          </Marker>
+        ) : (
+          <View />
+        )}
       </MapView>
     </View>
   )

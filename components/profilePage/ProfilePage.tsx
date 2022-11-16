@@ -11,6 +11,8 @@ import ProfileListPage from './profileList/ProfileListPage'
 import { Place } from '../../types/Place'
 import { List } from '../../types/List'
 import ListPage from '../listPage/ListPage'
+import Options from '../listPage/Options'
+import profileOptions from '../../assets/variables/profileOptions'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -20,15 +22,18 @@ type Props = {
   colors: Colors
   profile: Member
   setProfilePage: (active: boolean) => void
+  currentUser: boolean
 }
 
 export default function ProfilePage ({
   colors,
   profile,
-  setProfilePage
+  setProfilePage,
+  currentUser
 }: Props) {
-  const [selection, setSelection] = useState(0)
+  const [selection, setSelection] = useState<number>(0)
   const [selectedList, setSelectedList] = useState<List | undefined>()
+  const [profileSelection, setProfileSelection] = useState<Member | undefined>()
 
   const buttonMap = [
     <ProfileMap />,
@@ -45,6 +50,14 @@ export default function ProfilePage ({
       colors={colors}
       list={selectedList}
       setSelectedList={setSelectedList}
+      currentUser={currentUser}
+    />
+  ) : profileSelection ? (
+    <Options
+      colors={colors}
+      options={profileOptions(colors)}
+      selection={profileSelection}
+      setSelection={setProfileSelection}
     />
   ) : (
     <View
@@ -57,7 +70,7 @@ export default function ProfilePage ({
         colors={colors}
         profile={profile}
         setProfilePage={setProfilePage}
-        icon='user-edit'
+        setSelection={setProfileSelection}
       />
       <ProfileTopLine colors={colors} profile={profile} />
       <Text style={{ ...styles.username, color: colors.lightColor }}>

@@ -31,8 +31,8 @@ export default function ListMini ({ colors, list, setSelectedList }: Props) {
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: list.location.lat,
-            longitude: list.location.lng,
+            latitude: list.location.latitude,
+            longitude: list.location.longitude,
             latitudeDelta: 1,
             longitudeDelta: 1
           }}

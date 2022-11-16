@@ -23,6 +23,7 @@ export default function ContactScreen ({ colors }: Props) {
       colors={colors}
       profile={contact}
       setProfilePage={setProfilePage}
+      currentUser={false}
     />
   ) : (
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>

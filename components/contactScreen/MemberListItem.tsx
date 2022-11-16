@@ -49,7 +49,7 @@ export default function MemberListItem ({
         </View>
         <View style={styles.handleHolder}>
           <Text style={{ ...styles.handle, color: colors.lightColor }}>
-            @{member.handle}
+            @{member.name}
           </Text>
         </View>
       </View>

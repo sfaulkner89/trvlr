@@ -7,18 +7,24 @@ import { List } from '../../types/List'
 import PlaceComponent from './PlaceComponent'
 import { Place } from '../../types/Place'
 import placeOptions from '../../assets/variables/placeOptions'
-import PlaceOptions from './PlaceOptions'
 import MapView, { Marker } from 'react-native-maps'
 import calculateBound from '../../handlers/calculateBound'
 import calculateCenter from '../../handlers/calculateCenter'
+import Options from './Options'
 
 type Props = {
   colors: Colors
   list: List
   setSelectedList: (noList: undefined) => void
+  currentUser: boolean
 }
 
-export default function ListPage ({ colors, list, setSelectedList }: Props) {
+export default function ListPage ({
+  colors,
+  list,
+  setSelectedList,
+  currentUser
+}: Props) {
   const [placeSelection, setPlaceSelection] = useState<Place | undefined>()
 
   const bounds = calculateBound(list.places)
@@ -27,11 +33,11 @@ export default function ListPage ({ colors, list, setSelectedList }: Props) {
   return (
     <React.Fragment>
       {placeSelection ? (
-        <PlaceOptions
+        <Options
           colors={colors}
           options={placeOptions(colors)}
-          place={placeSelection}
-          setPlace={setPlaceSelection}
+          selection={placeSelection}
+          setSelection={setPlaceSelection}
         />
       ) : (
         <View />
@@ -41,7 +47,7 @@ export default function ListPage ({ colors, list, setSelectedList }: Props) {
           colors={colors}
           profile={list}
           setProfilePage={setSelectedList}
-          icon='edit'
+          setSelection={setPlaceSelection}
         />
         <View style={{ ...styles.mapHolder, backgroundColor: colors.midColor }}>
           <MapView
