@@ -52,7 +52,7 @@ export default function Options ({
 
 const styles = StyleSheet.create({
   background: {
-    position: 'absolute',
+    position: 'relative',
     top: 0,
     left: 0,
     height: winHeight,

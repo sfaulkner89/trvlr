@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
   },
 
   selectionHolder: {
-    flex: 1,
     marginTop: winHeight * 0.02
   }
 })

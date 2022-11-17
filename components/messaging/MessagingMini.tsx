@@ -22,6 +22,7 @@ type Props = {
 
 export default function MessagingMini ({ chat, colors, setChat }: Props) {
   const lastMessage = chat.messages[chat.messages.length - 1]
+  console.log(lastMessage)
   const today = new Date().toDateString()
   const dateString =
     lastMessage.dateSent.getDay() +
@@ -58,17 +59,13 @@ export default function MessagingMini ({ chat, colors, setChat }: Props) {
               : contacts[chat.contacts[0]].username}
           </Text>
         </View>
-        {typeof chat.contacts === 'object' ? (
-          <View />
-        ) : (
-          <View style={styles.handleHolder}>
-            <Text style={{ ...styles.handle, color: colors.lightColor }}>
-              {today === lastMessage.dateSent.toDateString()
-                ? lastMessage.dateSent.getHours() + ': ' + lastMessage.text
-                : dateString + ': ' + lastMessage.text}
-            </Text>
-          </View>
-        )}
+        <View style={styles.handleHolder}>
+          <Text style={{ ...styles.handle, color: colors.lightColor }}>
+            {today === lastMessage.dateSent.toDateString()
+              ? lastMessage.dateSent.getHours() + ': ' + lastMessage.text
+              : dateString + ': ' + lastMessage.text}
+          </Text>
+        </View>
       </View>
     </Pressable>
   )
