@@ -1,4 +1,10 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import { MessagingGroup } from '../../types/MessagingGroup'
@@ -27,7 +33,10 @@ export default function ChatScreen ({
   )
   const chatContacts = chat.contacts.map(id => contacts[id])
   return (
-    <View style={{ ...styles.container, backgroundColor: colors.midColor }}>
+    <KeyboardAvoidingView
+      behavior='padding'
+      style={{ ...styles.container, backgroundColor: colors.midColor }}
+    >
       <ChatHeader
         colors={colors}
         chat={chat}
@@ -52,7 +61,7 @@ export default function ChatScreen ({
         currentMessages={currentMessages}
         currentUser={currentUser}
       />
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -62,7 +71,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   messagesHolder: {
-    height: winHeight * 0.88,
+    flex: 1,
     width: winWidth * 0.98,
     justifyContent: 'flex-start'
   },

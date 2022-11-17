@@ -47,7 +47,7 @@ export default function MessageBubble ({
             }}
           >
             {message.dateSent.toLocaleTimeString([], {
-              hour: '2-digit',
+              hour: 'numeric',
               minute: '2-digit'
             })}
           </Text>
