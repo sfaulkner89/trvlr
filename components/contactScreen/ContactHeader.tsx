@@ -6,9 +6,10 @@ import { Colors } from '../../types/colors'
 
 type Props = {
   colors: Colors
+  title: string
 }
 
-export default function ContactHeader ({ colors }: Props) {
+export default function ContactHeader ({ colors, title }: Props) {
   return (
     <View style={styles.container}>
       <Pressable style={{ ...styles.qrHolder }}>
@@ -18,9 +19,7 @@ export default function ContactHeader ({ colors }: Props) {
           color={colors.lightColor}
         />
       </Pressable>
-      <Text style={{ ...styles.title, color: colors.lightColor }}>
-        Contacts
-      </Text>
+      <Text style={{ ...styles.title, color: colors.lightColor }}>{title}</Text>
       <Pressable style={{ ...styles.qrHolder }}>
         <AnIcon
           name='adduser'

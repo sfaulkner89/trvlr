@@ -27,7 +27,7 @@ export default function ContactScreen ({ colors }: Props) {
     />
   ) : (
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
-      <ContactHeader colors={colors} />
+      <ContactHeader colors={colors} title='Contacts' />
       <ScrollView>
         {groupData.map((group, i) => {
           return (

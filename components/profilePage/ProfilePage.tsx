@@ -21,7 +21,7 @@ const size = winWidth * 0.06
 type Props = {
   colors: Colors
   profile: Member
-  setProfilePage: (active: boolean) => void
+  setProfilePage?: (active: boolean) => void
   currentUser: boolean
 }
 

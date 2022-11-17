@@ -7,6 +7,7 @@ import ContactScreen from './components/contactScreen/ContactScreen'
 import HeaderBar from './components/headerBar/HeaderBar'
 import ProfilePage from './components/profilePage/ProfilePage'
 import userProfile from './assets/data/currentUserData'
+import ChatListPage from './components/messaging/ChatListPage'
 
 export const colors = {
   darkColor: '#34333a',
@@ -17,34 +18,28 @@ export const colors = {
 
 export default function App () {
   const [page, setPage] = useState(0)
-  const [profilePage, setProfilePage] = useState(false)
+  const [messages, setMessages] = useState(false)
   const pages = [
     <Map colors={colors} />,
     <Search colors={colors} />,
-    <ContactScreen colors={colors} />
+    <ContactScreen colors={colors} />,
+    <ProfilePage colors={colors} profile={userProfile} currentUser={true} />
   ]
-
-  return (
+  return messages ? (
+    <ChatListPage
+      colors={colors}
+      currentUser={userProfile}
+      setMessages={setMessages}
+    />
+  ) : (
     <View style={styles.container}>
-      {profilePage ? (
-        <ProfilePage
-          colors={colors}
-          profile={userProfile}
-          setProfilePage={setProfilePage}
-          currentUser={true}
-        />
+      {page === 0 ? (
+        <HeaderBar colors={colors} setMessages={setMessages} />
       ) : (
-        <React.Fragment>
-          {page === 0 ? <HeaderBar colors={colors} /> : <View />}
-          <View style={styles.contentHolder}>{pages[page]}</View>
-          <Toolbar
-            colors={colors}
-            page={page}
-            setPage={setPage}
-            setProfile={setProfilePage}
-          />
-        </React.Fragment>
+        <View />
       )}
+      <View style={styles.contentHolder}>{pages[page]}</View>
+      <Toolbar colors={colors} page={page} setPage={setPage} />
     </View>
   )
 }

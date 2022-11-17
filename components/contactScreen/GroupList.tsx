@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import React from 'react'
 import { Colors } from '../../types/colors'
-import { Group } from '../../types/Group'
+import { ContactGroup } from '../../types/ContactGroup'
 import MemberListItem from './MemberListItem'
 import { Member } from '../../types/Member'
 
@@ -10,7 +10,7 @@ const winWidth = Dimensions.get('window').width
 
 type Props = {
   colors: Colors
-  group: Group
+  group: ContactGroup
   setContact: (member: Member) => void
   setProfilePage: (active: boolean) => void
 }

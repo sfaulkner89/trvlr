@@ -14,10 +14,9 @@ type Props = {
   colors: Colors
   page: number
   setPage: (page: number) => void
-  setProfile: (active: boolean) => void
 }
 
-export default function Toolbar ({ colors, page, setPage, setProfile }: Props) {
+export default function Toolbar ({ colors, page, setPage }: Props) {
   const buttonProps = {}
   return (
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
@@ -42,8 +41,12 @@ export default function Toolbar ({ colors, page, setPage, setProfile }: Props) {
           color={page === 2 ? colors.selectedColor : colors.lightColor}
         />
       </Pressable>
-      <Pressable style={{ ...styles.button }} onPress={() => setProfile(true)}>
-        <IoIcon name='person' size={iconSize} color={colors.lightColor} />
+      <Pressable style={{ ...styles.button }} onPress={() => setPage(3)}>
+        <IoIcon
+          name='person'
+          size={iconSize}
+          color={page === 3 ? colors.selectedColor : colors.lightColor}
+        />
       </Pressable>
     </View>
   )

@@ -4,16 +4,16 @@ import { Colors } from '../../types/colors'
 import { default as FeIcon } from 'react-native-vector-icons/Feather'
 import { default as IoIcon } from 'react-native-vector-icons/Ionicons'
 import MapSearch from '../map/MapSearch'
+import { winHeight, winWidth } from '../../assets/variables/height-width'
 
-const winHeight = Dimensions.get('window').height
-const winWidth = Dimensions.get('window').width
 const size = winWidth * 0.06
 
 type Props = {
   colors: Colors
+  setMessages: (active: boolean) => void
 }
 
-export default function HeaderBar ({ colors }: Props) {
+export default function HeaderBar ({ colors, setMessages }: Props) {
   const [search, setSearch] = useState(false)
 
   return (
@@ -24,6 +24,7 @@ export default function HeaderBar ({ colors }: Props) {
       ) : (
         <Pressable
           style={{ ...styles.button, backgroundColor: colors.darkColor }}
+          onPress={() => setMessages(true)}
         >
           <FeIcon name='message-circle' size={size} color={colors.lightColor} />
         </Pressable>

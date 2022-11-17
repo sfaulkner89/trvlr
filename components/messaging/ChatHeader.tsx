@@ -7,41 +7,40 @@ import { default as FaIcon } from 'react-native-vector-icons/FontAwesome5'
 import { default as EnIcon } from 'react-native-vector-icons/Entypo'
 import { Member } from '../../types/Member'
 import { List } from '../../types/List'
+import { MessagingGroup } from '../../types/MessagingGroup'
 
 type Props = {
   colors: Colors
-  profile: Member | List
-  setProfilePage: (active: boolean) => void
-  setSelection: ((member: Member) => void) | ((list: List) => void)
+  chat: MessagingGroup
+  setChat: (chat?: undefined) => void
+  contacts: Member[]
 }
 
 const buttonSize = winWidth * 0.05
 
-export default function ProfileHeader ({
+export default function ChatHeader ({
   colors,
-  profile,
-  setProfilePage,
-  setSelection
+  chat,
+  setChat,
+  contacts
 }: Props) {
   return (
     <View style={styles.container}>
-      {setProfilePage ? (
-        <Pressable style={styles.button} onPress={() => setProfilePage(false)}>
-          <AnIcon name='left' size={buttonSize} color={colors.lightColor} />
-        </Pressable>
-      ) : (
-        <View style={styles.button} />
-      )}
-
+      <Pressable style={styles.button} onPress={() => setChat()}>
+        <AnIcon name='left' size={buttonSize} color={colors.lightColor} />
+      </Pressable>
       <Text style={{ ...styles.handle, color: colors.lightColor }}>
-        {profile.name}
+        {chat.group
+          ? chat.group.groupName
+          : contacts.length > 1
+          ? `${contacts.length} Contacts`
+          : contacts[0].username}
       </Text>
       <Pressable style={styles.button}>
         <EnIcon
           name='dots-three-horizontal'
           size={buttonSize}
           color={colors.lightColor}
-          onPress={() => setSelection(profile)}
         />
       </Pressable>
     </View>

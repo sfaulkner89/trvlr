@@ -1,4 +1,5 @@
 export default {
+  id: 'efad0b7b-47ae-45ae-9fa1-2748888efb6b',
   username: 'Sam',
   name: 'samDogChamillionaire',
   profilePicture: require('../profilePics/sam.jpeg'),

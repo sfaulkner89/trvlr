@@ -1,6 +1,6 @@
 import { Member } from './Member'
 
-export type Group = {
+export type ContactGroup = {
   groupName: string
   members: Member[]
 }
