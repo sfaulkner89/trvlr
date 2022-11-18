@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../../types/colors'
 import { Member } from '../../../types/Member'
@@ -9,6 +9,7 @@ type Props = {
   colors: Colors
   member: Member
   setSelectedList: (list: List) => void
+  currentUser: boolean
 }
 
 export default function ProfileListPage ({

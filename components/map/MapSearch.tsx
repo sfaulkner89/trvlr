@@ -36,7 +36,7 @@ export default function MapSearch ({ colors, search, setSearch }: Props) {
       {search ? (
         <React.Fragment>
           <TextInput
-            style={styles.input}
+            style={{ ...styles.input, color: colors.lightColor }}
             selectionColor={colors.selectedColor}
           />
           <Pressable onPress={() => setSearch(false)} style={styles.icon}>
@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
   },
   input: {
     width: winWidth * 0.7,
-    fontSize: winHeight * 0.02
+    fontSize: winHeight * 0.02,
+    paddingLeft: winWidth * 0.03
   },
   icon: {
     marginLeft: winWidth * 0.03

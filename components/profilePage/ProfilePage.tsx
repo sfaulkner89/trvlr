@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Dimensions, Image } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Image,
+  Pressable
+} from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import Selector from '../search/Selector'
@@ -13,6 +20,7 @@ import { List } from '../../types/List'
 import ListPage from '../listPage/ListPage'
 import Options from '../listPage/Options'
 import profileOptions from '../../assets/variables/profileOptions'
+import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -41,6 +49,7 @@ export default function ProfilePage ({
       colors={colors}
       member={profile}
       setSelectedList={setSelectedList}
+      currentUser={currentUser}
     />,
     <View />
   ]
@@ -71,6 +80,7 @@ export default function ProfilePage ({
         profile={profile}
         setProfilePage={setProfilePage}
         setSelection={setProfileSelection}
+        currentUser={currentUser}
       />
       <ProfileTopLine colors={colors} profile={profile} />
       <Text style={{ ...styles.username, color: colors.lightColor }}>
@@ -84,6 +94,18 @@ export default function ProfilePage ({
         setSelection={setSelection}
       />
       <View style={styles.selectionHolder}>{buttonMap[selection]}</View>
+      {selection === 1 ? (
+        <Pressable
+          style={{
+            ...styles.addListButton,
+            backgroundColor: colors.lightColor
+          }}
+        >
+          <AnIcon name='addfile' size={size} color={colors.midColor} />
+        </Pressable>
+      ) : (
+        <View />
+      )}
     </View>
   )
 }
@@ -104,5 +126,15 @@ const styles = StyleSheet.create({
 
   selectionHolder: {
     marginTop: winHeight * 0.02
+  },
+  addListButton: {
+    position: 'absolute',
+    bottom: winHeight * 0.1,
+    right: winWidth * 0.04,
+    padding: winWidth * 0.025,
+    borderRadius: size,
+    opacity: 0.8,
+    shadowOpacity: 0.6,
+    shadowOffset: { width: winWidth * 0.01, height: winWidth * 0.01 }
   }
 })

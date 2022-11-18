@@ -2,7 +2,6 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import ProfileHeader from '../profilePage/ProfileHeader'
 import { List } from '../../types/List'
 import PlaceComponent from './PlaceComponent'
 import { Place } from '../../types/Place'
@@ -11,6 +10,8 @@ import MapView, { Marker } from 'react-native-maps'
 import calculateBound from '../../handlers/calculateBound'
 import calculateCenter from '../../handlers/calculateCenter'
 import Options from './Options'
+import ListHeader from './ListHeader'
+import listOptions from '../../assets/variables/listOptions'
 
 type Props = {
   colors: Colors
@@ -25,6 +26,7 @@ export default function ListPage ({
   setSelectedList,
   currentUser
 }: Props) {
+  const [listSelection, setListSelection] = useState<List | undefined>()
   const [placeSelection, setPlaceSelection] = useState<Place | undefined>()
 
   const bounds = calculateBound(list.places)
@@ -32,22 +34,22 @@ export default function ListPage ({
 
   return (
     <React.Fragment>
-      {placeSelection ? (
+      {listSelection || placeSelection ? (
         <Options
           colors={colors}
-          options={placeOptions(colors)}
-          selection={placeSelection}
-          setSelection={setPlaceSelection}
+          options={placeSelection ? placeOptions(colors) : listOptions(colors)}
+          selection={placeSelection ? placeSelection : listSelection}
+          setSelection={placeSelection ? setPlaceSelection : setListSelection}
         />
       ) : (
         <View />
       )}
       <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
-        <ProfileHeader
+        <ListHeader
           colors={colors}
           profile={list}
-          setProfilePage={setSelectedList}
-          setSelection={setPlaceSelection}
+          setSelectedList={setSelectedList}
+          setSelection={setListSelection}
         />
         <View style={{ ...styles.mapHolder, backgroundColor: colors.midColor }}>
           <MapView

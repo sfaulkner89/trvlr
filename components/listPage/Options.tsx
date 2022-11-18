@@ -8,12 +8,16 @@ import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { Place } from '../../types/Place'
 import Icon, { default as EnIcon } from 'react-native-vector-icons/Entypo'
 import { Member } from '../../types/Member'
+import { List } from '../../types/List'
 
 type Props = {
   colors: Colors
   options: Option[]
-  selection: Place | Member
-  setSelection: ((place?: Place) => void) | ((member?: Member) => void)
+  selection: List | Member | Place
+  setSelection:
+    | ((list?: List) => void)
+    | ((place?: Place) => void)
+    | ((member?: Member) => void)
 }
 
 export default function Options ({
