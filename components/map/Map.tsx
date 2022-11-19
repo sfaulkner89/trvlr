@@ -31,7 +31,7 @@ export default function Map ({ colors }: Props) {
         <Geojson
           geojson={worldJson}
           strokeColor='transparent'
-          fillColor={null}
+          fillColor='transparent'
           strokeWidth={2}
           onPress={e => setCountry(e.feature.properties.NAME)}
         />

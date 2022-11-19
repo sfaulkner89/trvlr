@@ -5,9 +5,9 @@ import { Place } from './Place'
 export type List = {
   name: string
   photo?: ImageData
-  location: LatLng
-  city: string
-  country: string
+  location?: LatLng
+  city?: string
+  country?: string
   dateCreated: Date
   dateModified: Date
   places: Place[]

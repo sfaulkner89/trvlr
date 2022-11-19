@@ -22,8 +22,13 @@ export default function App () {
   const pages = [
     <Map colors={colors} />,
     <Search colors={colors} />,
-    <ContactScreen colors={colors} />,
-    <ProfilePage colors={colors} profile={userProfile} currentUser={true} />
+    <ContactScreen colors={colors} currentUser={userProfile} />,
+    <ProfilePage
+      colors={colors}
+      profile={userProfile}
+      isCurrentUser={true}
+      currentUser={userProfile}
+    />
   ]
   return messages ? (
     <ChatListPage

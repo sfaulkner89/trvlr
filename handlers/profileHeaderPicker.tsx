@@ -5,8 +5,8 @@ import { Colors } from '../types/colors'
 
 const buttonSize = winWidth * 0.05
 
-export default (colors: Colors, currentUser: boolean) => {
-  return currentUser ? (
+export default (colors: Colors, isCurrentUser: boolean) => {
+  return isCurrentUser ? (
     <FaIcon name='user-edit' size={buttonSize} color={colors.lightColor} />
   ) : (
     <EnIcon

@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, Dimensions, TextInput } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TextInput,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -17,30 +25,32 @@ type Props = {
 export default function Search ({ colors }: Props) {
   const [searchType, setSearchType] = useState(0)
   return (
-    <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
-      <View style={styles.inputContainer}>
-        <View
-          style={{ ...styles.inputBase, backgroundColor: colors.lightColor }}
-        >
-          <Icon
-            name='search'
-            size={size}
-            color={colors.darkColor}
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={{ ...styles.input }}
-            selectionColor={colors.darkColor}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
+        <View style={styles.inputContainer}>
+          <View
+            style={{ ...styles.inputBase, backgroundColor: colors.lightColor }}
+          >
+            <Icon
+              name='search'
+              size={size}
+              color={colors.darkColor}
+              style={styles.searchIcon}
+            />
+            <TextInput
+              style={{ ...styles.input }}
+              selectionColor={colors.darkColor}
+            />
+          </View>
+          <SearchSelector
+            colors={colors}
+            buttonList={searchCriteria}
+            selection={searchType}
+            setSelection={setSearchType}
           />
         </View>
-        <SearchSelector
-          colors={colors}
-          buttonList={searchCriteria}
-          selection={searchType}
-          setSelection={setSearchType}
-        />
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   )
 }
 

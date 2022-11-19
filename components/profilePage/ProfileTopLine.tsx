@@ -14,9 +14,11 @@ type Props = {
 export default function ProfileTopLine ({ profile, colors }: Props) {
   return (
     <View style={styles.container}>
-      {profileStats.slice(0, 2).map((stat, i) => (
-        <StatHolder stat={stat} profile={profile} key={i} colors={colors} />
-      ))}
+      <View style={styles.statHolderHolder}>
+        {profileStats.slice(0, 2).map((stat, i) => (
+          <StatHolder stat={stat} profile={profile} key={i} colors={colors} />
+        ))}
+      </View>
 
       <View style={{ ...styles.imageHolder }}>
         <Image
@@ -24,26 +26,35 @@ export default function ProfileTopLine ({ profile, colors }: Props) {
           style={{ ...styles.profilePicture, borderColor: colors.lightColor }}
         />
       </View>
-      {profileStats.slice(2).map((stat, i) => (
-        <StatHolder stat={stat} profile={profile} key={i} colors={colors} />
-      ))}
+      <View style={styles.statHolderHolder}>
+        {profileStats.slice(2).map((stat, i) => (
+          <StatHolder stat={stat} profile={profile} key={i} colors={colors} />
+        ))}
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: winWidth * 0.9,
-    flexDirection: 'row'
+    width: winWidth,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   imageHolder: {
-    marginLeft: winWidth * 0.04,
-    marginRight: winWidth * 0.04
+    flex: 1,
+    alignItems: 'center'
   },
   profilePicture: {
-    width: winWidth * 0.25,
-    height: winWidth * 0.25,
+    width: winWidth * 0.18,
+    height: winWidth * 0.18,
     borderRadius: winWidth * 0.2,
     borderWidth: 3
+  },
+  statHolderHolder: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center'
   }
 })

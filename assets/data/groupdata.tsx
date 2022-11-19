@@ -4,18 +4,22 @@ export const contacts = {
     username: 'Fat Freddy',
     name: 'funtimefreddy',
     profilePicture: require('../profilePics/tats.jpeg'),
+    bio: 'FunTime Freddy farts ferociously',
     countries: 23,
-    worldCovered: 57.5,
+    following: 85,
+    followers: 323,
     friends: 342,
     lists: []
   },
   '7f4276dc-19e5-4662-bb0f-95b6180ded65': {
     id: '7f4276dc-19e5-4662-bb0f-95b6180ded65',
     username: 'Big Freedia',
-    name: 'friedafuxxx4000',
+    name: 'freediafuxxx4000',
     profilePicture: require('../profilePics/big-freedia.jpeg'),
+    bio: 'Freedia fucks foxes',
     countries: 23,
-    worldCovered: 57.5,
+    following: 85,
+    followers: 323,
     friends: 342,
     lists: []
   },
@@ -24,8 +28,10 @@ export const contacts = {
     username: 'Tiny Punisher',
     name: 'stinkboxdaddy',
     profilePicture: require('../profilePics/dumb.jpeg'),
+    bio: 'TP all up in your TP',
     countries: 23,
-    worldCovered: 57.5,
+    following: 85,
+    followers: 323,
     friends: 342,
     lists: []
   }

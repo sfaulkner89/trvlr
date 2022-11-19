@@ -1,18 +1,18 @@
 export default [
   {
     key: 'countries',
-    stat: 'Countries'
+    stat: '/195 🌎'
   },
   {
     key: 'lists',
     stat: 'Lists'
   },
   {
-    key: 'worldCovered',
-    stat: 'World'
+    key: 'followers',
+    stat: 'Followers'
   },
   {
-    key: 'friends',
-    stat: 'Friends'
+    key: 'following',
+    stat: 'Following'
   }
 ]

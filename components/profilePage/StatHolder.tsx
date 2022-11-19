@@ -29,7 +29,7 @@ export default function StatHolder ({ stat, profile, colors }: Props) {
           style={{
             ...styles.stat,
             color: colors.lightColor,
-            fontSize: (winWidth * 0.08) / Math.sqrt(stat.stat.length)
+            fontSize: (winWidth * 0.11) / Math.sqrt(stat.stat.length)
           }}
         >
           {stat.stat}
@@ -42,15 +42,15 @@ export default function StatHolder ({ stat, profile, colors }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: winHeight * 0.045,
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'center'
   },
   valueHolder: {},
   value: {
     fontSize: winWidth * 0.045,
-    textAlign: 'center'
+    textAlign: 'center',
+    marginRight: winWidth * 0.01
   },
   statHolder: {},
   stat: {

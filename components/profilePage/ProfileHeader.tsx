@@ -9,13 +9,16 @@ import { default as FeIcon } from 'react-native-vector-icons/Feather'
 import { default as SiIcon } from 'react-native-vector-icons/SimpleLineIcons'
 import { Member } from '../../types/Member'
 import { List } from '../../types/List'
+import { MessagingGroup } from '../../types/MessagingGroup'
 
 type Props = {
   colors: Colors
   profile: Member
   setProfilePage: (active: boolean) => void
   setSelection: (member: Member) => void
-  currentUser: boolean
+  isCurrentUser: boolean
+  setChat: (active: MessagingGroup) => void
+  messages: MessagingGroup
 }
 
 const buttonSize = winWidth * 0.05
@@ -25,7 +28,9 @@ export default function ProfileHeader ({
   profile,
   setProfilePage,
   setSelection,
-  currentUser
+  isCurrentUser,
+  setChat,
+  messages
 }: Props) {
   return (
     <View style={styles.container}>
@@ -33,7 +38,7 @@ export default function ProfileHeader ({
         <View
           style={{
             ...styles.buttonHolder,
-            justifyContent: currentUser ? 'flex-end' : 'center'
+            justifyContent: isCurrentUser ? 'flex-end' : 'center'
           }}
         >
           <Pressable
@@ -53,12 +58,12 @@ export default function ProfileHeader ({
       <View
         style={{
           ...styles.buttonHolder,
-          justifyContent: currentUser ? 'flex-end' : 'center'
+          justifyContent: isCurrentUser ? 'flex-end' : 'center'
         }}
       >
-        {!currentUser ? (
+        {!isCurrentUser ? (
           <React.Fragment>
-            <Pressable style={styles.button}>
+            <Pressable style={styles.button} onPress={() => setChat(messages)}>
               <FeIcon
                 name='message-circle'
                 size={buttonSize}
@@ -80,7 +85,7 @@ export default function ProfileHeader ({
         <Pressable
           style={{
             ...styles.button,
-            alignItems: currentUser ? 'flex-end' : 'center'
+            alignItems: isCurrentUser ? 'flex-end' : 'center'
           }}
         >
           <EnIcon

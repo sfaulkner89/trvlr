@@ -22,7 +22,6 @@ type Props = {
 
 export default function MessagingMini ({ chat, colors, setChat }: Props) {
   const lastMessage = chat.messages[chat.messages.length - 1]
-  console.log(lastMessage)
   const today = new Date().toDateString()
   const dateString =
     lastMessage.dateSent.getDay() +

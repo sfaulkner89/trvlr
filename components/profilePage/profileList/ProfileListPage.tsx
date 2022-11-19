@@ -9,7 +9,7 @@ type Props = {
   colors: Colors
   member: Member
   setSelectedList: (list: List) => void
-  currentUser: boolean
+  isCurrentUser: boolean
 }
 
 export default function ProfileListPage ({

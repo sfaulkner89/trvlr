@@ -3,9 +3,10 @@ export default {
   username: 'Sam',
   name: 'samDogChamillionaire',
   profilePicture: require('../profilePics/sam.jpeg'),
+  bio: 'I wish I was a carrot',
   countries: 68,
-  worldCovered: 57.5,
-  friends: 342,
+  following: 57,
+  followers: 342,
   lists: [
     {
       name: 'Boston Weekend Party List',
