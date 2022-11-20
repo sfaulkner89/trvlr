@@ -7,7 +7,7 @@ export type Member = {
   bio: string
   profilePicture: ImageData
   countries: number
-  worldCovered: number
-  friends: number
+  following: number
+  followers: number
   lists: List[]
 }

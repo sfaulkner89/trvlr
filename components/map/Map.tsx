@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import MapView, {
   Callout,
   Geojson,
@@ -10,41 +10,50 @@ import MapView, {
 import { Colors } from '../../types/colors'
 import worldJson from '../../assets/110m.json'
 import CountryPopUp from './CountryPopUp'
-const jb = require('../../assets/download.jpg')
+import getMapAreaName from '../../handlers/googleServices/getMapAreaName'
 
-const winHeight = Dimensions.get('window').height
-const winWidth = Dimensions.get('window').width
+import { winHeight, winWidth } from '../../assets/variables/height-width'
+import { PlaceDetails } from '../../types/PlaceDetails'
+import MapPin from './MapPin'
+import { Deltas } from '../../types/Deltas'
 
 type Props = {
   colors: Colors
 }
 
 export default function Map ({ colors }: Props) {
-  const [country, setCountry] = useState<string | undefined>()
-  const [clickCoords, setClickCoords] = useState<LatLng | undefined>()
+  const [placeInfo, setPlaceInfo] = useState<PlaceDetails[] | undefined>()
+  const [deltas, setDeltas] = useState<Deltas | undefined>({
+    latitudeDelta: 180,
+    longitudeDelta: 180
+  })
+
+  const positionRef = useRef<LatLng & Deltas>({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 180,
+    longitudeDelta: 180
+  })
+  const mapRef = useRef()
+
+  const moveHandler = async () => {
+    const placeDetails = await getMapAreaName(positionRef.current)
+    setDeltas({
+      latitudeDelta: positionRef.current.latitudeDelta,
+      longitudeDelta: positionRef.current.longitudeDelta
+    })
+    setPlaceInfo(placeDetails)
+  }
+
   return (
     <View style={styles.container}>
+      <MapPin colors={colors} placeDetails={placeInfo} deltas={deltas} />
       <MapView
         style={styles.map}
-        onPress={e => setClickCoords(e.nativeEvent.coordinate)}
-      >
-        <Geojson
-          geojson={worldJson}
-          strokeColor='transparent'
-          fillColor='transparent'
-          strokeWidth={2}
-          onPress={e => setCountry(e.feature.properties.NAME)}
-        />
-        {country && clickCoords ? (
-          <Marker coordinate={clickCoords}>
-            <Callout tooltip>
-              <CountryPopUp colors={colors} country={country} />
-            </Callout>
-          </Marker>
-        ) : (
-          <View />
-        )}
-      </MapView>
+        onRegionChange={e => (positionRef.current = e)}
+        onTouchEnd={() => moveHandler()}
+        onTouchMove={() => setPlaceInfo(undefined)}
+      ></MapView>
     </View>
   )
 }
