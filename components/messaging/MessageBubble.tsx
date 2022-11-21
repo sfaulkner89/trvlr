@@ -34,7 +34,7 @@ export default function MessageBubble ({
         <Text
           style={{
             ...styles.messageText,
-            color: currentUserBoolean ? colors.darkColor : colors.lightColor
+            color: currentUserBoolean ? colors.darkColor : colors.darkColor
           }}
         >
           {message.text}
@@ -43,7 +43,7 @@ export default function MessageBubble ({
           <Text
             style={{
               ...styles.dateText,
-              color: currentUserBoolean ? colors.darkColor : colors.lightColor
+              color: currentUserBoolean ? colors.darkColor : colors.darkColor
             }}
           >
             {message.dateSent.toLocaleTimeString([], {
