@@ -10,6 +10,7 @@ import { default as SiIcon } from 'react-native-vector-icons/SimpleLineIcons'
 import { Member } from '../../types/Member'
 import { List } from '../../types/List'
 import { MessagingGroup } from '../../types/MessagingGroup'
+import Constants from 'expo-constants'
 
 type Props = {
   colors: Colors

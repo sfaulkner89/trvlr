@@ -18,6 +18,7 @@ export default function ProfileInfoLine ({ colors, profile }: Props) {
       <Text style={{ ...styles.bio, color: colors.lightColor }}>
         {profile.bio}
       </Text>
+      <View></View>
     </View>
   )
 }

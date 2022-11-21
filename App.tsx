@@ -13,10 +13,11 @@ export const colors = {
   darkColor: '#34333a',
   midColor: '#4b4a54',
   lightColor: '#cccccc',
-  selectedColor: '#6b7341'
+  selectedColor: '#98b68a'
 }
 
 export default function App () {
+  console.log(process.env)
   const [page, setPage] = useState(0)
   const [messages, setMessages] = useState(false)
   const pages = [
