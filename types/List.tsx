@@ -3,7 +3,7 @@ import { Location } from './Location'
 import { Place } from './Place'
 
 export type List = {
-  name: string
+  displayName: string
   photo?: ImageData
   location?: LatLng
   city?: string

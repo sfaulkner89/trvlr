@@ -24,8 +24,8 @@ export default function PlaceComponent ({
     <React.Fragment>
       <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
         <View style={{ ...styles.textHolder }}>
-          <Text style={{ ...styles.name, color: colors.lightColor }}>
-            {place.name}
+          <Text style={{ ...styles.displayName, color: colors.lightColor }}>
+            {place.displayName}
             <Text style={{ ...styles.placeType }}> - {placeTypeDisplay}</Text>
           </Text>
           <Text style={{ ...styles.notes, color: colors.lightColor }}>
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     marginLeft: winWidth * 0.05,
     maxWidth: winWidth * 0.85
   },
-  name: {
+  displayName: {
     fontWeight: 'bold'
   },
   placeType: {

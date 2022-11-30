@@ -40,8 +40,8 @@ export default function ListMini ({ colors, list, setSelectedList }: Props) {
         />
       )}
       <View style={styles.textHolder}>
-        <Text style={{ ...styles.name, color: colors.lightColor }}>
-          {list.name}
+        <Text style={{ ...styles.displayName, color: colors.lightColor }}>
+          {list.displayName}
         </Text>
         <Text style={{ ...styles.geography, color: colors.lightColor }}>
           {list.city}, {list.country}
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: winWidth * 0.03
   },
   textHolder: {},
-  name: {
+  displayName: {
     fontWeight: 'bold'
   },
   iconHolder: {

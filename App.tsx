@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import Map from './components/map/Map'
 import Toolbar from './components/toolbar/Toolbar'
@@ -6,8 +6,9 @@ import Search from './components/search/Search'
 import ContactScreen from './components/contactScreen/ContactScreen'
 import HeaderBar from './components/headerBar/HeaderBar'
 import ProfilePage from './components/profilePage/ProfilePage'
-import userProfile from './assets/data/currentUserData'
 import ChatListPage from './components/messaging/ChatListPage'
+import SignUpPage from './components/signUp/SignUpPage'
+import { userCache } from './assets/caches/userCache'
 
 export const colors = {
   darkColor: '#34333a',
@@ -17,9 +18,24 @@ export const colors = {
 }
 
 export default function App () {
-  console.log(process.env)
+  const [userProfile, setUserProfile] = useState()
+
+  // useEffect(() => {
+  //   const profileCache = async () => {
+  //     const profile = await userCache
+  //       .get('primary')
+  //       .then(profile => JSON.parse(profile))
+  //     if (profile) {
+  //       setUserProfile(profile)
+  //       setLoggedIn(true)
+  //     }
+  //   }
+  //   profileCache()
+  // }, [])
+
   const [page, setPage] = useState(0)
   const [messages, setMessages] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false)
   const pages = [
     <Map colors={colors} />,
     <Search colors={colors} />,
@@ -31,7 +47,9 @@ export default function App () {
       currentUser={userProfile}
     />
   ]
-  return messages ? (
+  return !loggedIn ? (
+    <SignUpPage colors={colors} />
+  ) : messages ? (
     <ChatListPage
       colors={colors}
       currentUser={userProfile}

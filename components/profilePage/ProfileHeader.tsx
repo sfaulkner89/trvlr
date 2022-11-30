@@ -46,8 +46,8 @@ export default function ProfileHeader ({
         <View style={styles.buttonHolder} />
       )}
 
-      <Text style={{ ...styles.handle, color: colors.lightColor }}>
-        {profile.name}
+      <Text style={{ ...styles.displayName, color: colors.lightColor }}>
+        {profile.displayName}
       </Text>
       <View
         style={{
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: winWidth
   },
-  handle: {
+  displayName: {
     marginTop: winHeight * 0.01,
     fontSize: winWidth * 0.035,
     fontWeight: 'bold',

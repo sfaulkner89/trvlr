@@ -3,7 +3,7 @@ import { List } from './List'
 export type Member = {
   id: string
   username: string
-  name: string
+  displayName: string
   bio: string
   profilePicture: ImageData
   countries: number

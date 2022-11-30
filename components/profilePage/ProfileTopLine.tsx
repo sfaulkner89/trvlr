@@ -1,10 +1,11 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../types/colors'
-import { winHeight, winWidth } from '../../assets/variables/height-width'
+import { winWidth } from '../../assets/variables/height-width'
 import profileStats from '../../assets/variables/profileStats'
 import StatHolder from './StatHolder'
 import { Member } from '../../types/Member'
+import CachedImage from 'react-native-expo-cached-image'
 
 type Props = {
   colors: Colors
@@ -21,7 +22,7 @@ export default function ProfileTopLine ({ profile, colors }: Props) {
       </View>
 
       <View style={{ ...styles.imageHolder }}>
-        <Image
+        <CachedImage
           source={profile.profilePicture}
           style={{ ...styles.profilePicture, borderColor: colors.lightColor }}
         />
