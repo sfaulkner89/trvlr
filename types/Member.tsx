@@ -3,11 +3,12 @@ import { List } from './List'
 export type Member = {
   id: string
   username: string
-  name: string
+  displayName: string
   bio: string
   profilePicture: ImageData
-  countries: number
-  following: number
-  followers: number
+  profileLocation: string
+  countries: string[]
+  following: string[]
+  followers: string[]
   lists: List[]
 }

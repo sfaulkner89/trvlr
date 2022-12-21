@@ -26,6 +26,7 @@ import currentMessages from '../../assets/data/currentMessages'
 import { MessagingGroup } from '../../types/MessagingGroup'
 import NewListPage from '../newList/NewListPage'
 import ProfileInfoLine from './ProfileInfoLine'
+import { findChat } from '../../handlers/findChat'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -104,11 +105,15 @@ export default function ProfilePage ({
         setProfilePage={setProfilePage}
         setSelection={setProfileSelection}
         isCurrentUser={isCurrentUser}
-        setChat={setChat}
-        messages={currentMessages[0]}
       />
       <ProfileTopLine colors={colors} profile={profile} />
-      <ProfileInfoLine colors={colors} profile={profile} />
+      <ProfileInfoLine
+        colors={colors}
+        profile={profile}
+        setChat={setChat}
+        messages={findChat(profile, currentMessages)}
+        isCurrentUser={isCurrentUser}
+      />
       <Selector
         colors={colors}
         buttonList={profileButton}

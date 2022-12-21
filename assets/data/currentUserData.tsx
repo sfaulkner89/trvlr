@@ -1,7 +1,7 @@
 export default {
   id: 'efad0b7b-47ae-45ae-9fa1-2748888efb6b',
   username: 'Sam',
-  name: 'samDogChamillionaire',
+  displayName: 'samDogChamillionaire',
   profilePicture: require('../profilePics/sam.jpeg'),
   bio: 'I wish I was a carrot',
   countries: 68,
@@ -9,7 +9,7 @@ export default {
   followers: 342,
   lists: [
     {
-      name: 'Boston Weekend Party List',
+      displayName: 'Boston Weekend Party List',
       city: 'Boston',
       country: 'USA',
       location: {
@@ -20,7 +20,7 @@ export default {
       dateModified: new Date('03-05-2020'),
       places: [
         {
-          name: 'Saltie Girl',
+          displayName: 'Saltie Girl',
           placeType: 'restaurant',
           location: {
             latitude: 42.351229,
@@ -32,7 +32,7 @@ export default {
             'Man this place had some stank ass seafood...in the best possible way.'
         },
         {
-          name: 'Boston Common',
+          displayName: 'Boston Common',
           placeType: 'landmark',
           location: {
             latitude: 42.3551,

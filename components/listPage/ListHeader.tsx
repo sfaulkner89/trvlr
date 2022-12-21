@@ -36,8 +36,8 @@ export default function ListHeader ({
           <AnIcon name='left' size={buttonSize} color={colors.lightColor} />
         </Pressable>
       </View>
-      <Text style={{ ...styles.handle, color: colors.lightColor }}>
-        {profile.name}
+      <Text style={{ ...styles.displayName, color: colors.lightColor }}>
+        {profile.displayName}
       </Text>
       <View style={styles.buttonsHolder}>
         <Pressable style={styles.button}>
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: winWidth
   },
-  handle: {
+  displayName: {
     marginTop: winHeight * 0.01,
     fontSize: winWidth * 0.035,
     fontWeight: 'bold',

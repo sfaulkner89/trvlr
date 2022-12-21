@@ -39,7 +39,7 @@ export default function Options ({
           />
         </Pressable>
         <Text style={{ ...styles.name, color: colors.lightColor }}>
-          {selection.name}
+          {selection.displayName}
         </Text>
         <View style={{ width: winWidth * 0.2 }}></View>
       </View>

@@ -3,8 +3,13 @@ import { default as FaIcon5 } from 'react-native-vector-icons/FontAwesome5'
 import { default as FaIcon } from 'react-native-vector-icons/FontAwesome'
 import { winWidth } from './height-width'
 import { Colors } from '../../types/colors'
+import { userCache } from '../caches/userCache'
 
 const iconSize = winWidth * 0.1
+
+const deleteHandler = async () => {
+  await userCache.remove('primary')
+}
 
 export default (colors: Colors) => [
   {
@@ -22,8 +27,8 @@ export default (colors: Colors) => [
     onPress: () => console.log('Add to list')
   },
   {
-    title: 'Share Place',
+    title: 'Delete Profile',
     icon: <FaIcon name='share' size={iconSize} color={colors.lightColor} />,
-    onPress: () => console.log('Share')
+    onPress: deleteHandler
   }
 ]
