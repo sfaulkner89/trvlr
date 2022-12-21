@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@env": ["node_modules/react-native-dotenv"] // this mapping is relative to "baseUrl"
+    }
   },
   "extends": "expo/tsconfig.base"
 }

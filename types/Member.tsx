@@ -6,8 +6,9 @@ export type Member = {
   displayName: string
   bio: string
   profilePicture: ImageData
-  countries: number
-  following: number
-  followers: number
+  profileLocation: string
+  countries: string[]
+  following: string[]
+  followers: string[]
   lists: List[]
 }

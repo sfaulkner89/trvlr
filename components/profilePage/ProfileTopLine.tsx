@@ -23,7 +23,7 @@ export default function ProfileTopLine ({ profile, colors }: Props) {
 
       <View style={{ ...styles.imageHolder }}>
         <CachedImage
-          source={profile.profilePicture}
+          source={{ uri: profile.profileLocation }}
           style={{ ...styles.profilePicture, borderColor: colors.lightColor }}
         />
       </View>

@@ -8,34 +8,39 @@ import HeaderBar from './components/headerBar/HeaderBar'
 import ProfilePage from './components/profilePage/ProfilePage'
 import ChatListPage from './components/messaging/ChatListPage'
 import SignUpPage from './components/signUp/SignUpPage'
+import { Colors } from './types/colors'
 import { userCache } from './assets/caches/userCache'
+import { useAppDispatch } from './redux/hooks'
+import { setUser } from './redux/slices/userSlice'
 
-export const colors = {
+export const colors: Colors = {
   darkColor: '#34333a',
   midColor: '#4b4a54',
   lightColor: '#cccccc',
-  selectedColor: '#98b68a'
+  selectedColor: '#98b68a',
+  errorColor: '#732017'
 }
 
 export default function App () {
   const [userProfile, setUserProfile] = useState()
-
-  // useEffect(() => {
-  //   const profileCache = async () => {
-  //     const profile = await userCache
-  //       .get('primary')
-  //       .then(profile => JSON.parse(profile))
-  //     if (profile) {
-  //       setUserProfile(profile)
-  //       setLoggedIn(true)
-  //     }
-  //   }
-  //   profileCache()
-  // }, [])
-
   const [page, setPage] = useState(0)
   const [messages, setMessages] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false)
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    const profileCache = async () => {
+      const profile = await userCache.get('primary')
+      if (profile) {
+        setUserProfile(JSON.parse(profile))
+        dispatch(setUser(JSON.parse(profile)))
+        setLoggedIn(true)
+      }
+    }
+    profileCache()
+  }, [loggedIn])
+
   const pages = [
     <Map colors={colors} />,
     <Search colors={colors} />,
@@ -48,7 +53,7 @@ export default function App () {
     />
   ]
   return !loggedIn ? (
-    <SignUpPage colors={colors} />
+    <SignUpPage colors={colors} setLoggedIn={setLoggedIn} />
   ) : messages ? (
     <ChatListPage
       colors={colors}

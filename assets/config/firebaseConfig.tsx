@@ -1,9 +1,10 @@
 import { initializeApp } from 'firebase/app'
 import { getStorage, ref } from 'firebase/storage'
 import { v4 } from 'uuid'
+import { FIREBASE_API_KEY } from '@env'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCpPC5LZI92yFtXRrjz1ZQt6SMQzp0kqQs',
+  apiKey: FIREBASE_API_KEY,
   authDomain: 'hale-trilogy-369214.firebaseapp.com',
   projectId: 'hale-trilogy-369214',
   storageBucket: 'hale-trilogy-369214.appspot.com',

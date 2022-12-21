@@ -13,10 +13,12 @@ import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
 import { Colors } from '../../types/colors'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import * as ImagePicker from 'expo-image-picker'
-import { NewProfile } from '../../types/newProfile'
 import profileSubmitHandler from '../../handlers/api/profileSubmitHandler'
-// import { useMutation } from '@apollo/client'
-// import { CREATE_USER } from '../../handlers/gql/users/createUser'
+import { useMutation } from '@apollo/client'
+import { CREATE_USER } from '../../handlers/gql/users/createUser'
+import { CreateProfileInputs } from '../../types/CreateProfileInputs'
+import capitalise from '../../assets/tools/capitalise'
+import { useAppDispatch } from '../../redux/hooks'
 
 const buttonSize: number = winWidth * 0.05
 
@@ -28,11 +30,13 @@ const maxDob: Date = new Date(
 
 type Props = {
   colors: Colors
+  setLoggedIn: (fire: boolean) => void
 }
-export default function SignUpPage ({ colors }: Props) {
+
+export default function SignUpPage ({ colors, setLoggedIn }: Props) {
   const [questionNumber, setQuestionNumber] = useState(0)
-  // const [createUser] = useMutation(CREATE_USER)
-  const [userInfo, setUserInfo] = useState<NewProfile>({
+  const [createUser] = useMutation(CREATE_USER)
+  const [userInfo, setUserInfo] = useState<CreateProfileInputs>({
     email: '',
     confirmEmail: '',
     password: '',
@@ -42,8 +46,11 @@ export default function SignUpPage ({ colors }: Props) {
     dob: maxDob,
     profilePicture: undefined
   })
+  const [error, setError] = useState<string | undefined>()
+  const dispatch = useAppDispatch()
 
   const lastQuestion = questionNumber > loginQuestions.length - 2
+  const currentQuestion = loginQuestions[questionNumber]
 
   const imageSelector = async () => {
     let profilePicture = await ImagePicker.launchImageLibraryAsync({
@@ -53,8 +60,46 @@ export default function SignUpPage ({ colors }: Props) {
       aspect: [1, 1],
       quality: 0
     }).then(data => data.assets[0])
-    console.log(profilePicture)
     setUserInfo({ ...userInfo, profilePicture })
+  }
+
+  const backHandler = () => {
+    setError(undefined)
+    setQuestionNumber(qn => qn - 1)
+  }
+
+  const submitHandler = () => {
+    profileSubmitHandler(
+      {
+        email: userInfo.email,
+        password: userInfo.password,
+        username: userInfo.username,
+        displayName: userInfo.displayName,
+        dob: userInfo.dob
+      },
+      userInfo.profilePicture,
+      createUser,
+      setLoggedIn,
+      dispatch
+    )
+  }
+
+  const validateAndMoveOn = () => {
+    const currentAnswer = userInfo[currentQuestion.data]
+    const validation = currentQuestion.validate.validate(currentAnswer)
+    if (validation.error) {
+      setError(validation.error.message)
+      return
+    }
+    if (
+      currentQuestion.confirm &&
+      userInfo[currentQuestion.confirm] !== currentAnswer
+    ) {
+      setError(`${capitalise(currentQuestion.confirm)} does not match`)
+      return
+    }
+    setError(undefined)
+    setQuestionNumber(qn => qn + 1)
   }
 
   const compSelector = {
@@ -66,9 +111,10 @@ export default function SignUpPage ({ colors }: Props) {
           color: colors.lightColor
         }}
         autoFocus
-        value={userInfo[loginQuestions[questionNumber].data]}
+        secureTextEntry={typeof currentQuestion.hidden !== 'undefined'}
+        value={userInfo[currentQuestion.data]}
         onChangeText={e =>
-          setUserInfo({ ...userInfo, [currentQuestion.data]: e })
+          setUserInfo({ ...userInfo, [currentQuestion.data]: e.toLowerCase() })
         }
       />
     ),
@@ -115,7 +161,7 @@ export default function SignUpPage ({ colors }: Props) {
       </Pressable>
     )
   }
-  const currentQuestion = loginQuestions[questionNumber]
+
   return (
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
       <View style={{ ...styles.header }}>
@@ -135,13 +181,26 @@ export default function SignUpPage ({ colors }: Props) {
           {loginQuestions[questionNumber].prompt}
         </Text>
         {compSelector[loginQuestions[questionNumber].dataType]}
+        {error && (
+          <View
+            style={{
+              ...styles.errorMessage,
+              backgroundColor: colors.lightColor
+            }}
+          >
+            <Text
+              style={{
+                color: colors.errorColor
+              }}
+            >
+              {error}
+            </Text>
+          </View>
+        )}
       </View>
       <View style={styles.bottomButtonsHolder}>
         {questionNumber > 0 ? (
-          <Pressable
-            style={styles.backButton}
-            onPress={() => setQuestionNumber(qn => qn - 1)}
-          >
+          <Pressable style={styles.backButton} onPress={backHandler}>
             <AnIcon name='left' size={buttonSize} color={colors.lightColor} />
             <Text style={{ color: colors.lightColor }}>Back</Text>
           </Pressable>
@@ -154,11 +213,7 @@ export default function SignUpPage ({ colors }: Props) {
               ...styles.submitButton,
               backgroundColor: colors.selectedColor
             }}
-            onPress={
-              lastQuestion
-                ? () => profileSubmitHandler(userInfo, createUser)
-                : () => setQuestionNumber(qn => qn + 1)
-            }
+            onPress={lastQuestion ? submitHandler : validateAndMoveOn}
           >
             <Text
               style={{
@@ -207,6 +262,7 @@ const styles = StyleSheet.create({
     width: winWidth * 0.8,
     height: winHeight * 0.06,
     margin: winHeight * 0.05,
+    marginBottom: winHeight * 0.01,
     paddingLeft: winWidth * 0.02,
     fontSize: winWidth * 0.06,
     borderRadius: winWidth * 0.03
@@ -243,5 +299,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: winWidth * 0.16
   },
-  placeholderText: {}
+  placeholderText: {},
+  errorMessage: {
+    padding: winWidth * 0.01,
+    borderRadius: winWidth * 0.01
+  }
 })

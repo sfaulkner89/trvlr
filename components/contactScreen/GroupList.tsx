@@ -1,16 +1,16 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import React from 'react'
 import { Colors } from '../../types/colors'
-import { ContactGroup } from '../../types/ContactGroup'
 import MemberListItem from './MemberListItem'
 import { Member } from '../../types/Member'
+import { GroupInfo } from '../../types/GroupInfo'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
 
 type Props = {
   colors: Colors
-  group: ContactGroup
+  group: GroupInfo
   setContact: (member: Member) => void
   setProfilePage: (active: boolean) => void
 }
@@ -28,7 +28,7 @@ export default function GroupList ({
           {group.groupName}
         </Text>
       </View>
-      {group.members.map((member, i) => {
+      {group.memberProfiles.map((member, i) => {
         return (
           <MemberListItem
             member={member}

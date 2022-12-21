@@ -33,7 +33,7 @@ export default function MapSearch ({ colors, search, setSearch }: Props) {
       }
     >
       <Icon name='search' size={size} color={colors.lightColor} />
-      {search ? (
+      {search && (
         <React.Fragment>
           <TextInput
             style={{ ...styles.input, color: colors.lightColor }}
@@ -43,8 +43,6 @@ export default function MapSearch ({ colors, search, setSearch }: Props) {
             <EnIcon name='cross' size={size} color={colors.lightColor} />
           </Pressable>
         </React.Fragment>
-      ) : (
-        <View />
       )}
     </Pressable>
   )
