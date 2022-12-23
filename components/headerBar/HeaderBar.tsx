@@ -1,10 +1,9 @@
 import { StyleSheet, Text, View, Dimensions, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
-import { default as FeIcon } from 'react-native-vector-icons/Feather'
-import { default as IoIcon } from 'react-native-vector-icons/Ionicons'
 import MapSearch from '../map/MapSearch'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
+import { AntDesign } from '@expo/vector-icons'
 
 const size = winWidth * 0.06
 
@@ -19,14 +18,12 @@ export default function HeaderBar ({ colors, setMessages }: Props) {
   return (
     <View style={{ ...styles.container, backgroundColor: 'transparent' }}>
       <MapSearch colors={colors} search={search} setSearch={setSearch} />
-      {search ? (
-        <View />
-      ) : (
+      {!search && (
         <Pressable
           style={{ ...styles.button, backgroundColor: colors.darkColor }}
           onPress={() => setMessages(true)}
         >
-          <FeIcon name='message-circle' size={size} color={colors.lightColor} />
+          <AntDesign name='message1' size={size} color={colors.lightColor} />
         </Pressable>
       )}
     </View>
@@ -35,10 +32,9 @@ export default function HeaderBar ({ colors, setMessages }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    height: winHeight * 0.11,
     zIndex: 1,
     position: 'absolute',
-    top: 0,
+    top: winHeight * 0.05,
     left: winWidth * 0.05,
     width: winWidth * 0.9,
     flexDirection: 'row',

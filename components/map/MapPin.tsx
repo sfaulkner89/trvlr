@@ -1,32 +1,33 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { default as IoIcon } from 'react-native-vector-icons/Ionicons'
+import { FontAwesome } from '@expo/vector-icons'
 import { Colors } from '../../types/colors'
-import { PlaceDetails } from '../../types/PlaceDetails'
+import { AreaNames } from '../../types/AreaNames'
 import { Deltas } from '../../types/Deltas'
+import { PlaceDetails } from 'types/PlaceDetails'
 
 type Props = {
   colors: Colors
-  placeDetails: PlaceDetails[]
+  areaNames: AreaNames[]
+  selectedPlace: PlaceDetails
   deltas: Deltas
 }
 
-export default function MapPin ({ colors, placeDetails, deltas }) {
+export default function MapPin ({ colors, areaNames, selectedPlace, deltas }) {
   const deltaSum = deltas.latitudeDelta + deltas.longitudeDelta
-  console.log(deltaSum)
   const granularity =
     deltaSum > 40 ? 4 : deltaSum > 15 ? 3 : deltaSum > 8 ? 2 : 1
   return (
     <React.Fragment>
-      {placeDetails ? (
+      {areaNames && !selectedPlace && (
         <View style={{ ...styles.infoBox, backgroundColor: colors.midColor }}>
           <Text style={{ ...styles.placeName, color: colors.lightColor }}>
-            {placeDetails.length < 2
+            {areaNames.length < 2
               ? "Can't check in here"
-              : placeDetails.length < granularity
-              ? placeDetails[placeDetails.length - 1]
-              : placeDetails[granularity].long_name}
+              : areaNames.length < granularity
+              ? areaNames[areaNames.length - 1]
+              : areaNames[granularity].long_name}
           </Text>
           <View style={styles.buttonHolder}>
             <Pressable
@@ -51,10 +52,42 @@ export default function MapPin ({ colors, placeDetails, deltas }) {
             </Pressable>
           </View>
         </View>
-      ) : (
-        <View />
       )}
-      <IoIcon name='pin-sharp' style={styles.pin} size={winWidth * 0.1} />
+      {selectedPlace && !areaNames && (
+        <View style={{ ...styles.infoBox, backgroundColor: colors.midColor }}>
+          <Text style={{ ...styles.placeName, color: colors.lightColor }}>
+            {selectedPlace.establishment.name}
+          </Text>
+          <View style={styles.buttonHolder}>
+            <Pressable
+              style={{
+                ...styles.button,
+                backgroundColor: colors.selectedColor
+              }}
+            >
+              <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
+                Check In
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                ...styles.button,
+                backgroundColor: colors.selectedColor
+              }}
+            >
+              <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
+                Create List
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
+      <FontAwesome
+        name='map-pin'
+        style={styles.pin}
+        color={colors.midColor}
+        size={winWidth * 0.1}
+      />
     </React.Fragment>
   )
 }

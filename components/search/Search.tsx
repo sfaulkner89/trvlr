@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import { FontAwesome } from '@expo/vector-icons'
 import SearchSelector from './Selector'
 import { searchCriteria } from '../../assets/variables/searchCriteria'
 
@@ -31,7 +31,7 @@ export default function Search ({ colors }: Props) {
           <View
             style={{ ...styles.inputBase, backgroundColor: colors.lightColor }}
           >
-            <Icon
+            <FontAwesome
               name='search'
               size={size}
               color={colors.darkColor}

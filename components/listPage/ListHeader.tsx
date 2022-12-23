@@ -2,11 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
-import { default as FaIcon } from 'react-native-vector-icons/FontAwesome5'
-import { default as EnIcon } from 'react-native-vector-icons/Entypo'
-import { default as FoIcon } from 'react-native-vector-icons/Fontisto'
-import { Member } from '../../types/Member'
+import { AntDesign, Entypo } from '@expo/vector-icons'
 import { List } from '../../types/List'
 
 type Props = {
@@ -33,7 +29,7 @@ export default function ListHeader ({
     <View style={styles.container}>
       <View style={styles.buttonsHolder}>
         <Pressable style={styles.button} onPress={() => setSelectedList(false)}>
-          <AnIcon name='left' size={buttonSize} color={colors.lightColor} />
+          <AntDesign name='left' size={buttonSize} color={colors.lightColor} />
         </Pressable>
       </View>
       <Text style={{ ...styles.displayName, color: colors.lightColor }}>
@@ -41,7 +37,7 @@ export default function ListHeader ({
       </Text>
       <View style={styles.buttonsHolder}>
         <Pressable style={styles.button}>
-          <AnIcon
+          <AntDesign
             name={liked ? 'heart' : 'hearto'}
             size={buttonSize}
             color={colors.lightColor}
@@ -49,10 +45,10 @@ export default function ListHeader ({
           />
         </Pressable>
         <Pressable style={styles.button}>
-          <FoIcon name='save' size={buttonSize} color={colors.lightColor} />
+          <AntDesign name='save' size={buttonSize} color={colors.lightColor} />
         </Pressable>
         <Pressable style={styles.button}>
-          <EnIcon
+          <Entypo
             name='dots-three-horizontal'
             size={buttonSize}
             color={colors.lightColor}

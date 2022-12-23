@@ -12,7 +12,7 @@ import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { List } from '../../types/List'
-import { default as EnIcon } from 'react-native-vector-icons/Entypo'
+import { Entypo } from '@expo/vector-icons'
 
 type Props = {
   colors: Colors
@@ -41,7 +41,7 @@ export default function NewListPage ({
   const createHandler = () => {
     setNewList(false)
     setSelectedList({
-      name: listName,
+      displayName: listName,
       photo: undefined,
       location: undefined, // get Coordinates of city if being created from a place.
       city: city ? city : undefined,
@@ -56,7 +56,7 @@ export default function NewListPage ({
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ ...styles.container, backgroundColor: colors.midColor }}>
         <Pressable style={styles.exitHolder} onPress={() => setNewList(false)}>
-          <EnIcon
+          <Entypo
             name='cross'
             size={winWidth * 0.08}
             color={colors.lightColor}
@@ -79,7 +79,7 @@ export default function NewListPage ({
               style={styles.crossHolder}
               onPress={() => setListName('')}
             >
-              <EnIcon
+              <Entypo
                 name='cross'
                 size={winWidth * 0.08}
                 color={colors.lightColor}

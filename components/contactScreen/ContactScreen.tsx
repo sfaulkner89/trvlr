@@ -56,6 +56,7 @@ export default function ContactScreen ({ colors, currentUser }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    width: winWidth
   }
 })

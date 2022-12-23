@@ -6,7 +6,7 @@ import { Option } from '../../types/Option'
 import OptionHolder from './OptionHolder'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { Place } from '../../types/Place'
-import Icon, { default as EnIcon } from 'react-native-vector-icons/Entypo'
+import { Entypo } from '@expo/vector-icons'
 import { Member } from '../../types/Member'
 import { List } from '../../types/List'
 
@@ -31,7 +31,7 @@ export default function Options ({
       <View style={{ height: winHeight * 0.05 }}></View>
       <View style={{ ...styles.header, backgroundColor: colors.darkColor }}>
         <Pressable onPress={() => setSelection()}>
-          <EnIcon
+          <Entypo
             name='cross'
             size={winWidth * 0.08}
             color={colors.lightColor}

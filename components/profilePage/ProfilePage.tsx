@@ -20,7 +20,7 @@ import { List } from '../../types/List'
 import ListPage from '../listPage/ListPage'
 import Options from '../listPage/Options'
 import profileOptions from '../../assets/variables/profileOptions'
-import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
+import { AntDesign } from '@expo/vector-icons'
 import ChatScreen from '../messaging/ChatScreen'
 import currentMessages from '../../assets/data/currentMessages'
 import { MessagingGroup } from '../../types/MessagingGroup'
@@ -129,7 +129,7 @@ export default function ProfilePage ({
           }}
           onPress={() => setNewList(true)}
         >
-          <AnIcon name='addfile' size={size} color={colors.midColor} />
+          <AntDesign name='addfile' size={size} color={colors.midColor} />
         </Pressable>
       ) : (
         <View />

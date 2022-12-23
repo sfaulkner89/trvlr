@@ -1,58 +1,66 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import React, { useRef, useState } from 'react'
-import MapView, {
-  Callout,
-  Geojson,
-  LatLng,
-  Marker,
-  Overlay
-} from 'react-native-maps'
+import MapView, { LatLng } from 'react-native-maps'
 import { Colors } from '../../types/colors'
-import worldJson from '../../assets/110m.json'
-import CountryPopUp from './CountryPopUp'
 import getMapAreaName from '../../handlers/googleServices/getMapAreaName'
 
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { PlaceDetails } from '../../types/PlaceDetails'
 import MapPin from './MapPin'
 import { Deltas } from '../../types/Deltas'
+import initialPosition from '../../assets/config/initialPosition'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import {
+  changeMapLocation,
+  clearMapBrowseArea,
+  setMapBrowseArea
+} from '../../redux/slices/locationSlice'
+import { clearSelectedPlace } from '../../redux/slices/resultsSlice'
 
 type Props = {
   colors: Colors
 }
 
 export default function Map ({ colors }: Props) {
-  const [placeInfo, setPlaceInfo] = useState<PlaceDetails[] | undefined>()
   const [deltas, setDeltas] = useState<Deltas | undefined>({
     latitudeDelta: 180,
     longitudeDelta: 180
   })
+  const dispatch = useAppDispatch()
+  const mapPosition = useAppSelector(state => state.location.map)
+  const areaNames = useAppSelector(state => state.location.browseArea)
+  const selectedPlace = useAppSelector(state => state.results.selectedPlace)
 
-  const positionRef = useRef<LatLng & Deltas>({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 180,
-    longitudeDelta: 180
-  })
-  const mapRef = useRef()
+  const [position, setPosition] = useState<LatLng & Deltas>(initialPosition)
 
   const moveHandler = async () => {
-    const placeDetails = await getMapAreaName(positionRef.current)
+    const placeDetails = await getMapAreaName(position)
     setDeltas({
-      latitudeDelta: positionRef.current.latitudeDelta,
-      longitudeDelta: positionRef.current.longitudeDelta
+      latitudeDelta: position.latitudeDelta,
+      longitudeDelta: position.longitudeDelta
     })
-    setPlaceInfo(placeDetails)
+    dispatch(changeMapLocation(position))
+    dispatch(setMapBrowseArea(placeDetails))
+  }
+
+  const touchHandler = () => {
+    dispatch(clearMapBrowseArea())
+    dispatch(clearSelectedPlace())
   }
 
   return (
     <View style={styles.container}>
-      <MapPin colors={colors} placeDetails={placeInfo} deltas={deltas} />
+      <MapPin
+        colors={colors}
+        areaNames={areaNames}
+        deltas={deltas}
+        selectedPlace={selectedPlace}
+      />
       <MapView
         style={styles.map}
-        onRegionChange={e => (positionRef.current = e)}
+        region={mapPosition}
+        onRegionChange={e => setPosition(e)}
         onTouchEnd={() => moveHandler()}
-        onTouchMove={() => setPlaceInfo(undefined)}
+        onTouchMove={() => touchHandler()}
       ></MapView>
     </View>
   )

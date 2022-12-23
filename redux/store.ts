@@ -8,14 +8,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import persistReducer from 'redux-persist/lib/persistReducer'
 import persistStore from 'redux-persist/es/persistStore'
+import locationSlice from './slices/locationSlice'
+import resultsSlice from './slices/resultsSlice'
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  stateReconciler: autoMergeLevel2
+  stateReconciler: autoMergeLevel2,
+  blacklist: ['results']
 }
 
-const reducers = combineReducers({ userReducer })
+const reducers = combineReducers({
+  user: userReducer,
+  location: locationSlice,
+  results: resultsSlice
+})
 
 const persistedReducer = persistReducer(persistConfig, reducers)
 

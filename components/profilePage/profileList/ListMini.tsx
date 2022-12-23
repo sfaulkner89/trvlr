@@ -4,8 +4,7 @@ import { Colors } from '../../../types/colors'
 import { List } from '../../../types/List'
 import MapView from 'react-native-maps'
 import { winHeight, winWidth } from '../../../assets/variables/height-width'
-import { default as FaIcon } from 'react-native-vector-icons/FontAwesome'
-import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
+import { AntDesign, FontAwesome } from '@expo/vector-icons'
 
 type Props = {
   colors: Colors
@@ -52,8 +51,8 @@ export default function ListMini ({ colors, list, setSelectedList }: Props) {
           {list.places.length}
         </Text>
 
-        <FaIcon name='map-pin' size={iconSize} color={colors.lightColor} />
-        <AnIcon
+        <FontAwesome name='map-pin' size={iconSize} color={colors.lightColor} />
+        <AntDesign
           name='right'
           size={iconSize}
           color={colors.lightColor}

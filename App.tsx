@@ -10,7 +10,7 @@ import ChatListPage from './components/messaging/ChatListPage'
 import SignUpPage from './components/signUp/SignUpPage'
 import { Colors } from './types/colors'
 import { userCache } from './assets/caches/userCache'
-import { useAppDispatch } from './redux/hooks'
+import { useAppDispatch, useAppSelector } from './redux/hooks'
 import { setUser } from './redux/slices/userSlice'
 
 export const colors: Colors = {
@@ -28,6 +28,7 @@ export default function App () {
   const [loggedIn, setLoggedIn] = useState(false)
 
   const dispatch = useAppDispatch()
+  const store = useAppSelector(state => state)
 
   useEffect(() => {
     const profileCache = async () => {
@@ -40,6 +41,10 @@ export default function App () {
     }
     profileCache()
   }, [loggedIn])
+
+  useEffect(() => {
+    console.log(store)
+  }, [store])
 
   const pages = [
     <Map colors={colors} />,
