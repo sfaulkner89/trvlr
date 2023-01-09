@@ -34,9 +34,10 @@ export default function ResultsHiolder ({ results, colors }: Props) {
         longitudeDelta: location.longitudeDelta
       })
     )
+    const placeId = result.placeId
     dispatch(clearPlaceResults())
     dispatch(clearMapBrowseArea())
-    dispatch(setSelectedPlace(details))
+    dispatch(setSelectedPlace({ ...details, placeId }))
   }
 
   return (

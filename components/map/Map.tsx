@@ -15,20 +15,40 @@ import {
   setMapBrowseArea
 } from '../../redux/slices/locationSlice'
 import { clearSelectedPlace } from '../../redux/slices/resultsSlice'
+import NewListPage from '../../components/newList/NewListPage'
+import { Member } from '../../types/Member'
+import { List } from '../../types/List'
+import ListPage from '../../components/listPage/ListPage'
+import HeaderBar from '../../components/headerBar/HeaderBar'
+import localeSelector from '../../assets/tools/localeSelector'
+import { PlaceDetails } from 'types/PlaceDetails'
 
 type Props = {
   colors: Colors
+  currentUser: Member
+  isCurrentUser: boolean
+  setMessages: (set: boolean) => void
 }
 
-export default function Map ({ colors }: Props) {
+export default function Map ({
+  colors,
+  currentUser,
+  isCurrentUser,
+  setMessages
+}: Props) {
   const [deltas, setDeltas] = useState<Deltas | undefined>({
     latitudeDelta: 180,
     longitudeDelta: 180
   })
+  const [newList, setNewList] = useState(false)
+  const [selectedList, setSelectedList] = useState<List | undefined>()
+
   const dispatch = useAppDispatch()
   const mapPosition = useAppSelector(state => state.location.map)
   const areaNames = useAppSelector(state => state.location.browseArea)
-  const selectedPlace = useAppSelector(state => state.results.selectedPlace)
+  const selectedPlace: PlaceDetails = useAppSelector(
+    state => state.results.selectedPlace
+  )
 
   const [position, setPosition] = useState<LatLng & Deltas>(initialPosition)
 
@@ -49,19 +69,44 @@ export default function Map ({ colors }: Props) {
 
   return (
     <View style={styles.container}>
-      <MapPin
-        colors={colors}
-        areaNames={areaNames}
-        deltas={deltas}
-        selectedPlace={selectedPlace}
-      />
-      <MapView
-        style={styles.map}
-        region={mapPosition}
-        onRegionChange={e => setPosition(e)}
-        onTouchEnd={() => moveHandler()}
-        onTouchMove={() => touchHandler()}
-      ></MapView>
+      {newList ? (
+        <NewListPage
+          colors={colors}
+          currentUser={currentUser}
+          setNewList={setNewList}
+          setSelectedList={setSelectedList}
+          locale={
+            areaNames
+              ? localeSelector(areaNames, deltas)
+              : selectedPlace.location.locale
+          }
+        />
+      ) : selectedList ? (
+        <ListPage
+          colors={colors}
+          list={selectedList}
+          setSelectedList={setSelectedList}
+          isCurrentUser={isCurrentUser}
+        />
+      ) : (
+        <React.Fragment>
+          <HeaderBar colors={colors} setMessages={setMessages} />
+          <MapPin
+            colors={colors}
+            areaNames={areaNames}
+            deltas={deltas}
+            selectedPlace={selectedPlace}
+            setNewList={setNewList}
+          />
+          <MapView
+            style={styles.map}
+            region={mapPosition}
+            onRegionChange={e => setPosition(e)}
+            onTouchEnd={() => moveHandler()}
+            onTouchMove={() => touchHandler()}
+          ></MapView>
+        </React.Fragment>
+      )}
     </View>
   )
 }

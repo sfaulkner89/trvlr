@@ -19,15 +19,18 @@ import { CREATE_USER } from '../../handlers/gql/users/createUser'
 import { CreateProfileInputs } from '../../types/CreateProfileInputs'
 import capitalise from '../../assets/tools/capitalise'
 import { useAppDispatch } from '../../redux/hooks'
+import addZero from '../../assets/tools/addZero'
 
 const buttonSize: number = winWidth * 0.05
 
 const today: Date = new Date()
 
-const maxDob: Date = new Date(
-  `${today.getFullYear() - 18}-${today.getMonth()}-0${today.getDay()}`
+const maxDob = new Date(
+  `${today.getFullYear() - 18}-${addZero(today.getMonth() + 1)}-${addZero(
+    today.getDate()
+  )}`
 )
-
+console.log(maxDob)
 type Props = {
   colors: Colors
   setLoggedIn: (fire: boolean) => void
@@ -121,6 +124,7 @@ export default function SignUpPage ({ colors, setLoggedIn }: Props) {
     date: (
       <View style={styles.dateHolder}>
         <RNDateTimePicker
+          maximumDate={new Date()}
           value={userInfo.dob}
           onChange={e =>
             setUserInfo({

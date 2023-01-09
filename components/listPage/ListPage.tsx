@@ -12,7 +12,7 @@ import calculateCenter from '../../handlers/calculateCenter'
 import Options from './Options'
 import ListHeader from './ListHeader'
 import listOptions from '../../assets/variables/listOptions'
-import { default as MaIcon } from 'react-native-vector-icons/MaterialIcons'
+import { MaterialIcons } from '@expo/vector-icons'
 
 type Props = {
   colors: Colors
@@ -96,7 +96,7 @@ export default function ListPage ({
             backgroundColor: colors.lightColor
           }}
         >
-          <MaIcon name='place' size={size} color={colors.midColor} />
+          <MaterialIcons name='place' size={size} color={colors.midColor} />
           <Text style={{ ...styles.tinyPlus, color: colors.midColor }}>+</Text>
         </Pressable>
       </View>

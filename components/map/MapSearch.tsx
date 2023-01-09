@@ -30,8 +30,6 @@ type Props = {
 }
 
 export default function MapSearch ({ colors, search, setSearch }: Props) {
-  const [results, setResults] = useState(null)
-
   const mapLocation = useAppSelector(state => state.location.map)
   const placeResults = useAppSelector(state => state.results.mapSearch)
   const dispatch = useAppDispatch()
@@ -42,11 +40,8 @@ export default function MapSearch ({ colors, search, setSearch }: Props) {
   }
 
   const changeHandler = async (search: string) => {
-    console.log(search)
     const results = await placeSearch(search, mapLocation)
-    console.log(results)
     if (results) {
-      console.log('here')
       dispatch(changePlaceResults(results))
     }
   }

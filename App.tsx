@@ -42,12 +42,13 @@ export default function App () {
     profileCache()
   }, [loggedIn])
 
-  useEffect(() => {
-    console.log(store)
-  }, [store])
-
   const pages = [
-    <Map colors={colors} />,
+    <Map
+      colors={colors}
+      currentUser={userProfile}
+      isCurrentUser={true}
+      setMessages={setMessages}
+    />,
     <Search colors={colors} />,
     <ContactScreen colors={colors} currentUser={userProfile} />,
     <ProfilePage
@@ -67,11 +68,6 @@ export default function App () {
     />
   ) : (
     <View style={styles.container}>
-      {page === 0 ? (
-        <HeaderBar colors={colors} setMessages={setMessages} />
-      ) : (
-        <View />
-      )}
       <View style={styles.contentHolder}>{pages[page]}</View>
       <Toolbar colors={colors} page={page} setPage={setPage} />
     </View>

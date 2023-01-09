@@ -6,28 +6,29 @@ import { Colors } from '../../types/colors'
 import { AreaNames } from '../../types/AreaNames'
 import { Deltas } from '../../types/Deltas'
 import { PlaceDetails } from 'types/PlaceDetails'
+import localeSelector from '../../assets/tools/localeSelector'
 
 type Props = {
   colors: Colors
   areaNames: AreaNames[]
   selectedPlace: PlaceDetails
   deltas: Deltas
+  setNewList: (set: boolean) => void
 }
 
-export default function MapPin ({ colors, areaNames, selectedPlace, deltas }) {
-  const deltaSum = deltas.latitudeDelta + deltas.longitudeDelta
-  const granularity =
-    deltaSum > 40 ? 4 : deltaSum > 15 ? 3 : deltaSum > 8 ? 2 : 1
+export default function MapPin ({
+  colors,
+  areaNames,
+  selectedPlace,
+  deltas,
+  setNewList
+}: Props) {
   return (
     <React.Fragment>
       {areaNames && !selectedPlace && (
         <View style={{ ...styles.infoBox, backgroundColor: colors.midColor }}>
           <Text style={{ ...styles.placeName, color: colors.lightColor }}>
-            {areaNames.length < 2
-              ? "Can't check in here"
-              : areaNames.length < granularity
-              ? areaNames[areaNames.length - 1]
-              : areaNames[granularity].long_name}
+            {localeSelector(areaNames, deltas)}
           </Text>
           <View style={styles.buttonHolder}>
             <Pressable
@@ -45,6 +46,7 @@ export default function MapPin ({ colors, areaNames, selectedPlace, deltas }) {
                 ...styles.button,
                 backgroundColor: colors.selectedColor
               }}
+              onPress={() => setNewList(true)}
             >
               <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
                 Create List
@@ -74,6 +76,7 @@ export default function MapPin ({ colors, areaNames, selectedPlace, deltas }) {
                 ...styles.button,
                 backgroundColor: colors.selectedColor
               }}
+              onPress={() => setNewList(true)}
             >
               <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
                 Create List
