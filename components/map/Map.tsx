@@ -22,19 +22,22 @@ import ListPage from '../../components/listPage/ListPage'
 import HeaderBar from '../../components/headerBar/HeaderBar'
 import localeSelector from '../../assets/tools/localeSelector'
 import { PlaceDetails } from 'types/PlaceDetails'
+import ProfileListPage from '../../components/profilePage/profileList/ProfileListPage'
 
 type Props = {
   colors: Colors
   currentUser: Member
   isCurrentUser: boolean
   setMessages: (set: boolean) => void
+  setPage: (set: number) => void
 }
 
 export default function Map ({
   colors,
   currentUser,
   isCurrentUser,
-  setMessages
+  setMessages,
+  setPage
 }: Props) {
   const [deltas, setDeltas] = useState<Deltas | undefined>({
     latitudeDelta: 180,
@@ -42,6 +45,8 @@ export default function Map ({
   })
   const [newList, setNewList] = useState(false)
   const [selectedList, setSelectedList] = useState<List | undefined>()
+  const [position, setPosition] = useState<LatLng & Deltas>(initialPosition)
+  const [addToList, setAddToList] = useState<boolean>(false)
 
   const dispatch = useAppDispatch()
   const mapPosition = useAppSelector(state => state.location.map)
@@ -49,9 +54,7 @@ export default function Map ({
   const selectedPlace: PlaceDetails = useAppSelector(
     state => state.results.selectedPlace
   )
-
-  const [position, setPosition] = useState<LatLng & Deltas>(initialPosition)
-
+  const member = useAppSelector(state => state.user)
   const moveHandler = async () => {
     const placeDetails = await getMapAreaName(position)
     setDeltas({
@@ -75,11 +78,18 @@ export default function Map ({
           currentUser={currentUser}
           setNewList={setNewList}
           setSelectedList={setSelectedList}
-          locale={
-            areaNames
-              ? localeSelector(areaNames, deltas)
-              : selectedPlace.location.locale
-          }
+        />
+      ) : addToList ? (
+        <ProfileListPage
+          colors={colors}
+          member={member}
+          isCurrentUser={isCurrentUser}
+          setSelectedList={setSelectedList}
+          newListProvided={true}
+          setNewList={setNewList}
+          setAddToList={setAddToList}
+          addToList={addToList}
+          selectedList={selectedList}
         />
       ) : selectedList ? (
         <ListPage
@@ -87,6 +97,7 @@ export default function Map ({
           list={selectedList}
           setSelectedList={setSelectedList}
           isCurrentUser={isCurrentUser}
+          setPage={setPage}
         />
       ) : (
         <React.Fragment>
@@ -97,6 +108,7 @@ export default function Map ({
             deltas={deltas}
             selectedPlace={selectedPlace}
             setNewList={setNewList}
+            setAddToList={setAddToList}
           />
           <MapView
             style={styles.map}

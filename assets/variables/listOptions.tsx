@@ -4,7 +4,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import { winWidth } from './height-width'
 import { Colors } from '../../types/colors'
 
-const iconSize = winWidth * 0.1
+export const iconSize = winWidth * 0.1
 
 export default (colors: Colors) => [
   {

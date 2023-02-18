@@ -14,6 +14,7 @@ type Props = {
   selectedPlace: PlaceDetails
   deltas: Deltas
   setNewList: (set: boolean) => void
+  setAddToList: (set: boolean) => void
 }
 
 export default function MapPin ({
@@ -21,7 +22,8 @@ export default function MapPin ({
   areaNames,
   selectedPlace,
   deltas,
-  setNewList
+  setNewList,
+  setAddToList
 }: Props) {
   return (
     <React.Fragment>
@@ -58,7 +60,7 @@ export default function MapPin ({
       {selectedPlace && !areaNames && (
         <View style={{ ...styles.infoBox, backgroundColor: colors.midColor }}>
           <Text style={{ ...styles.placeName, color: colors.lightColor }}>
-            {selectedPlace.establishment.name}
+            {selectedPlace.name}
           </Text>
           <View style={styles.buttonHolder}>
             <Pressable
@@ -76,10 +78,10 @@ export default function MapPin ({
                 ...styles.button,
                 backgroundColor: colors.selectedColor
               }}
-              onPress={() => setNewList(true)}
+              onPress={() => setAddToList(true)}
             >
               <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
-                Create List
+                Add To List
               </Text>
             </Pressable>
           </View>

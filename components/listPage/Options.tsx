@@ -9,14 +9,15 @@ import { Place } from '../../types/Place'
 import { Entypo } from '@expo/vector-icons'
 import { Member } from '../../types/Member'
 import { List } from '../../types/List'
+import { PlaceDetails } from 'types/PlaceDetails'
 
 type Props = {
   colors: Colors
   options: Option[]
-  selection: List | Member | Place
+  selection: List | Member | PlaceDetails
   setSelection:
     | ((list?: List) => void)
-    | ((place?: Place) => void)
+    | ((place?: PlaceDetails) => void)
     | ((member?: Member) => void)
 }
 
@@ -39,7 +40,7 @@ export default function Options ({
           />
         </Pressable>
         <Text style={{ ...styles.name, color: colors.lightColor }}>
-          {selection.displayName}
+          {selection.name ? selection.name : selection.displayName}
         </Text>
         <View style={{ width: winWidth * 0.2 }}></View>
       </View>

@@ -30,7 +30,6 @@ const maxDob = new Date(
     today.getDate()
   )}`
 )
-console.log(maxDob)
 type Props = {
   colors: Colors
   setLoggedIn: (fire: boolean) => void

@@ -1,12 +1,12 @@
-import { MutationFunction } from '@apollo/client'
+import { FetchResult, MutationFunction, MutationResult } from '@apollo/client'
 import { Settings } from 'react-native'
+import { List } from 'types/List'
 import { PlaceDetails } from 'types/PlaceDetails'
 import { Member } from '../../types/Member'
 
 export default async (
   user: Member,
   listName: String,
-  locale: String,
   initialPlace: PlaceDetails | undefined,
   createList: MutationFunction
 ) => {
@@ -19,17 +19,22 @@ export default async (
           longitude: initialPlace.location.longitude
         }
       : undefined,
-    initialPlace: {
-      name: initialPlace.establishment.name,
-      googlePlaceId: initialPlace.placeId,
-      location: {
-        latitude: initialPlace.location.latitude,
-        longitude: initialPlace.location.longitude
-      }
-    }
+    initialPlace: initialPlace
+      ? {
+          name: initialPlace.name,
+          googlePlaceId: initialPlace.placeId,
+          types: initialPlace.establishment.types,
+          location: {
+            latitude: initialPlace.location.latitude,
+            longitude: initialPlace.location.longitude
+          }
+        }
+      : null
   }
-  console.log(createVariables)
-  const newList = await createList({
+  const newList: List = await createList({
     variables: createVariables
-  }).catch(err => console.error(err))
+  })
+    .then(res => res.data.createList)
+    .catch(err => console.error(err))
+  return newList
 }

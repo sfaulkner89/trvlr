@@ -38,6 +38,7 @@ type Props = {
   setProfilePage?: (active: boolean) => void
   isCurrentUser: boolean
   currentUser: Member
+  setPage: (set: number) => void
 }
 
 export default function ProfilePage ({
@@ -45,7 +46,8 @@ export default function ProfilePage ({
   profile,
   setProfilePage,
   isCurrentUser,
-  currentUser
+  currentUser,
+  setPage
 }: Props) {
   const [selection, setSelection] = useState<number>(0)
   const [selectedList, setSelectedList] = useState<List | undefined>()
@@ -60,6 +62,11 @@ export default function ProfilePage ({
       member={profile}
       setSelectedList={setSelectedList}
       isCurrentUser={isCurrentUser}
+      selectedList={selectedList}
+      setNewList={setNewList}
+      newListProvided={false}
+      addToList={false}
+      setAddToList={() => {}}
     />,
     <View />
   ]
@@ -84,6 +91,7 @@ export default function ProfilePage ({
       list={selectedList}
       setSelectedList={setSelectedList}
       isCurrentUser={isCurrentUser}
+      setPage={setPage}
     />
   ) : profileSelection ? (
     <Options

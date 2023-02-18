@@ -1,28 +1,72 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Colors } from '../../../types/colors'
 import { List } from '../../../types/List'
 import MapView from 'react-native-maps'
 import { winHeight, winWidth } from '../../../assets/variables/height-width'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'
+import placeShim from '../../../assets/tools/placeShim'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { ADDPLACETOLIST } from '../../../handlers/gql/lists/addPlaceToList'
+import { addToListHandler } from '../../../handlers/api/addToListHandler'
+import { CHECKDUPLICATEPLACE } from '../../../handlers/api/checkDuplicatePlace'
+import placeUnshim from '../../../assets/tools/placeUnshim'
 
 type Props = {
   colors: Colors
   list: List
   setSelectedList: (list: List) => void
+  selectedList: List
+  addToList: boolean
+  setAddToList: (set: boolean) => void
 }
 
 const iconSize = winWidth * 0.04
 
-export default function ListMini ({ colors, list, setSelectedList }: Props) {
+export default function ListMini ({
+  colors,
+  list,
+  setSelectedList,
+  addToList,
+  setAddToList
+}: Props) {
+  const selectedPlace = useAppSelector(state => state.results.selectedPlace)
+  const [placeAdder] = useMutation(ADDPLACETOLIST)
+
+  const { data: duplicate, refetch } = useQuery(CHECKDUPLICATEPLACE, {
+    variables: {
+      listId: list.id,
+      place: selectedPlace ? placeUnshim([selectedPlace])[0] : null
+    }
+  })
+
+  useEffect(() => {
+    refetch()
+  }, [addToList])
+
   return (
     <Pressable
+      disabled={addToList && duplicate ? duplicate?.checkDuplicatePlace : false}
       style={{
         ...styles.container,
-        backgroundColor: colors.darkColor,
+        backgroundColor:
+          addToList && duplicate?.checkDuplicatePlace
+            ? colors.midColor
+            : colors.darkColor,
         borderColor: colors.lightColor
       }}
-      onPress={() => setSelectedList(list)}
+      onPress={
+        addToList
+          ? async () =>
+              await addToListHandler(
+                placeAdder,
+                selectedPlace,
+                list,
+                setAddToList
+              )
+          : () => setSelectedList({ ...list, places: placeShim(list.places) })
+      }
     >
       {list.photo ? (
         <Image source={list.photo} style={styles.photo} />
@@ -30,8 +74,8 @@ export default function ListMini ({ colors, list, setSelectedList }: Props) {
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: list.location.latitude,
-            longitude: list.location.longitude,
+            latitude: list.location?.latitude ?? 0,
+            longitude: list.location?.longitude ?? 0,
             latitudeDelta: 1,
             longitudeDelta: 1
           }}
@@ -39,12 +83,31 @@ export default function ListMini ({ colors, list, setSelectedList }: Props) {
         />
       )}
       <View style={styles.textHolder}>
-        <Text style={{ ...styles.displayName, color: colors.lightColor }}>
+        <Text
+          style={{
+            ...styles.displayName,
+            color:
+              addToList && duplicate?.checkDuplicatePlace
+                ? colors.darkColor
+                : colors.lightColor
+          }}
+        >
           {list.displayName}
         </Text>
-        <Text style={{ ...styles.geography, color: colors.lightColor }}>
-          {list.city}, {list.country}
-        </Text>
+        {list.country && list.city && (
+          <Text style={{ ...styles.geography, color: colors.lightColor }}>
+            {list.city}, {list.country}
+          </Text>
+        )}
+        {addToList && duplicate && duplicate.checkDuplicatePlace && (
+          <Text
+            style={{
+              color: colors.errorColor
+            }}
+          >
+            Place already on list.
+          </Text>
+        )}
       </View>
       <View style={{ ...styles.iconHolder }}>
         <Text style={{ ...styles.places, color: colors.lightColor }}>

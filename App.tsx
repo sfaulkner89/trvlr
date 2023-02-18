@@ -18,7 +18,7 @@ export const colors: Colors = {
   midColor: '#4b4a54',
   lightColor: '#cccccc',
   selectedColor: '#98b68a',
-  errorColor: '#732017'
+  errorColor: '#ae1d24'
 }
 
 export default function App () {
@@ -48,6 +48,7 @@ export default function App () {
       currentUser={userProfile}
       isCurrentUser={true}
       setMessages={setMessages}
+      setPage={setPage}
     />,
     <Search colors={colors} />,
     <ContactScreen colors={colors} currentUser={userProfile} />,
@@ -56,6 +57,7 @@ export default function App () {
       profile={userProfile}
       isCurrentUser={true}
       currentUser={userProfile}
+      setPage={setPage}
     />
   ]
   return !loggedIn ? (

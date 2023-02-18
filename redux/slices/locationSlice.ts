@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { LatLng } from 'react-native-maps'
 import { Deltas } from 'types/Deltas'
-import { PlaceDetails } from 'types/AreaNames'
+import { PlaceDetails } from '../../types/PlaceDetails'
 import initialPosition from '../../assets/config/initialPosition'
 import { Member } from '../../types/Member'
 

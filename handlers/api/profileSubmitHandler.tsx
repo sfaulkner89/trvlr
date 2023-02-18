@@ -25,6 +25,9 @@ export default async (
   const fullyInitialisedUser = await createUser({
     variables: { ...newProfile, dob: JSON.stringify(payload.dob) }
   })
+  if (fullyInitialisedUser.errors) {
+    console.error(fullyInitialisedUser.errors)
+  }
   userCache
     .set('primary', JSON.stringify(fullyInitialisedUser.data.createUser))
     .then(() => setLoggedIn(true))

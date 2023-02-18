@@ -14,10 +14,11 @@ import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { List } from '../../types/List'
 import { Entypo } from '@expo/vector-icons'
 import createList from '../../handlers/api/createList'
-import { useMutation } from '@apollo/client'
+import { MutationResult, QueryResult, useMutation } from '@apollo/client'
 import { CREATELIST } from '../../handlers/gql/lists/createList'
 import { PlaceDetails } from 'types/PlaceDetails'
 import { useAppSelector } from '../../redux/hooks'
+import placeShim from '../../assets/tools/placeShim'
 
 type Props = {
   colors: Colors
@@ -37,22 +38,23 @@ export default function NewListPage ({
   const month = new Date().toLocaleString('default', { month: 'long' })
   const year = new Date().toLocaleString('default', { year: 'numeric' })
 
-  const defaultListName = locale
-    ? `${locale} List ${year}`
+  const selectedPlace: PlaceDetails = useAppSelector(
+    state => state.results.selectedPlace
+  )
+
+  const defaultListName = selectedPlace?.location.area
+    ? `${selectedPlace.location.area} List ${year}`
     : `${month} ${year} List`
 
   const [listName, setListName] = useState<string>(defaultListName)
 
   const [newList] = useMutation(CREATELIST)
 
-  const selectedPlace: PlaceDetails = useAppSelector(
-    state => state.results.selectedPlace
-  )
   const user = useAppSelector(state => state.user)
-
   const createHandler = async () => {
-    await createList(user, listName, locale, selectedPlace, newList)
+    const createdList = await createList(user, listName, selectedPlace, newList)
     setNewList(false)
+    const cleanedPlaces = placeShim(createdList.places)
     setSelectedList({
       displayName: listName,
       photo: undefined,
@@ -61,7 +63,7 @@ export default function NewListPage ({
       country: undefined,
       dateCreated: new Date(),
       dateModified: new Date(),
-      places: []
+      places: cleanedPlaces
     })
   }
 

@@ -1,5 +1,6 @@
 export type PlaceDetails = {
   placeId: string
+  name: string
   location: {
     latitude: number
     longitude: number
@@ -7,8 +8,6 @@ export type PlaceDetails = {
     area?: string
   }
   establishment: {
-    name: string
-    photos: google.maps.places.Photo[]
     price: number
     rating: number
     types: string[]

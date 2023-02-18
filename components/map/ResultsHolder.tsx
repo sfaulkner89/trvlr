@@ -30,8 +30,8 @@ export default function ResultsHiolder ({ results, colors }: Props) {
       changeMapLocation({
         //changes location to the new place and keeps existing zoom level
         ...details.location,
-        latitudeDelta: location.latitudeDelta,
-        longitudeDelta: location.longitudeDelta
+        latitudeDelta: 0.004,
+        longitudeDelta: 0.004
       })
     )
     const placeId = result.placeId
@@ -47,9 +47,10 @@ export default function ResultsHiolder ({ results, colors }: Props) {
         backgroundColor: hexToRgbA(colors.midColor, 0.9)
       }}
     >
-      {results.map(result => {
+      {results.map((result, i) => {
         return (
           <Pressable
+            key={i}
             onPress={() => selectionHandler(result)}
             style={{
               ...styles.resultHolderButton
