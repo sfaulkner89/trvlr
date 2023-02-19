@@ -56,7 +56,7 @@ export default function ProfileListPage ({
           <View style={styles.newList}>
             <OptionHolder
               colors={colors}
-              option={newListOption(setNewList, setAddToList)}
+              option={newListOption(setNewList, setAddToList, colors)}
             />
           </View>
         </React.Fragment>

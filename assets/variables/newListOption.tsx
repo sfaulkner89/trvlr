@@ -1,10 +1,11 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { colors } from '../../App'
+import { Colors } from 'types/colors'
 import { iconSize } from './listOptions'
 
 export const newListOption = (
   setNewList: (set: boolean) => void,
-  setAddToList: (set: boolean) => void
+  setAddToList: (set: boolean) => void,
+  colors: Colors
 ) => ({
   title: 'Create New List',
   icon: (

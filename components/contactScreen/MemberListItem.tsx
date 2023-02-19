@@ -10,6 +10,8 @@ import React from 'react'
 import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
 
+import CachedImage from 'react-native-expo-cached-image'
+
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
 
@@ -40,7 +42,10 @@ export default function MemberListItem ({
       }}
       onPress={contactHandler}
     >
-      <Image style={styles.profilePicture} source={member.profilePicture} />
+      <CachedImage
+        style={styles.profilePicture}
+        source={{ uri: member.profileLocation }}
+      />
       <View style={styles.dataHolder}>
         <View style={styles.usernameHolder}>
           <Text style={{ ...styles.username, color: colors.lightColor }}>

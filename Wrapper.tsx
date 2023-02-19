@@ -5,13 +5,21 @@ import { persistor, store } from './redux/store'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
+import 'expo-dev-client'
 
+const uri =
+  process.env.NODE_ENV === 'produciton'
+    ? `${process.env.API_URL}/graphql`
+    : 'http://localhost:8080/graphql'
+
+console.log(uri)
 const client = new ApolloClient({
-  uri: 'http://localhost:8080/graphql',
+  uri,
   cache: new InMemoryCache()
 })
 
 export default function Wrapper () {
+  console.log(process.env.NODE_ENV)
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor} loading={null}>

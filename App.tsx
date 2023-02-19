@@ -28,7 +28,6 @@ export default function App () {
   const [loggedIn, setLoggedIn] = useState(false)
 
   const dispatch = useAppDispatch()
-  const store = useAppSelector(state => state)
 
   useEffect(() => {
     const profileCache = async () => {
@@ -50,8 +49,12 @@ export default function App () {
       setMessages={setMessages}
       setPage={setPage}
     />,
-    <Search colors={colors} />,
-    <ContactScreen colors={colors} currentUser={userProfile} />,
+    <Search colors={colors} currentUser={userProfile} setPage={setPage} />,
+    <ContactScreen
+      colors={colors}
+      currentUser={userProfile}
+      setPage={setPage}
+    />,
     <ProfilePage
       colors={colors}
       profile={userProfile}

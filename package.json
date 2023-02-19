@@ -8,7 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "publish": "NODE_ENV=\"production\" eas update"
+    "publish": "NODE_ENV=\"production\" API_URL=\"https://desolate-mesa-38375.herokuapp.com\" eas update"
   },
   "dependencies": {
     "@apollo/client": "^3.7.1",
@@ -26,6 +26,7 @@
     "expo": "~47.0.3",
     "expo-blur": "^12.0.1",
     "expo-constants": "~14.0.2",
+    "expo-dev-client": "~2.0.1",
     "expo-document-picker": "~11.0.1",
     "expo-image-picker": "~14.0.2",
     "expo-status-bar": "~1.4.2",
