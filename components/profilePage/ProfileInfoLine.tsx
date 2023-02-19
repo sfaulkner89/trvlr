@@ -3,9 +3,8 @@ import React from 'react'
 import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { default as FeIcon } from 'react-native-vector-icons/Feather'
-import { default as SiIcon } from 'react-native-vector-icons/SimpleLineIcons'
 import { MessagingGroup } from '../../types/MessagingGroup'
+import { Feather, SimpleLineIcons } from '@expo/vector-icons'
 
 type Props = {
   colors: Colors
@@ -37,7 +36,7 @@ export default function ProfileInfoLine ({
             style={{ ...styles.button, borderColor: colors.lightColor }}
             onPress={() => setChat(messages)}
           >
-            <FeIcon
+            <Feather
               name='message-circle'
               size={buttonSize}
               color={colors.lightColor}
@@ -50,7 +49,7 @@ export default function ProfileInfoLine ({
           <Pressable
             style={{ ...styles.button, borderColor: colors.lightColor }}
           >
-            <SiIcon
+            <SimpleLineIcons
               name='user-follow'
               size={buttonSize}
               color={colors.lightColor}

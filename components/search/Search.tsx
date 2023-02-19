@@ -87,9 +87,10 @@ export default function Search ({ colors, currentUser, setPage }: Props) {
             setSelection={setSearchType}
           />
         </View>
-        {(users?.userSearch || []).map((user: Member) => {
+        {(users?.userSearch || []).map((user: Member, i: number) => {
           return (
             <MemberListItem
+              key={i}
               member={user}
               colors={colors}
               setContact={setContact}

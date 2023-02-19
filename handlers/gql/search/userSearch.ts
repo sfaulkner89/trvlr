@@ -13,24 +13,26 @@ export const USERSEARCH = gql(`
             lists {
                 id
                 displayName
-                photo
-                location
+                location {
+                    latitude
+                    longitude
+                }
                 city
                 country
                 dateCreated
                 dateModified
                 places {
-                    placeId
-                name
-                location: {
-                    latitude
-                    longitude
-                    locale
-                    area
-                }
-                establishment: {
-                    price
-                    rating
+                    id
+                    name
+                    googlePlaceId
+                    location {
+                        latitude
+                        longitude
+                    }
+                    city
+                    country
+                    dateCreated
+                    dateModified
                     types
                 }
             }

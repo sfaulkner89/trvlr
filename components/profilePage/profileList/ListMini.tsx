@@ -73,11 +73,11 @@ export default function ListMini ({
       ) : (
         <MapView
           style={styles.map}
-          initialRegion={{
+          region={{
             latitude: list.location?.latitude ?? 0,
             longitude: list.location?.longitude ?? 0,
-            latitudeDelta: 1,
-            longitudeDelta: 1
+            latitudeDelta: 0.1,
+            longitudeDelta: 0.1
           }}
           loadingEnabled={true}
         />
