@@ -10,8 +10,7 @@ import React, { useState } from 'react'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
-import 'react-native-get-random-values'
-import { v4 } from 'uuid'
+import uuid from 'react-native-uuid'
 
 type Props = {
   colors: Colors
@@ -30,7 +29,7 @@ export default function ChatInput ({
 
   const sendHandler = () => {
     const messageToAdd: Message = {
-      id: v4(),
+      id: uuid.v4('string'),
       userId: currentUser.id,
       dateSent: new Date(),
       text: newMessage

@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 0.54.1"
+    "version": ">=5.2.0"
   },
   "build": {
     "base": {
@@ -21,6 +21,13 @@
       "releaseChannel": "stable",
       "android": {
         "buildType": "app-bundle"
+      }
+    },
+    "development-simulator": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
       }
     },
     "preview": {

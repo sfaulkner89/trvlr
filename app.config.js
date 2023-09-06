@@ -3,12 +3,15 @@ const Config = {
 };
 
 if (process.env.NODE_ENV === "production") {
-  Config.apiUrl = "https://desolate-mesa-38375.herokuapp.com";
+  Config.apiUrl = "https://urchin-app-lyhlx.ondigitalocean.app/";
 }
 
 module.exports = {
   name: "trvlr",
   version: "1.0.0",
+  ios: {
+    bundleIdentifier: "com.test.test",
+  },
   extra: {
     ...Config,
     eas: {

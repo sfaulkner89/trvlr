@@ -12,37 +12,29 @@ import ChatInput from './ChatInput'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import ChatHeader from './ChatHeader'
 import { contacts } from '../../assets/data/groupdata'
-import { Member } from '../../types/Member'
+import { Member } from 'types/Member'
 import MessageBubble from './MessageBubble'
+import { useAppSelector } from '../../redux/hooks'
 
 type Props = {
   colors: Colors
-  chat: MessagingGroup
-  setChat: (chat: undefined) => void
   currentUser: Member
+  profile: Member
 }
 
-export default function ChatScreen ({
-  colors,
-  chat,
-  setChat,
-  currentUser
-}: Props) {
+export default function ChatScreen ({ colors, currentUser, profile }: Props) {
+  const contact = useAppSelector(state => state.contact[profile.id])
+
   const [currentMessages, setCurrentMessages] = useState<Message[]>(
-    chat.messages
+    contact.messages
   )
-  const chatContacts = chat.contacts.map(id => contacts[id])
+
   return (
     <KeyboardAvoidingView
       behavior='padding'
       style={{ ...styles.container, backgroundColor: colors.midColor }}
     >
-      <ChatHeader
-        colors={colors}
-        chat={chat}
-        setChat={setChat}
-        contacts={chatContacts}
-      />
+      <ChatHeader colors={colors} profile={profile} />
       <ScrollView contentContainerStyle={{ ...styles.messagesHolder }}>
         {currentMessages.map((message, i) => {
           return (

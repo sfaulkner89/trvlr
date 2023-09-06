@@ -11,6 +11,10 @@ import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
 
 import CachedImage from 'react-native-expo-cached-image'
+import { useAppSelector } from '../../redux/hooks'
+import { RootState } from '../../redux/store'
+import { useDispatch } from 'react-redux'
+import { setProfile } from '../../redux/slices/profileSlice'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -28,9 +32,13 @@ export default function MemberListItem ({
   setContact,
   setProfilePage
 }: Props) {
+  const profile = useAppSelector((store: RootState) => store.profile)
+  const dispatch = useDispatch()
+
   const contactHandler = () => {
     setContact(member)
     setProfilePage(true)
+    dispatch(setProfile(member))
   }
 
   return (

@@ -20,7 +20,7 @@ type Props = {
   colors: Colors
 }
 
-export default function ResultsHiolder ({ results, colors }: Props) {
+export default function ResultsHolder ({ results, colors }: Props) {
   const dispatch = useAppDispatch()
   const location = useAppSelector(state => state.location.map)
 

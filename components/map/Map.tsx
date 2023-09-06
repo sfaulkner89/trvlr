@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Button,
+  Pressable
+} from 'react-native'
 import React, { useRef, useState } from 'react'
 import MapView, { LatLng } from 'react-native-maps'
 import { Colors } from '../../types/colors'
@@ -12,9 +19,13 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import {
   changeMapLocation,
   clearMapBrowseArea,
-  setMapBrowseArea
+  setMapBrowseArea,
+  setNearbyPlace
 } from '../../redux/slices/locationSlice'
-import { clearSelectedPlace } from '../../redux/slices/resultsSlice'
+import {
+  clearSelectedPlace,
+  setSelectedPlace
+} from '../../redux/slices/resultsSlice'
 import NewListPage from '../../components/newList/NewListPage'
 import { Member } from '../../types/Member'
 import { List } from '../../types/List'
@@ -23,6 +34,10 @@ import HeaderBar from '../../components/headerBar/HeaderBar'
 import localeSelector from '../../assets/tools/localeSelector'
 import { PlaceDetails } from 'types/PlaceDetails'
 import ProfileListPage from '../../components/profilePage/profileList/ProfileListPage'
+import placeSearch from '../../handlers/googleServices/placeSearch'
+import getPlaceDetails from '../../handlers/googleServices/getPlaceDetails'
+import nearbySearch from '../../handlers/googleServices/nearbySearch'
+import { PlaceSearchResult } from '../../types/PlaceSearchResult'
 
 type Props = {
   colors: Colors
@@ -56,13 +71,33 @@ export default function Map ({
   )
   const member = useAppSelector(state => state.user)
   const moveHandler = async () => {
-    const placeDetails = await getMapAreaName(position)
     setDeltas({
       latitudeDelta: position.latitudeDelta,
       longitudeDelta: position.longitudeDelta
     })
     dispatch(changeMapLocation(position))
-    dispatch(setMapBrowseArea(placeDetails))
+    if (position.latitudeDelta + position.longitudeDelta >= 2) {
+      const placeDetails = await getMapAreaName(position)
+      dispatch(setMapBrowseArea(placeDetails))
+    } else {
+      const result: PlaceSearchResult | void = await nearbySearch(position)
+      if (result) {
+        dispatch(
+          changeMapLocation({
+            //changes location to the new place and keeps existing zoom level
+            ...result.location,
+            latitudeDelta: 0.004,
+            longitudeDelta: 0.004
+          })
+        )
+        dispatch(setNearbyPlace(result))
+        const details = await getPlaceDetails(result)
+        console.log(details)
+        dispatch(
+          setSelectedPlace({ ...result, ...details, placeId: result.placeId })
+        )
+      }
+    }
   }
 
   const touchHandler = () => {

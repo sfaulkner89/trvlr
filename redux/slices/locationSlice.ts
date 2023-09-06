@@ -5,10 +5,29 @@ import { PlaceDetails } from '../../types/PlaceDetails'
 import initialPosition from '../../assets/config/initialPosition'
 import { Member } from '../../types/Member'
 
+type CheckInLocation = {
+  location: {
+    latitude: number
+    longitude: number
+  }
+  placeId: string
+  names: {
+    main_text: string
+    secondary_text: string
+  }
+}
+
 const initialState: {
   map: LatLng & Deltas
   browseArea: PlaceDetails[] | null
-} = { map: initialPosition, browseArea: null }
+  nearbyPlace: CheckInLocation | null
+  checkInLocation: CheckInLocation | null
+} = {
+  map: initialPosition,
+  browseArea: null,
+  nearbyPlace: null,
+  checkInLocation: null
+}
 
 export const locationSlice = createSlice({
   name: 'location',
@@ -23,6 +42,16 @@ export const locationSlice = createSlice({
     },
     clearMapBrowseArea: state => {
       void Object.assign(state, { ...state, browseArea: null })
+    },
+    setNearbyPlace: (state, action) => {
+      action.payload.location.latitude = action.payload.location.lat
+      action.payload.location.longitude = action.payload.location.lng
+      delete action.payload.location.lng
+      delete action.payload.location.lat
+      void Object.assign(state, { ...state, nearbyPlace: action.payload })
+    },
+    setCheckInLocation: (state, action) => {
+      void Object.assign(state, { ...state, checkInLocation: action.payload })
     }
   }
 })
@@ -31,7 +60,9 @@ export const {
   changeMapLocation,
   clearMapLocation,
   setMapBrowseArea,
-  clearMapBrowseArea
+  clearMapBrowseArea,
+  setCheckInLocation,
+  setNearbyPlace
 } = locationSlice.actions
 
 export default locationSlice.reducer

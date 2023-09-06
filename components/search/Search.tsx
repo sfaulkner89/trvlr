@@ -17,6 +17,9 @@ import { USERSEARCH } from '../../handlers/gql/search/userSearch'
 import MemberListItem from '../../components/contactScreen/MemberListItem'
 import { Member } from 'types/Member'
 import ProfilePage from '../../components/profilePage/ProfilePage'
+import { useAppSelector } from '../../redux/hooks'
+import { RootState } from '../../redux/store'
+import { useDispatch } from 'react-redux'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -51,10 +54,13 @@ export default function Search ({ colors, currentUser, setPage }: Props) {
     }
   }
 
+  const profile = useAppSelector((store: RootState) => store.profile)
+  const dispatch = useDispatch()
+
   return profilePage && contact ? (
     <ProfilePage
       colors={colors}
-      profile={contact}
+      profile={profile}
       setProfilePage={setProfilePage}
       isCurrentUser={false}
       currentUser={currentUser}

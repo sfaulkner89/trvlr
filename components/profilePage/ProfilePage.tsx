@@ -15,18 +15,15 @@ import ProfileTopLine from './ProfileTopLine'
 import ProfileHeader from './ProfileHeader'
 import { Member } from '../../types/Member'
 import ProfileListPage from './profileList/ProfileListPage'
-import { Place } from '../../types/Place'
 import { List } from '../../types/List'
 import ListPage from '../listPage/ListPage'
 import Options from '../listPage/Options'
 import profileOptions from '../../assets/variables/profileOptions'
 import { AntDesign } from '@expo/vector-icons'
 import ChatScreen from '../messaging/ChatScreen'
-import currentMessages from '../../assets/data/currentMessages'
-import { MessagingGroup } from '../../types/MessagingGroup'
 import NewListPage from '../newList/NewListPage'
 import ProfileInfoLine from './ProfileInfoLine'
-import { findChat } from '../../handlers/findChat'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -52,7 +49,8 @@ export default function ProfilePage ({
   const [selection, setSelection] = useState<number>(0)
   const [selectedList, setSelectedList] = useState<List | undefined>()
   const [profileSelection, setProfileSelection] = useState<Member | undefined>()
-  const [chat, setChat] = useState<MessagingGroup | undefined>()
+  const contact = useAppSelector(state => state.contact[profile.id])
+  const dispatch = useAppDispatch()
   const [newList, setNewList] = useState<boolean>()
 
   const buttonMap = [
@@ -78,13 +76,8 @@ export default function ProfilePage ({
       setNewList={setNewList}
       setSelectedList={setSelectedList}
     />
-  ) : chat ? (
-    <ChatScreen
-      colors={colors}
-      setChat={setChat}
-      chat={chat}
-      currentUser={currentUser}
-    />
+  ) : contact ? (
+    <ChatScreen profile={profile} colors={colors} currentUser={currentUser} />
   ) : selectedList ? (
     <ListPage
       colors={colors}
@@ -118,9 +111,8 @@ export default function ProfilePage ({
       <ProfileInfoLine
         colors={colors}
         profile={profile}
-        setChat={setChat}
-        messages={findChat(profile, currentMessages)}
         isCurrentUser={isCurrentUser}
+        currentUser={currentUser}
       />
       <Selector
         colors={colors}

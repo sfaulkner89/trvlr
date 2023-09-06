@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getStorage, ref } from 'firebase/storage'
-import { v4 } from 'uuid'
+import { getDatabase, ref as dbRef } from 'firebase/database'
+import uuid from 'react-native-uuid'
 import { FIREBASE_API_KEY } from '@env'
 
 const firebaseConfig = {
@@ -14,5 +15,8 @@ const firebaseConfig = {
 }
 
 const app = initializeApp(firebaseConfig)
+
 const storage = getStorage(app)
-export const profilePicRef = ref(storage, `profilepics/${v4()}`)
+
+export const profilePicRef = ref(storage, `profilepics/${uuid.v4()}`)
+export const db = getDatabase(app)

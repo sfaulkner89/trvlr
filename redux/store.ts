@@ -1,8 +1,4 @@
-import {
-  combineReducers,
-  configureStore,
-  getDefaultMiddleware
-} from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import userReducer from './slices/userSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
@@ -10,6 +6,8 @@ import persistReducer from 'redux-persist/lib/persistReducer'
 import persistStore from 'redux-persist/es/persistStore'
 import locationSlice from './slices/locationSlice'
 import resultsSlice from './slices/resultsSlice'
+import profileSlice from './slices/profileSlice'
+import contactSlice from './slices/contactSlice'
 
 const persistConfig = {
   key: 'root',
@@ -21,7 +19,9 @@ const persistConfig = {
 const reducers = combineReducers({
   user: userReducer,
   location: locationSlice,
-  results: resultsSlice
+  results: resultsSlice,
+  profile: profileSlice,
+  contact: contactSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)

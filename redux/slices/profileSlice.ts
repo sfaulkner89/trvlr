@@ -13,16 +13,16 @@ const initialState = {
   lists: []
 }
 
-export const userSlice = createSlice({
-  name: 'user',
+export const profileSlice = createSlice({
+  name: 'profile',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<Member>) =>
+    setProfile: (state, action: PayloadAction<Member>) =>
       Object.assign(state, action.payload),
-    clearUser: state => Object.assign(state, initialState)
+    clearProfile: state => Object.assign(state, initialState)
   }
 })
 
-export const { setUser, clearUser } = userSlice.actions
+export const { setProfile, clearProfile } = profileSlice.actions
 
-export default userSlice.reducer
+export default profileSlice.reducer

@@ -7,6 +7,10 @@ import { AreaNames } from '../../types/AreaNames'
 import { Deltas } from '../../types/Deltas'
 import { PlaceDetails } from 'types/PlaceDetails'
 import localeSelector from '../../assets/tools/localeSelector'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { setCheckInLocation } from '../../redux/slices/locationSlice'
+import { useMutation } from '@apollo/client'
+import { PUT_USER } from '../../handlers/gql/users/putUser'
 
 type Props = {
   colors: Colors
@@ -25,6 +29,22 @@ export default function MapPin ({
   setNewList,
   setAddToList
 }: Props) {
+  const location = useAppSelector(state => state.location.nearbyPlace)
+  const user = useAppSelector(state => state.user)
+  const dispatch = useAppDispatch()
+  const [checkIn] = useMutation(PUT_USER)
+
+  const onCheckInPress = () => {
+    console.log('LOCATION', location)
+    dispatch(setCheckInLocation(location))
+    checkIn({
+      variables: {
+        userId: user.id,
+        checkInLocation: location
+      }
+    })
+  }
+
   return (
     <React.Fragment>
       {areaNames && !selectedPlace && (
@@ -38,6 +58,7 @@ export default function MapPin ({
                 ...styles.button,
                 backgroundColor: colors.selectedColor
               }}
+              onPress={onCheckInPress}
             >
               <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
                 Check In
@@ -57,13 +78,14 @@ export default function MapPin ({
           </View>
         </View>
       )}
-      {selectedPlace && !areaNames && (
+      {selectedPlace && (
         <View style={{ ...styles.infoBox, backgroundColor: colors.midColor }}>
           <Text style={{ ...styles.placeName, color: colors.lightColor }}>
             {selectedPlace.name}
           </Text>
           <View style={styles.buttonHolder}>
             <Pressable
+              onPress={onCheckInPress}
               style={{
                 ...styles.button,
                 backgroundColor: colors.selectedColor
@@ -103,17 +125,20 @@ const styles = StyleSheet.create({
     zIndex: 20,
     top: winHeight * 0.5,
     left: winWidth * 0.5
+    // height: 40,
+    // width: 40,
+    // transform: [{ translateX: -20 }, { translateY: -20 }]
   },
   infoBox: {
     position: 'absolute',
     zIndex: 20,
-    top: winHeight * 0.4,
-    left: winWidth * 0.38,
-    width: winWidth * 0.34,
+    top: winHeight * 0.39,
+    left: winWidth * 0.2,
+    width: winWidth * 0.64,
     height: winHeight * 0.1,
-    translateX: winWidth * 0.1,
+    translateX: winWidth * 0.25,
     translateY: winHeight * 0.07,
-    padding: 0,
+    padding: 10,
     borderRadius: winWidth * 0.05,
     alignItems: 'center',
     justifyContent: 'center'
@@ -125,10 +150,11 @@ const styles = StyleSheet.create({
     padding: winWidth * 0.01,
     borderRadius: winWidth * 0.02,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    height: winHeight * 0.04
   },
   buttonText: {
-    fontSize: winWidth * 0.025,
+    fontSize: winWidth * 0.035,
     textAlign: 'center'
   },
   buttonHolder: {
