@@ -13,7 +13,7 @@ export const CREATE_USER = gql(`
             followers,
             following,
             countries,
-            lists,
+            listIds,
             groups {
                 groupName
                 memberProfiles {
@@ -25,7 +25,7 @@ export const CREATE_USER = gql(`
                     followers,
                     following,
                     countries,
-                    lists
+                    listIds
                 }
             }
         }

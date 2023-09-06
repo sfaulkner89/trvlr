@@ -7,6 +7,7 @@ import currentMessages from '../../assets/data/currentMessages'
 import { MessagingGroup } from '../../types/MessagingGroup'
 import ChatScreen from './ChatScreen'
 import ChatListHeader from './ChatListHeader'
+import { useAppSelector } from '../../redux/hooks'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -22,28 +23,29 @@ export default function ChatListPage ({
   currentUser,
   setMessages
 }: Props) {
-  const [chat, setChat] = useState<MessagingGroup | undefined>()
-  return chat ? (
-    <ChatScreen
-      colors={colors}
-      chat={chat}
-      setChat={setChat}
-      currentUser={currentUser}
-    />
+  const [contact, setContact] = useState<
+    (Member & { messages: Message[] }) | undefined
+  >()
+  const contacts = useAppSelector(store => store.contact)
+
+  return contact ? (
+    <ChatScreen colors={colors} currentUser={currentUser} profile={contact} />
   ) : (
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
       <ChatListHeader colors={colors} setMessages={setMessages} />
       <ScrollView>
-        {currentMessages.map((chat, i) => {
-          return (
-            <MessagingMini
-              colors={colors}
-              chat={chat}
-              setChat={setChat}
-              key={i}
-            />
-          )
-        })}
+        {contacts.map(
+          (contact: Member & { messages: Message[] }, i: number) => {
+            return (
+              <MessagingMini
+                colors={colors}
+                contact={contact}
+                setContact={setContact}
+                key={i}
+              />
+            )
+          }
+        )}
       </ScrollView>
     </View>
   )

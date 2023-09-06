@@ -1,5 +1,5 @@
 type Message = {
-  id: string
+  id?: string | number[]
   userId: string
   dateSent: Date
   text: string

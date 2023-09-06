@@ -12,32 +12,27 @@ import { MessagingGroup } from '../../types/MessagingGroup'
 import ImageGroup from './ImageGroup'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { Member } from '../../types/Member'
-import { contacts } from '../../assets/data/groupdata'
 
 type Props = {
   colors: Colors
-  chat: MessagingGroup
-  setChat: (contact: MessagingGroup) => void
+  contact: Member & { messages: Message[] }
+  setContact: (contact: Member & { messages: Message[] }) => void
 }
 
-export default function MessagingMini ({ chat, colors, setChat }: Props) {
-  const lastMessage = chat.messages[chat.messages.length - 1]
+export default function MessagingMini ({ contact, colors, setContact }: Props) {
+  const lastMessage = contact.messages[contact.messages.length - 1]
   const today = new Date().toDateString()
   const dateString =
     lastMessage.dateSent.getDay() +
     ' ' +
     lastMessage.dateSent.toLocaleString('default', { month: 'short' })
-  const imageSource =
-    chat.group && chat.group.groupPicture ? (
-      <Image style={styles.profilePicture} source={chat.group.groupPicture} />
-    ) : chat.contacts.length > 1 ? (
-      <ImageGroup />
-    ) : (
-      <Image
-        style={styles.profilePicture}
-        source={contacts[chat.contacts[0]].profilePicture}
-      />
-    )
+  const imageSource = (
+    <Image
+      style={styles.profilePicture}
+      source={{ uri: contact.profileLocation }}
+    />
+  )
+
   return (
     <Pressable
       style={{
@@ -45,17 +40,13 @@ export default function MessagingMini ({ chat, colors, setChat }: Props) {
         backgroundColor: colors.midColor,
         borderBottomColor: colors.darkColor
       }}
-      onPress={() => setChat(chat)}
+      onPress={() => setContact(contact)}
     >
       {imageSource}
       <View style={styles.dataHolder}>
         <View style={styles.usernameHolder}>
           <Text style={{ ...styles.username, color: colors.lightColor }}>
-            {chat.group
-              ? chat.group.groupName
-              : chat.contacts.length > 1
-              ? `${chat.contacts.length} Contacts`
-              : contacts[chat.contacts[0]].username}
+            {contact.username}
           </Text>
         </View>
         <View style={styles.handleHolder}>

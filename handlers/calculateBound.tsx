@@ -1,6 +1,7 @@
+import { PlaceDetails } from 'types/PlaceDetails'
 import { Place } from '../types/Place'
 
-export default (places: Place[]) => {
+export default (places: PlaceDetails[]) => {
   const orderedlatitudes = places
     .map(place => place.location.latitude)
     .sort((a, b) => b - a)

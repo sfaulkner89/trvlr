@@ -2,9 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../types/colors'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
-import { default as FaIcon } from 'react-native-vector-icons/FontAwesome5'
-import { default as EnIcon } from 'react-native-vector-icons/Entypo'
+import { AntDesign, Entypo, FontAwesome5 } from '@expo/vector-icons'
 
 import { Member } from '../../types/Member'
 import { MessagingGroup } from '../../types/MessagingGroup'
@@ -39,7 +37,11 @@ export default function ProfileHeader ({
             style={styles.button}
             onPress={() => setProfilePage(false)}
           >
-            <AnIcon name='left' size={buttonSize} color={colors.lightColor} />
+            <AntDesign
+              name='left'
+              size={buttonSize}
+              color={colors.lightColor}
+            />
           </Pressable>
         </View>
       ) : (
@@ -61,7 +63,7 @@ export default function ProfileHeader ({
             alignItems: isCurrentUser ? 'flex-end' : 'center'
           }}
         >
-          <EnIcon
+          <Entypo
             name='dots-three-horizontal'
             size={buttonSize}
             color={colors.lightColor}

@@ -15,9 +15,10 @@ const winWidth = Dimensions.get('window').width
 type Props = {
   colors: Colors
   currentUser: Member
+  setPage: (set: number) => void
 }
 
-export default function ContactScreen ({ colors, currentUser }: Props) {
+export default function ContactScreen ({ colors, currentUser, setPage }: Props) {
   const [profilePage, setProfilePage] = useState(false)
   const [contact, setContact] = useState<Member | undefined>()
 
@@ -32,6 +33,7 @@ export default function ContactScreen ({ colors, currentUser }: Props) {
       setProfilePage={setProfilePage}
       isCurrentUser={false}
       currentUser={currentUser}
+      setPage={setPage}
     />
   ) : (
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
@@ -56,6 +58,7 @@ export default function ContactScreen ({ colors, currentUser }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    width: winWidth
   }
 })

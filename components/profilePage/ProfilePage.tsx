@@ -15,18 +15,15 @@ import ProfileTopLine from './ProfileTopLine'
 import ProfileHeader from './ProfileHeader'
 import { Member } from '../../types/Member'
 import ProfileListPage from './profileList/ProfileListPage'
-import { Place } from '../../types/Place'
 import { List } from '../../types/List'
 import ListPage from '../listPage/ListPage'
 import Options from '../listPage/Options'
 import profileOptions from '../../assets/variables/profileOptions'
-import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
+import { AntDesign } from '@expo/vector-icons'
 import ChatScreen from '../messaging/ChatScreen'
-import currentMessages from '../../assets/data/currentMessages'
-import { MessagingGroup } from '../../types/MessagingGroup'
 import NewListPage from '../newList/NewListPage'
 import ProfileInfoLine from './ProfileInfoLine'
-import { findChat } from '../../handlers/findChat'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -38,6 +35,7 @@ type Props = {
   setProfilePage?: (active: boolean) => void
   isCurrentUser: boolean
   currentUser: Member
+  setPage: (set: number) => void
 }
 
 export default function ProfilePage ({
@@ -45,12 +43,14 @@ export default function ProfilePage ({
   profile,
   setProfilePage,
   isCurrentUser,
-  currentUser
+  currentUser,
+  setPage
 }: Props) {
   const [selection, setSelection] = useState<number>(0)
   const [selectedList, setSelectedList] = useState<List | undefined>()
   const [profileSelection, setProfileSelection] = useState<Member | undefined>()
-  const [chat, setChat] = useState<MessagingGroup | undefined>()
+  const contact = useAppSelector(state => state.contact[profile.id])
+  const dispatch = useAppDispatch()
   const [newList, setNewList] = useState<boolean>()
 
   const buttonMap = [
@@ -60,6 +60,11 @@ export default function ProfilePage ({
       member={profile}
       setSelectedList={setSelectedList}
       isCurrentUser={isCurrentUser}
+      selectedList={selectedList}
+      setNewList={setNewList}
+      newListProvided={false}
+      addToList={false}
+      setAddToList={() => {}}
     />,
     <View />
   ]
@@ -71,19 +76,15 @@ export default function ProfilePage ({
       setNewList={setNewList}
       setSelectedList={setSelectedList}
     />
-  ) : chat ? (
-    <ChatScreen
-      colors={colors}
-      setChat={setChat}
-      chat={chat}
-      currentUser={currentUser}
-    />
+  ) : contact ? (
+    <ChatScreen profile={profile} colors={colors} currentUser={currentUser} />
   ) : selectedList ? (
     <ListPage
       colors={colors}
       list={selectedList}
       setSelectedList={setSelectedList}
       isCurrentUser={isCurrentUser}
+      setPage={setPage}
     />
   ) : profileSelection ? (
     <Options
@@ -110,9 +111,8 @@ export default function ProfilePage ({
       <ProfileInfoLine
         colors={colors}
         profile={profile}
-        setChat={setChat}
-        messages={findChat(profile, currentMessages)}
         isCurrentUser={isCurrentUser}
+        currentUser={currentUser}
       />
       <Selector
         colors={colors}
@@ -129,7 +129,7 @@ export default function ProfilePage ({
           }}
           onPress={() => setNewList(true)}
         >
-          <AnIcon name='addfile' size={size} color={colors.midColor} />
+          <AntDesign name='addfile' size={size} color={colors.midColor} />
         </Pressable>
       ) : (
         <View />

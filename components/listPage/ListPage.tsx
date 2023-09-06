@@ -12,13 +12,15 @@ import calculateCenter from '../../handlers/calculateCenter'
 import Options from './Options'
 import ListHeader from './ListHeader'
 import listOptions from '../../assets/variables/listOptions'
-import { default as MaIcon } from 'react-native-vector-icons/MaterialIcons'
+import { MaterialIcons } from '@expo/vector-icons'
+import { PlaceDetails } from 'types/PlaceDetails'
 
 type Props = {
   colors: Colors
   list: List
   setSelectedList: (noList: undefined) => void
   isCurrentUser: boolean
+  setPage: (set: number) => void
 }
 
 const size = winWidth * 0.06
@@ -27,10 +29,13 @@ export default function ListPage ({
   colors,
   list,
   setSelectedList,
-  isCurrentUser
+  isCurrentUser,
+  setPage
 }: Props) {
   const [listSelection, setListSelection] = useState<List | undefined>()
-  const [placeSelection, setPlaceSelection] = useState<Place | undefined>()
+  const [placeSelection, setPlaceSelection] = useState<
+    PlaceDetails | undefined
+  >()
 
   const bounds = calculateBound(list.places)
   const center = calculateCenter(list.places)
@@ -55,7 +60,7 @@ export default function ListPage ({
           setSelection={setListSelection}
         />
         <View style={{ ...styles.mapHolder, backgroundColor: colors.midColor }}>
-          {list.places.length > 0 ? (
+          {list.places.length > 0 && (
             <MapView
               style={styles.map}
               initialRegion={{
@@ -69,34 +74,38 @@ export default function ListPage ({
                 return <Marker coordinate={place.location} key={i} />
               })}
             </MapView>
-          ) : (
-            <View />
           )}
         </View>
-        <ScrollView
-          contentContainerStyle={{
-            ...styles.container,
-            backgroundColor: colors.midColor
-          }}
-        >
-          {list.places.map((place, i) => {
-            return (
-              <PlaceComponent
-                colors={colors}
-                place={place}
-                key={i}
-                setPlaceSelection={setPlaceSelection}
-              />
-            )
-          })}
+        <ScrollView>
+          <View
+            style={{
+              ...styles.container,
+              backgroundColor: colors.midColor
+            }}
+          >
+            {list.places.map((place, i) => {
+              return (
+                <PlaceComponent
+                  colors={colors}
+                  place={place}
+                  key={i}
+                  setPlaceSelection={setPlaceSelection}
+                />
+              )
+            })}
+          </View>
         </ScrollView>
         <Pressable
           style={{
             ...styles.addPlaceButton,
             backgroundColor: colors.lightColor
           }}
+          onPress={() => {
+            setSelectedList(undefined)
+            setPage(0)
+          }}
         >
-          <MaIcon name='place' size={size} color={colors.midColor} />
+          <MaterialIcons name='place' size={size} color={colors.midColor} />
           <Text style={{ ...styles.tinyPlus, color: colors.midColor }}>+</Text>
         </Pressable>
       </View>

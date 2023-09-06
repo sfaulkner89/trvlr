@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
   container: {
     height: winHeight * 0.1,
     width: winWidth,
+    flex: 1,
     flexDirection: 'row',
     marginTop: winHeight * 0.0015,
     alignItems: 'center',

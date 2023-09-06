@@ -4,6 +4,13 @@ import { default as EnIcon } from 'react-native-vector-icons/Entypo'
 import { default as FaIcon } from 'react-native-vector-icons/FontAwesome'
 import { default as FafIcon } from 'react-native-vector-icons/FontAwesome5'
 import { default as IoIcon } from 'react-native-vector-icons/Ionicons'
+import {
+  AntDesign,
+  Entypo,
+  FontAwesome,
+  FontAwesome5,
+  Ionicons
+} from '@expo/vector-icons'
 import { Colors } from '../../types/colors'
 
 const winHeight = Dimensions.get('window').height
@@ -21,28 +28,28 @@ export default function Toolbar ({ colors, page, setPage }: Props) {
   return (
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
       <Pressable style={styles.button} onPress={() => setPage(0)}>
-        <EnIcon
+        <Entypo
           name='map'
           size={iconSize * 1.1}
           color={page === 0 ? colors.selectedColor : colors.lightColor}
         />
       </Pressable>
       <Pressable style={styles.button} onPress={() => setPage(1)}>
-        <FaIcon
+        <FontAwesome
           name='search'
           size={iconSize}
           color={page === 1 ? colors.selectedColor : colors.lightColor}
         />
       </Pressable>
       <Pressable style={styles.button} onPress={() => setPage(2)}>
-        <FafIcon
+        <FontAwesome5
           name='user-friends'
           size={iconSize}
           color={page === 2 ? colors.selectedColor : colors.lightColor}
         />
       </Pressable>
       <Pressable style={{ ...styles.button }} onPress={() => setPage(3)}>
-        <IoIcon
+        <Ionicons
           name='person'
           size={iconSize}
           color={page === 3 ? colors.selectedColor : colors.lightColor}

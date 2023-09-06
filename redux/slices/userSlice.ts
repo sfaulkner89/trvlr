@@ -8,8 +8,8 @@ const initialState = {
   bio: '',
   profilePicture: '',
   countries: '',
-  following: '',
-  followers: '',
+  following: [],
+  followers: [],
   lists: []
 }
 

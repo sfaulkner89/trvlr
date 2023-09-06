@@ -12,14 +12,20 @@ import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { List } from '../../types/List'
-import { default as EnIcon } from 'react-native-vector-icons/Entypo'
+import { Entypo } from '@expo/vector-icons'
+import createList from '../../handlers/api/createList'
+import { MutationResult, QueryResult, useMutation } from '@apollo/client'
+import { CREATELIST } from '../../handlers/gql/lists/createList'
+import { PlaceDetails } from 'types/PlaceDetails'
+import { useAppSelector } from '../../redux/hooks'
+import placeShim from '../../assets/tools/placeShim'
 
 type Props = {
   colors: Colors
   currentUser: Member
   setNewList: (active: boolean) => void
   setSelectedList: (list: List) => void
-  city?: string
+  locale?: string
 }
 
 export default function NewListPage ({
@@ -27,28 +33,37 @@ export default function NewListPage ({
   currentUser,
   setNewList,
   setSelectedList,
-  city
+  locale
 }: Props) {
   const month = new Date().toLocaleString('default', { month: 'long' })
   const year = new Date().toLocaleString('default', { year: 'numeric' })
 
-  const defaultListName = city
-    ? `${city} List ${month} ${year}`
+  const selectedPlace: PlaceDetails = useAppSelector(
+    state => state.results.selectedPlace
+  )
+
+  const defaultListName = selectedPlace?.location.area
+    ? `${selectedPlace.location.area} List ${year}`
     : `${month} ${year} List`
 
   const [listName, setListName] = useState<string>(defaultListName)
 
-  const createHandler = () => {
+  const [newList] = useMutation(CREATELIST)
+
+  const user = useAppSelector(state => state.user)
+  const createHandler = async () => {
+    const createdList = await createList(user, listName, selectedPlace, newList)
     setNewList(false)
+    const cleanedPlaces = placeShim(createdList.places)
     setSelectedList({
-      name: listName,
+      displayName: listName,
       photo: undefined,
       location: undefined, // get Coordinates of city if being created from a place.
-      city: city ? city : undefined,
+      city: locale,
       country: undefined,
       dateCreated: new Date(),
       dateModified: new Date(),
-      places: []
+      places: cleanedPlaces
     })
   }
 
@@ -56,7 +71,7 @@ export default function NewListPage ({
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ ...styles.container, backgroundColor: colors.midColor }}>
         <Pressable style={styles.exitHolder} onPress={() => setNewList(false)}>
-          <EnIcon
+          <Entypo
             name='cross'
             size={winWidth * 0.08}
             color={colors.lightColor}
@@ -79,7 +94,7 @@ export default function NewListPage ({
               style={styles.crossHolder}
               onPress={() => setListName('')}
             >
-              <EnIcon
+              <Entypo
                 name='cross'
                 size={winWidth * 0.08}
                 color={colors.lightColor}

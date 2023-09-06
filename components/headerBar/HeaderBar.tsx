@@ -1,10 +1,20 @@
 import { StyleSheet, Text, View, Dimensions, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
-import { default as FeIcon } from 'react-native-vector-icons/Feather'
-import { default as IoIcon } from 'react-native-vector-icons/Ionicons'
 import MapSearch from '../map/MapSearch'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
+import { AntDesign, Entypo } from '@expo/vector-icons'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import {
+  changeMapLocation,
+  setMapBrowseArea,
+  setNearbyPlace
+} from '../../redux/slices/locationSlice'
+import getMapAreaName from '../../handlers/googleServices/getMapAreaName'
+import nearbySearch from '../../handlers/googleServices/nearbySearch'
+import { PlaceSearchResult } from '../../types/PlaceSearchResult'
+import getPlaceDetails from '../../handlers/googleServices/getPlaceDetails'
+import { setSelectedPlace } from '../../redux/slices/resultsSlice'
 
 const size = winWidth * 0.06
 
@@ -16,18 +26,49 @@ type Props = {
 export default function HeaderBar ({ colors, setMessages }: Props) {
   const [search, setSearch] = useState(false)
 
+  const dispatch = useAppDispatch()
+  const checkInLocation = useAppSelector(
+    state => state.location.checkInLocation
+  )
+
+  const homeHandler = async () => {
+    const position = {
+      longitude: checkInLocation.location.longitude,
+      latitude: checkInLocation.location.latitude,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005
+    }
+    dispatch(changeMapLocation(position))
+    const placeDetails = await getMapAreaName(position)
+    dispatch(setMapBrowseArea(placeDetails))
+    const result: PlaceSearchResult | void = await nearbySearch(position)
+    if (result) {
+      dispatch(setNearbyPlace(result))
+      const details = await getPlaceDetails(result)
+      dispatch(
+        setSelectedPlace({ ...result, ...details, placeId: result.placeId })
+      )
+    }
+  }
+
   return (
     <View style={{ ...styles.container, backgroundColor: 'transparent' }}>
       <MapSearch colors={colors} search={search} setSearch={setSearch} />
-      {search ? (
-        <View />
-      ) : (
-        <Pressable
-          style={{ ...styles.button, backgroundColor: colors.darkColor }}
-          onPress={() => setMessages(true)}
-        >
-          <FeIcon name='message-circle' size={size} color={colors.lightColor} />
-        </Pressable>
+      {!search && (
+        <React.Fragment>
+          <Pressable
+            style={{ ...styles.button, backgroundColor: colors.darkColor }}
+            onPress={() => setMessages(true)}
+          >
+            <AntDesign name='message1' size={size} color={colors.lightColor} />
+          </Pressable>
+          <Pressable
+            onPress={homeHandler}
+            style={{ ...styles.button, backgroundColor: colors.darkColor }}
+          >
+            <Entypo name='home' size={24} color={colors.lightColor} />
+          </Pressable>
+        </React.Fragment>
       )}
     </View>
   )
@@ -35,10 +76,9 @@ export default function HeaderBar ({ colors, setMessages }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    height: winHeight * 0.11,
     zIndex: 1,
     position: 'absolute',
-    top: 0,
+    top: winHeight * 0.05,
     left: winWidth * 0.05,
     width: winWidth * 0.9,
     flexDirection: 'row',

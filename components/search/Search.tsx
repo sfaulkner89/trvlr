@@ -7,11 +7,19 @@ import {
   TouchableWithoutFeedback,
   Keyboard
 } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Colors } from '../../types/colors'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import { FontAwesome } from '@expo/vector-icons'
 import SearchSelector from './Selector'
 import { searchCriteria } from '../../assets/variables/searchCriteria'
+import { useLazyQuery, useQuery } from '@apollo/client'
+import { USERSEARCH } from '../../handlers/gql/search/userSearch'
+import MemberListItem from '../../components/contactScreen/MemberListItem'
+import { Member } from 'types/Member'
+import ProfilePage from '../../components/profilePage/ProfilePage'
+import { useAppSelector } from '../../redux/hooks'
+import { RootState } from '../../redux/store'
+import { useDispatch } from 'react-redux'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -20,18 +28,52 @@ const size = winWidth * 0.06
 
 type Props = {
   colors: Colors
+  currentUser: Member
+  setPage: (set: number) => void
 }
 
-export default function Search ({ colors }: Props) {
+export default function Search ({ colors, currentUser, setPage }: Props) {
   const [searchType, setSearchType] = useState(0)
-  return (
+  const [query, setQuery] = useState('')
+  const [profilePage, setProfilePage] = useState(false)
+  const [contact, setContact] = useState<Member | undefined>()
+  const [userSearch, { loading, data: users, error }] = useLazyQuery(USERSEARCH)
+
+  useEffect(() => {
+    console.log(users, loading)
+  }, [users, loading])
+
+  const searchHandler = async (query: string) => {
+    setQuery(query)
+    if (query.length >= 3) {
+      await userSearch({
+        variables: {
+          query
+        }
+      })
+    }
+  }
+
+  const profile = useAppSelector((store: RootState) => store.profile)
+  const dispatch = useDispatch()
+
+  return profilePage && contact ? (
+    <ProfilePage
+      colors={colors}
+      profile={profile}
+      setProfilePage={setProfilePage}
+      isCurrentUser={false}
+      currentUser={currentUser}
+      setPage={setPage}
+    />
+  ) : (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
         <View style={styles.inputContainer}>
           <View
             style={{ ...styles.inputBase, backgroundColor: colors.lightColor }}
           >
-            <Icon
+            <FontAwesome
               name='search'
               size={size}
               color={colors.darkColor}
@@ -40,6 +82,8 @@ export default function Search ({ colors }: Props) {
             <TextInput
               style={{ ...styles.input }}
               selectionColor={colors.darkColor}
+              onChangeText={q => searchHandler(q)}
+              value={query}
             />
           </View>
           <SearchSelector
@@ -49,6 +93,17 @@ export default function Search ({ colors }: Props) {
             setSelection={setSearchType}
           />
         </View>
+        {(users?.userSearch || []).map((user: Member, i: number) => {
+          return (
+            <MemberListItem
+              key={i}
+              member={user}
+              colors={colors}
+              setContact={setContact}
+              setProfilePage={setProfilePage}
+            />
+          )
+        })}
       </View>
     </TouchableWithoutFeedback>
   )

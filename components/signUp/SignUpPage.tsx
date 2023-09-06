@@ -9,7 +9,7 @@ import {
 import React, { useState } from 'react'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import loginQuestions from '../../assets/variables/loginQuestions'
-import { default as AnIcon } from 'react-native-vector-icons/AntDesign'
+import { AntDesign } from '@expo/vector-icons'
 import { Colors } from '../../types/colors'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import * as ImagePicker from 'expo-image-picker'
@@ -19,15 +19,17 @@ import { CREATE_USER } from '../../handlers/gql/users/createUser'
 import { CreateProfileInputs } from '../../types/CreateProfileInputs'
 import capitalise from '../../assets/tools/capitalise'
 import { useAppDispatch } from '../../redux/hooks'
+import addZero from '../../assets/tools/addZero'
 
 const buttonSize: number = winWidth * 0.05
 
 const today: Date = new Date()
 
-const maxDob: Date = new Date(
-  `${today.getFullYear() - 18}-${today.getMonth()}-0${today.getDay()}`
+const maxDob = new Date(
+  `${today.getFullYear() - 18}-${addZero(today.getMonth() + 1)}-${addZero(
+    today.getDate()
+  )}`
 )
-
 type Props = {
   colors: Colors
   setLoggedIn: (fire: boolean) => void
@@ -121,6 +123,7 @@ export default function SignUpPage ({ colors, setLoggedIn }: Props) {
     date: (
       <View style={styles.dateHolder}>
         <RNDateTimePicker
+          maximumDate={new Date()}
           value={userInfo.dob}
           onChange={e =>
             setUserInfo({
@@ -166,7 +169,7 @@ export default function SignUpPage ({ colors, setLoggedIn }: Props) {
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
       <View style={{ ...styles.header }}>
         <View style={{ ...styles.arrowHolder }}>
-          <AnIcon name='left' size={buttonSize} color={colors.lightColor} />
+          <AntDesign name='left' size={buttonSize} color={colors.lightColor} />
         </View>
         <View style={{ ...styles.headerTitleHolder }}>
           <Text style={{ ...styles.titleText, color: colors.lightColor }}>
@@ -201,7 +204,11 @@ export default function SignUpPage ({ colors, setLoggedIn }: Props) {
       <View style={styles.bottomButtonsHolder}>
         {questionNumber > 0 ? (
           <Pressable style={styles.backButton} onPress={backHandler}>
-            <AnIcon name='left' size={buttonSize} color={colors.lightColor} />
+            <AntDesign
+              name='left'
+              size={buttonSize}
+              color={colors.lightColor}
+            />
             <Text style={{ color: colors.lightColor }}>Back</Text>
           </Pressable>
         ) : (

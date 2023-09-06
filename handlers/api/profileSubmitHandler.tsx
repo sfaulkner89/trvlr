@@ -14,8 +14,10 @@ export default async (
   setLoggedIn: (fire: boolean) => void,
   dispatch: Dispatch
 ) => {
-  const image = await fetch(profilePicture.uri).then(res => res.blob())
-  const blob = new Blob([image])
+  const image = await fetch(profilePicture.uri)
+    .then(res => res.blob())
+    .catch(err => console.error(err))
+  const blob = image ? new Blob([image]) : new Blob()
   await uploadBytes(profilePicRef, blob).catch(err => console.error(err))
   const imageUrl = await getDownloadURL(profilePicRef)
   const newProfile: NewProfile = {
@@ -25,6 +27,9 @@ export default async (
   const fullyInitialisedUser = await createUser({
     variables: { ...newProfile, dob: JSON.stringify(payload.dob) }
   })
+  if (fullyInitialisedUser.errors) {
+    console.error(fullyInitialisedUser.errors)
+  }
   userCache
     .set('primary', JSON.stringify(fullyInitialisedUser.data.createUser))
     .then(() => setLoggedIn(true))
