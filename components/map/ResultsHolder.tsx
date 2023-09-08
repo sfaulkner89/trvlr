@@ -14,6 +14,7 @@ import {
   changeMapLocation,
   clearMapBrowseArea
 } from '../../redux/slices/locationSlice'
+import { closeSearch } from '../../redux/slices/searchSlice'
 
 type Props = {
   results: PlaceSearchResult[]
@@ -37,6 +38,7 @@ export default function ResultsHolder ({ results, colors }: Props) {
     const placeId = result.placeId
     dispatch(clearPlaceResults())
     dispatch(clearMapBrowseArea())
+    dispatch(closeSearch())
     dispatch(setSelectedPlace({ ...details, placeId }))
   }
 

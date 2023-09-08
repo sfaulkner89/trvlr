@@ -13,7 +13,7 @@ import ProfilePage from './components/profilePage/ProfilePage'
 import Search from './components/search/Search'
 import SignUpPage from './components/signUp/SignUpPage'
 import Toolbar from './components/toolbar/Toolbar'
-import { useAppDispatch } from './redux/hooks'
+import { useAppDispatch, useAppSelector } from './redux/hooks'
 import { setUser } from './redux/slices/userSlice'
 import { Colors } from './types/colors'
 
@@ -33,6 +33,7 @@ export default function App () {
   const [contactList, setContactList] = useState()
 
   const dispatch = useAppDispatch()
+  const user = useAppSelector(state => state.user)
 
   useEffect(() => {
     const profileCache = async () => {

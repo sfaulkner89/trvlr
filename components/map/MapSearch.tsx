@@ -17,6 +17,7 @@ import {
   changePlaceResults,
   clearPlaceResults
 } from '../../redux/slices/resultsSlice'
+import { closeSearch, openSearch } from '../../redux/slices/searchSlice'
 
 const winHeight: number = Dimensions.get('window').height
 const winWidth: number = Dimensions.get('window').width
@@ -25,17 +26,16 @@ const size: number = winWidth * 0.06
 
 type Props = {
   colors: Colors
-  search: boolean
-  setSearch: (active: boolean) => void
 }
 
-export default function MapSearch ({ colors, search, setSearch }: Props) {
+export default function MapSearch ({ colors }: Props) {
   const mapLocation = useAppSelector(state => state.location.map)
   const placeResults = useAppSelector(state => state.results.mapSearch)
+  const searchOpen = useAppSelector(state => state.search.searchOpen)
   const dispatch = useAppDispatch()
 
   const crossHandler = () => {
-    setSearch(false)
+    dispatch(closeSearch())
     dispatch(clearPlaceResults())
   }
 
@@ -49,15 +49,15 @@ export default function MapSearch ({ colors, search, setSearch }: Props) {
   return (
     <View>
       <Pressable
-        onPress={() => setSearch(true)}
+        onPress={() => dispatch(openSearch())}
         style={
-          search
+          searchOpen
             ? { ...styles.clickedContainer, backgroundColor: colors.darkColor }
             : { ...styles.container, backgroundColor: colors.darkColor }
         }
       >
         <AntDesign name='search1' size={size} color={colors.lightColor} />
-        {search && (
+        {searchOpen && (
           <React.Fragment>
             <TextInput
               style={{ ...styles.input, color: colors.lightColor }}

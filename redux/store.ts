@@ -8,6 +8,7 @@ import locationSlice from './slices/locationSlice'
 import resultsSlice from './slices/resultsSlice'
 import profileSlice from './slices/profileSlice'
 import contactSlice from './slices/contactSlice'
+import searchSlice from './slices/searchSlice'
 
 const persistConfig = {
   key: 'root',
@@ -21,7 +22,8 @@ const reducers = combineReducers({
   location: locationSlice,
   results: resultsSlice,
   profile: profileSlice,
-  contact: contactSlice
+  contact: contactSlice,
+  search: searchSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)

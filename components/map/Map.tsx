@@ -1,13 +1,6 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Button,
-  Pressable
-} from 'react-native'
-import React, { useRef, useState } from 'react'
-import MapView, { LatLng } from 'react-native-maps'
+import { StyleSheet, View } from 'react-native'
+import React, { useState } from 'react'
+import MapView, { LatLng, Marker } from 'react-native-maps'
 import { Colors } from '../../types/colors'
 import getMapAreaName from '../../handlers/googleServices/getMapAreaName'
 
@@ -31,10 +24,8 @@ import { Member } from '../../types/Member'
 import { List } from '../../types/List'
 import ListPage from '../../components/listPage/ListPage'
 import HeaderBar from '../../components/headerBar/HeaderBar'
-import localeSelector from '../../assets/tools/localeSelector'
 import { PlaceDetails } from 'types/PlaceDetails'
 import ProfileListPage from '../../components/profilePage/profileList/ProfileListPage'
-import placeSearch from '../../handlers/googleServices/placeSearch'
 import getPlaceDetails from '../../handlers/googleServices/getPlaceDetails'
 import nearbySearch from '../../handlers/googleServices/nearbySearch'
 import { PlaceSearchResult } from '../../types/PlaceSearchResult'
@@ -66,15 +57,18 @@ export default function Map ({
   const dispatch = useAppDispatch()
   const mapPosition = useAppSelector(state => state.location.map)
   const areaNames = useAppSelector(state => state.location.browseArea)
+  const checkInLocation = useAppSelector(
+    state => state.location.checkInLocation
+  )
   const selectedPlace: PlaceDetails = useAppSelector(
     state => state.results.selectedPlace
   )
   const member = useAppSelector(state => state.user)
   const moveHandler = async () => {
-    setDeltas({
-      latitudeDelta: position.latitudeDelta,
-      longitudeDelta: position.longitudeDelta
-    })
+    // setDeltas({
+    //   latitudeDelta: position.latitudeDelta,
+    //   longitudeDelta: position.longitudeDelta
+    // })
     dispatch(changeMapLocation(position))
     if (position.latitudeDelta + position.longitudeDelta >= 2) {
       const placeDetails = await getMapAreaName(position)
@@ -85,9 +79,9 @@ export default function Map ({
         dispatch(
           changeMapLocation({
             //changes location to the new place and keeps existing zoom level
-            ...result.location,
-            latitudeDelta: 0.004,
-            longitudeDelta: 0.004
+            ...result.location
+            // latitudeDelta: 0.004,
+            // longitudeDelta: 0.004
           })
         )
         dispatch(setNearbyPlace(result))
@@ -99,10 +93,19 @@ export default function Map ({
       }
     }
   }
-
   const touchHandler = () => {
     dispatch(clearMapBrowseArea())
     dispatch(clearSelectedPlace())
+  }
+
+  const pinAtCheckIn =
+    mapPosition.longitude === checkInLocation.location.longitude &&
+    mapPosition.latitude === checkInLocation.location.latitude
+
+  const mapPositionCalibrated = {
+    ...mapPosition,
+    longitude: mapPosition.longitude - 0.00015,
+    latitude: mapPosition.latitude + 0.00015
   }
 
   return (
@@ -147,11 +150,13 @@ export default function Map ({
           />
           <MapView
             style={styles.map}
-            region={mapPosition}
+            region={mapPositionCalibrated}
             onRegionChange={e => setPosition(e)}
             onTouchEnd={() => moveHandler()}
             onTouchMove={() => touchHandler()}
-          ></MapView>
+          >
+            {!pinAtCheckIn && <Marker coordinate={checkInLocation.location} />}
+          </MapView>
         </React.Fragment>
       )}
     </View>

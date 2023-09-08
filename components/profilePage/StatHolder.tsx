@@ -14,14 +14,19 @@ type Props = {
 }
 
 export default function StatHolder ({ stat, profile, colors }: Props) {
+  const statValue =
+    typeof profile[stat.key] === 'object'
+      ? profile[stat.key].length
+      : profile[stat.key]
+
+  const statKey = stat.stat
+
   return (
     <View style={styles.container}>
       <View style={styles.valueHolder}>
         <Text style={{ ...styles.value, color: colors.lightColor }}>
-          {typeof profile[stat.key] === 'object'
-            ? profile[stat.key].length
-            : profile[stat.key]}
           {stat.key === 'worldCovered' ? '%' : ''}
+          {statValue}
         </Text>
       </View>
       <View style={styles.statHolder}>
@@ -32,7 +37,7 @@ export default function StatHolder ({ stat, profile, colors }: Props) {
             fontSize: (winWidth * 0.11) / Math.sqrt(stat.stat.length)
           }}
         >
-          {stat.stat}
+          {statKey}
         </Text>
       </View>
     </View>

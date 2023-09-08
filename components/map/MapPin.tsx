@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { setCheckInLocation } from '../../redux/slices/locationSlice'
 import { useMutation } from '@apollo/client'
 import { PUT_USER } from '../../handlers/gql/users/putUser'
+import ToolTip from './ToolTip'
 
 type Props = {
   colors: Colors
@@ -31,6 +32,7 @@ export default function MapPin ({
 }: Props) {
   const location = useAppSelector(state => state.location.nearbyPlace)
   const user = useAppSelector(state => state.user)
+  const searchOpen = useAppSelector(state => state.search.searchOpen)
   const dispatch = useAppDispatch()
   const [checkIn] = useMutation(PUT_USER)
 
@@ -47,67 +49,16 @@ export default function MapPin ({
 
   return (
     <React.Fragment>
-      {areaNames && !selectedPlace && (
-        <View style={{ ...styles.infoBox, backgroundColor: colors.midColor }}>
-          <Text style={{ ...styles.placeName, color: colors.lightColor }}>
-            {localeSelector(areaNames, deltas)}
-          </Text>
-          <View style={styles.buttonHolder}>
-            <Pressable
-              style={{
-                ...styles.button,
-                backgroundColor: colors.selectedColor
-              }}
-              onPress={onCheckInPress}
-            >
-              <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
-                Check In
-              </Text>
-            </Pressable>
-            <Pressable
-              style={{
-                ...styles.button,
-                backgroundColor: colors.selectedColor
-              }}
-              onPress={() => setNewList(true)}
-            >
-              <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
-                Create List
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-      )}
-      {selectedPlace && (
-        <View style={{ ...styles.infoBox, backgroundColor: colors.midColor }}>
-          <Text style={{ ...styles.placeName, color: colors.lightColor }}>
-            {selectedPlace.name}
-          </Text>
-          <View style={styles.buttonHolder}>
-            <Pressable
-              onPress={onCheckInPress}
-              style={{
-                ...styles.button,
-                backgroundColor: colors.selectedColor
-              }}
-            >
-              <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
-                Check In
-              </Text>
-            </Pressable>
-            <Pressable
-              style={{
-                ...styles.button,
-                backgroundColor: colors.selectedColor
-              }}
-              onPress={() => setAddToList(true)}
-            >
-              <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
-                Add To List
-              </Text>
-            </Pressable>
-          </View>
-        </View>
+      {!searchOpen && (
+        <ToolTip
+          areaNames={areaNames}
+          selectedPlace={selectedPlace}
+          deltas={deltas}
+          colors={colors}
+          setNewList={setNewList}
+          setAddToList={setAddToList}
+          onCheckInPress={onCheckInPress}
+        />
       )}
       <FontAwesome
         name='map-pin'

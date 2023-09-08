@@ -25,6 +25,7 @@ type Props = {
 
 export default function HeaderBar ({ colors, setMessages }: Props) {
   const [search, setSearch] = useState(false)
+  const searchOpen = useAppSelector(state => state.search.searchOpen)
 
   const dispatch = useAppDispatch()
   const checkInLocation = useAppSelector(
@@ -53,8 +54,8 @@ export default function HeaderBar ({ colors, setMessages }: Props) {
 
   return (
     <View style={{ ...styles.container, backgroundColor: 'transparent' }}>
-      <MapSearch colors={colors} search={search} setSearch={setSearch} />
-      {!search && (
+      <MapSearch colors={colors} />
+      {!searchOpen && (
         <React.Fragment>
           <Pressable
             style={{ ...styles.button, backgroundColor: colors.darkColor }}

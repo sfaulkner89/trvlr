@@ -2,10 +2,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../types/colors'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { AntDesign, Entypo, FontAwesome5 } from '@expo/vector-icons'
+import { AntDesign, Entypo } from '@expo/vector-icons'
 
 import { Member } from '../../types/Member'
-import { MessagingGroup } from '../../types/MessagingGroup'
 
 type Props = {
   colors: Colors

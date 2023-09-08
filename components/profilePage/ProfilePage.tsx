@@ -6,7 +6,7 @@ import {
   Image,
   Pressable
 } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Colors } from '../../types/colors'
 import Selector from '../search/Selector'
 import profileButton from '../../assets/variables/profileButton'
@@ -24,6 +24,9 @@ import ChatScreen from '../messaging/ChatScreen'
 import NewListPage from '../newList/NewListPage'
 import ProfileInfoLine from './ProfileInfoLine'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { GETUSERLISTS } from '../../handlers/gql/lists/getUserLists'
+import { useQuery } from '@apollo/client'
+import { setLists } from '../../redux/slices/userSlice'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -40,16 +43,27 @@ type Props = {
 
 export default function ProfilePage ({
   colors,
-  profile,
   setProfilePage,
   isCurrentUser,
   currentUser,
   setPage
 }: Props) {
+  const profile = useAppSelector(state => state.user)
+  const { data, refetch } = useQuery(GETUSERLISTS, {
+    variables: { id: profile.id }
+  })
+  useEffect(() => {
+    refetch()
+    console.log(data.lists)
+    dispatch(setLists(data.getUser.lists))
+  }, [])
+
   const [selection, setSelection] = useState<number>(0)
   const [selectedList, setSelectedList] = useState<List | undefined>()
   const [profileSelection, setProfileSelection] = useState<Member | undefined>()
+
   const contact = useAppSelector(state => state.contact[profile.id])
+
   const dispatch = useAppDispatch()
   const [newList, setNewList] = useState<boolean>()
 
