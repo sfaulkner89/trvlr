@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { MessagingGroup } from '../../types/MessagingGroup'
 import { Feather, SimpleLineIcons } from '@expo/vector-icons'
 import { useMutation } from '@apollo/client'
 import { FOLLOW } from '../../handlers/gql/follow/follow'
@@ -13,6 +12,7 @@ import { setUser } from '../../redux/slices/userSlice'
 import { setProfile } from '../../redux/slices/profileSlice'
 import { setContact } from '../../redux/slices/contactSlice'
 import { useAppSelector } from '../../redux/hooks'
+import { setChat } from '../../redux/slices/messageSlice'
 
 type Props = {
   colors: Colors
@@ -32,7 +32,7 @@ export default function ProfileInfoLine ({
   const [unfollow] = useMutation(UNFOLLOW)
   const dispatch = useDispatch()
   const [following, setFollowing] = useState(
-    currentUser.following.includes(profile.id)
+    currentUser?.following?.includes(profile.id) || false
   )
   const [follows, setFollows] = useState(
     currentUser.followers.includes(profile.id)
@@ -61,11 +61,24 @@ export default function ProfileInfoLine ({
     dispatch(setUser(currentUser))
     dispatch(setProfile(profile))
   }
+  const chatHandler = () => {
+    const contact = currentUser.chats.find(
+      c => c.contacts.length === 2 && c.contacts.includes(profile.id)
+    )
+    if (contact) {
+      dispatch(setChat(contact))
+    } else {
+      //need to hit the new chat group endpoint and then update local state on success
+      //addNewChat()
+    }
+  }
+
+  console.log(profile)
 
   return (
     <View style={{ ...styles.container }}>
       <Text style={{ ...styles.username, color: colors.lightColor }}>
-        📍 Boston, US
+        {profile.checkInLocation?.names.main_text}
       </Text>
       {follows && <Text>Follows You</Text>}
       <Text style={{ ...styles.bio, color: colors.lightColor }}>
@@ -75,7 +88,7 @@ export default function ProfileInfoLine ({
         <View style={styles.buttonHolder}>
           <Pressable
             style={{ ...styles.button, borderColor: colors.lightColor }}
-            onPress={() => dispatch(setContact(contacts[profile.id]))}
+            onPress={chatHandler}
           >
             <Feather
               name='message-circle'

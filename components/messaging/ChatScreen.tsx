@@ -11,7 +11,6 @@ import { MessagingGroup } from '../../types/MessagingGroup'
 import ChatInput from './ChatInput'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import ChatHeader from './ChatHeader'
-import { contacts } from '../../assets/data/groupdata'
 import { Member } from 'types/Member'
 import MessageBubble from './MessageBubble'
 import { useAppSelector } from '../../redux/hooks'
@@ -23,10 +22,10 @@ type Props = {
 }
 
 export default function ChatScreen ({ colors, currentUser, profile }: Props) {
-  const contact = useAppSelector(state => state.contact[profile.id])
+  const chat = useAppSelector<MessagingGroup>(state => state.chat)
 
   const [currentMessages, setCurrentMessages] = useState<Message[]>(
-    contact.messages
+    chat.messages
   )
 
   return (

@@ -3,6 +3,21 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import localeSelector from '../../assets/tools/localeSelector'
 
 import { winHeight, winWidth } from '../../assets/variables/height-width'
+import { AreaNames } from '../../types/AreaNames'
+import { Deltas } from '../../types/Deltas'
+import { PlaceDetails } from '../../types/PlaceDetails'
+import { Colors } from '../../types/colors'
+
+type Props = {
+  isCurrentUser: true
+  areaNames: AreaNames[]
+  selectedPlace: PlaceDetails
+  deltas: Deltas
+  colors: Colors
+  setNewList: (set: boolean) => void
+  setAddToList: (set: boolean) => void
+  onCheckInPress: () => void
+}
 
 export default function ToolTip ({
   areaNames,
@@ -12,7 +27,7 @@ export default function ToolTip ({
   setNewList,
   setAddToList,
   onCheckInPress
-}) {
+}: Props) {
   if (areaNames && !selectedPlace)
     return (
       <View style={{ ...styles.infoBox, backgroundColor: colors.midColor }}>

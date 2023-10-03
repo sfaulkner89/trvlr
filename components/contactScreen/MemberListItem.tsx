@@ -38,7 +38,7 @@ export default function MemberListItem ({
   const contactHandler = () => {
     setContact(member)
     setProfilePage(true)
-    dispatch(setProfile(member))
+    // dispatch(setProfile(member))
   }
 
   return (
@@ -75,7 +75,10 @@ const styles = StyleSheet.create({
     height: 0.08 * winHeight,
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    width: winWidth,
+    paddingTop: winHeight * 0.02,
+    paddingBottom: winHeight * 0.02
   },
   profilePicture: {
     width: 0.13 * winWidth,

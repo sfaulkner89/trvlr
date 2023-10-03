@@ -60,7 +60,7 @@ export default function Search ({ colors, currentUser, setPage }: Props) {
   return profilePage && contact ? (
     <ProfilePage
       colors={colors}
-      profile={profile}
+      member={profile}
       setProfilePage={setProfilePage}
       isCurrentUser={false}
       currentUser={currentUser}
@@ -93,17 +93,19 @@ export default function Search ({ colors, currentUser, setPage }: Props) {
             setSelection={setSearchType}
           />
         </View>
-        {(users?.userSearch || []).map((user: Member, i: number) => {
-          return (
-            <MemberListItem
-              key={i}
-              member={user}
-              colors={colors}
-              setContact={setContact}
-              setProfilePage={setProfilePage}
-            />
-          )
-        })}
+        {(users?.userSearch || [])
+          .filter((user: Member) => user.id !== currentUser.id)
+          .map((user: Member, i: number) => {
+            return (
+              <MemberListItem
+                key={i}
+                member={user}
+                colors={colors}
+                setContact={setContact}
+                setProfilePage={setProfilePage}
+              />
+            )
+          })}
       </View>
     </TouchableWithoutFeedback>
   )

@@ -63,12 +63,14 @@ export default function HeaderBar ({ colors, setMessages }: Props) {
           >
             <AntDesign name='message1' size={size} color={colors.lightColor} />
           </Pressable>
-          <Pressable
-            onPress={homeHandler}
-            style={{ ...styles.button, backgroundColor: colors.darkColor }}
-          >
-            <Entypo name='home' size={24} color={colors.lightColor} />
-          </Pressable>
+          {checkInLocation && (
+            <Pressable
+              onPress={homeHandler}
+              style={{ ...styles.button, backgroundColor: colors.darkColor }}
+            >
+              <Entypo name='home' size={24} color={colors.lightColor} />
+            </Pressable>
+          )}
         </React.Fragment>
       )}
     </View>

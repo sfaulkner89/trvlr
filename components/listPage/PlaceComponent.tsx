@@ -10,6 +10,8 @@ type Props = {
   colors: Colors
   place: PlaceDetails
   setPlaceSelection: (place: PlaceDetails) => void
+  setHighlightedPlace: () => void
+  isHighlighted: boolean
 }
 
 const iconSize = winWidth * 0.04
@@ -17,7 +19,9 @@ const iconSize = winWidth * 0.04
 export default function PlaceComponent ({
   colors,
   place,
-  setPlaceSelection
+  setPlaceSelection,
+  setHighlightedPlace,
+  isHighlighted
 }: Props) {
   let placeTypeDisplay
   placeTypeDisplay =
@@ -27,9 +31,20 @@ export default function PlaceComponent ({
       : undefined
   return (
     <React.Fragment>
-      <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
+      <Pressable
+        style={{
+          ...styles.container,
+          backgroundColor: isHighlighted ? colors.midColor : colors.darkColor
+        }}
+        onPress={setHighlightedPlace}
+      >
         <View style={{ ...styles.textHolder }}>
-          <Text style={{ ...styles.displayName, color: colors.lightColor }}>
+          <Text
+            style={{
+              ...styles.displayName,
+              color: colors.lightColor
+            }}
+          >
             {place.name}
             {placeTypeDisplay && (
               <Text style={{ ...styles.placeType }}> - {placeTypeDisplay}</Text>
@@ -52,7 +67,7 @@ export default function PlaceComponent ({
             style={styles.arrow}
           />
         </Pressable>
-      </View>
+      </Pressable>
     </React.Fragment>
   )
 }
@@ -63,6 +78,7 @@ const styles = StyleSheet.create({
     width: winWidth,
     backgroundColor: 'white',
     alignItems: 'center',
+    justifyContent: 'space-between',
     flexDirection: 'row',
     marginTop: winHeight * 0.0015
   },
@@ -78,9 +94,9 @@ const styles = StyleSheet.create({
   },
   arrow: {},
   arrowHolder: {
-    flex: 1,
-    alignItems: 'flex-end',
-    marginRight: winWidth * 0.02
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginRight: winWidth * 0.04
   },
   extended: {
     height: winHeight * 0.15,

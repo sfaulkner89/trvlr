@@ -4,26 +4,36 @@ import { Member } from '../../types/Member'
 
 export const contactSlice = createSlice({
   name: 'contact',
-  initialState: [],
+  initialState: {
+    contactMarker: null,
+    contacts: []
+  },
   reducers: {
     setContacts: (
       state,
       action: PayloadAction<Member & { messages: Message[] }[]>
     ) => Object.assign(state, action.payload),
-    setContact: (
-      state,
-      action: PayloadAction<Member & { messages: Message[] }>
-    ) => {
-      console.log('ID', action.payload)
-      Object.assign(state[action.payload.id], action.payload.messages)
+    setContact: (state, action: PayloadAction<MessagingGroup>) => {
+      Object.assign(state.contacts[action.payload.id], action.payload.messages)
     },
     addMessage: (state, action: PayloadAction<Message>) =>
-      Object.assign(state, [...state, action.payload]),
-    clearContact: state => Object.assign(state, {})
+      Object.assign(state, [...state.contacts, action.payload]),
+    clearContact: state => Object.assign(state, {}),
+    contactMarkerVisible: (state, action: PayloadAction<Member>) => {
+      state.contactMarker = action.payload
+    },
+    contactMarkerInvisible: state => {
+      state.contactMarker = null
+    }
   }
 })
 
-export const { setContact, clearContact, addMessage, setContacts } =
-  contactSlice.actions
+export const {
+  setContact,
+  clearContact,
+  addMessage,
+  setContacts,
+  contactMarkerVisible
+} = contactSlice.actions
 
 export default contactSlice.reducer

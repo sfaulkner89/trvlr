@@ -36,6 +36,7 @@ export default function ListPage ({
   const [placeSelection, setPlaceSelection] = useState<
     PlaceDetails | undefined
   >()
+  const [highlightedPlace, setHighlightedPlace] = useState<number | undefined>()
 
   const bounds = calculateBound(list.places)
   const center = calculateCenter(list.places)
@@ -71,7 +72,20 @@ export default function ListPage ({
               }}
             >
               {list.places.map((place, i) => {
-                return <Marker coordinate={place.location} key={i} />
+                const highlightStyle = highlightedPlace === i
+                return (
+                  <Marker coordinate={place.location} key={i}>
+                    <View
+                      style={
+                        highlightStyle
+                          ? { ...styles.highlightedMarker }
+                          : { ...styles.marker }
+                      }
+                    >
+                      <Text style={styles.markerText}>{i + 1}</Text>
+                    </View>
+                  </Marker>
+                )
               })}
             </MapView>
           )}
@@ -90,6 +104,8 @@ export default function ListPage ({
                   place={place}
                   key={i}
                   setPlaceSelection={setPlaceSelection}
+                  setHighlightedPlace={() => setHighlightedPlace(i)}
+                  isHighlighted={highlightedPlace === i}
                 />
               )
             })}
@@ -135,6 +151,25 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     shadowOpacity: 0.6,
     shadowOffset: { width: winWidth * 0.01, height: winWidth * 0.01 }
+  },
+  marker: {
+    width: winWidth * 0.05,
+    height: winWidth * 0.05,
+    borderRadius: winWidth * 0.025,
+    backgroundColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  markerText: {
+    color: 'white'
+  },
+  highlightedMarker: {
+    backgroundColor: 'darkred',
+    width: winWidth * 0.1,
+    height: winWidth * 0.1,
+    borderRadius: winWidth * 0.05,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   tinyPlus: {
     position: 'absolute',

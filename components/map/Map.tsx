@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Image } from 'react-native'
 import React, { useState } from 'react'
 import MapView, { LatLng, Marker } from 'react-native-maps'
 import { Colors } from '../../types/colors'
@@ -29,6 +29,9 @@ import ProfileListPage from '../../components/profilePage/profileList/ProfileLis
 import getPlaceDetails from '../../handlers/googleServices/getPlaceDetails'
 import nearbySearch from '../../handlers/googleServices/nearbySearch'
 import { PlaceSearchResult } from '../../types/PlaceSearchResult'
+import { useQuery } from '@apollo/client'
+import { GETUSERS } from '../../handlers/gql/users/getUsers'
+import ContactMarker from './ContactMarker'
 
 type Props = {
   colors: Colors
@@ -63,6 +66,13 @@ export default function Map ({
   const selectedPlace: PlaceDetails = useAppSelector(
     state => state.results.selectedPlace
   )
+  const { data: contactLocations, refetch } = useQuery<{ getUsers: Member[] }>(
+    GETUSERS,
+    {
+      variables: { ids: currentUser.following }
+    }
+  )
+
   const member = useAppSelector(state => state.user)
   const moveHandler = async () => {
     // setDeltas({
@@ -86,7 +96,6 @@ export default function Map ({
         )
         dispatch(setNearbyPlace(result))
         const details = await getPlaceDetails(result)
-        console.log(details)
         dispatch(
           setSelectedPlace({ ...result, ...details, placeId: result.placeId })
         )
@@ -99,8 +108,8 @@ export default function Map ({
   }
 
   const pinAtCheckIn =
-    mapPosition.longitude === checkInLocation.location.longitude &&
-    mapPosition.latitude === checkInLocation.location.latitude
+    mapPosition?.longitude === checkInLocation?.location.longitude &&
+    mapPosition?.latitude === checkInLocation?.location.latitude
 
   const mapPositionCalibrated = {
     ...mapPosition,
@@ -155,7 +164,12 @@ export default function Map ({
             onTouchEnd={() => moveHandler()}
             onTouchMove={() => touchHandler()}
           >
-            {!pinAtCheckIn && <Marker coordinate={checkInLocation.location} />}
+            {checkInLocation && !pinAtCheckIn && (
+              <ContactMarker contact={{ ...currentUser, checkInLocation }} />
+            )}
+            {(contactLocations?.getUsers || []).map((contact, i) => {
+              return <ContactMarker key={i} contact={contact} />
+            })}
           </MapView>
         </React.Fragment>
       )}

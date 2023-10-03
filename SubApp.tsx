@@ -1,7 +1,6 @@
-import { QueryResult, useQuery } from '@apollo/client'
+import { QueryResult, useLazyQuery, useQuery } from '@apollo/client'
 import { db } from './assets/config/firebaseConfig'
 import { child, get, ref } from 'firebase/database'
-import { GETUSERS } from './handlers/gql/users/getUsers'
 import React, { useEffect, useState } from 'react'
 import { Modal, StyleSheet, View } from 'react-native'
 import { Member } from 'types/Member'
@@ -16,6 +15,7 @@ import Toolbar from './components/toolbar/Toolbar'
 import { useAppDispatch, useAppSelector } from './redux/hooks'
 import { setUser } from './redux/slices/userSlice'
 import { Colors } from './types/colors'
+import { GETUSER } from './handlers/gql/users/getUser'
 
 export const colors: Colors = {
   darkColor: '#34333a',
@@ -26,33 +26,39 @@ export const colors: Colors = {
 }
 
 export default function App () {
-  const [userProfile, setUserProfile] = useState<Member | undefined>()
   const [page, setPage] = useState(0)
   const [messages, setMessages] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false)
-  const [contactList, setContactList] = useState()
 
   const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.user)
+  const [getUser, { data }] = useLazyQuery(GETUSER)
 
   useEffect(() => {
     const profileCache = async () => {
       const user = await userCache.get('primary')
       if (user) {
-        setUserProfile(JSON.parse(user))
-        dispatch(setUser(JSON.parse(user)))
+        await getUser({
+          variables: { id: JSON.parse(user).id }
+        })
+        dispatch(setUser(data?.getUser))
         setLoggedIn(true)
-      }
-      if (userProfile) {
-        let messageList = get(
-          child(ref(db), `/messages/${userProfile.id}`)
-        ).then(snapshot => setContactList(snapshot.val()))
-        console.log(messageList)
       }
     }
 
     profileCache()
   }, [])
+
+  // const {data, refetch } = useQuery(GETUSER, {
+  //   variables: { id: user.id }
+  // })
+
+  // useEffect(() => {
+  //   refetch()
+  //   console.log('refetching')
+  //   if (data) dispatch(setUser(data?.getUser))
+  //   if (data) console.log(data.getUser)
+  // }, [user])
 
   // const messagingContacts: QueryResult<Member[]> = useQuery(GETUSERS, {
   //   variables: { ids: Object.keys({ messageList }) }
@@ -66,22 +72,18 @@ export default function App () {
   const pages = [
     <Map
       colors={colors}
-      currentUser={userProfile}
+      currentUser={user}
       isCurrentUser={true}
       setMessages={setMessages}
       setPage={setPage}
     />,
-    <Search colors={colors} currentUser={userProfile} setPage={setPage} />,
-    <ContactScreen
-      colors={colors}
-      currentUser={userProfile}
-      setPage={setPage}
-    />,
+    <Search colors={colors} currentUser={user} setPage={setPage} />,
+    <ContactScreen colors={colors} currentUser={user} setPage={setPage} />,
     <ProfilePage
       colors={colors}
-      profile={userProfile}
+      member={user}
       isCurrentUser={true}
-      currentUser={userProfile}
+      currentUser={user}
       setPage={setPage}
     />
   ]
@@ -90,7 +92,7 @@ export default function App () {
   ) : messages ? (
     <ChatListPage
       colors={colors}
-      currentUser={userProfile}
+      currentUser={user}
       setMessages={setMessages}
     />
   ) : (

@@ -8,6 +8,9 @@ import { Member } from '../../types/Member'
 import { useAppSelector } from '../../redux/hooks'
 import { RootState } from '../../redux/store'
 import { GroupInfo } from '../../types/GroupInfo'
+import { GETUSERS } from '../../handlers/gql/users/getUsers'
+import { useQuery } from '@apollo/client'
+import MemberListItem from './MemberListItem'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -22,14 +25,16 @@ export default function ContactScreen ({ colors, currentUser, setPage }: Props) 
   const [profilePage, setProfilePage] = useState(false)
   const [contact, setContact] = useState<Member | undefined>()
 
-  const contacts: GroupInfo[] = useAppSelector(
-    (state: RootState) => state.user.groups
-  )
+  const { data, refetch } = useQuery<{ getUsers: Member[] }>(GETUSERS, {
+    variables: { ids: currentUser.following }
+  })
+
+  const contacts = data?.getUsers || []
 
   return profilePage && contact ? (
     <ProfilePage
       colors={colors}
-      profile={contact}
+      member={contact}
       setProfilePage={setProfilePage}
       isCurrentUser={false}
       currentUser={currentUser}
@@ -39,10 +44,10 @@ export default function ContactScreen ({ colors, currentUser, setPage }: Props) 
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
       <ContactHeader colors={colors} title='Contacts' />
       <ScrollView>
-        {contacts.map((group: GroupInfo, i: number) => {
+        {contacts.map((group: Member, i: number) => {
           return (
-            <GroupList
-              group={group}
+            <MemberListItem
+              member={group}
               colors={colors}
               key={i}
               setContact={setContact}

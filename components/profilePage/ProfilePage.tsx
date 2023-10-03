@@ -24,9 +24,10 @@ import ChatScreen from '../messaging/ChatScreen'
 import NewListPage from '../newList/NewListPage'
 import ProfileInfoLine from './ProfileInfoLine'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { GETUSERLISTS } from '../../handlers/gql/lists/getUserLists'
 import { useQuery } from '@apollo/client'
-import { setLists } from '../../redux/slices/userSlice'
+import { setUser } from '../../redux/slices/userSlice'
+import { GETUSER } from '../../handlers/gql/users/getUser'
+import { setContact } from '../../redux/slices/contactSlice'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -34,7 +35,7 @@ const size = winWidth * 0.06
 
 type Props = {
   colors: Colors
-  profile: Member
+  member: Member
   setProfilePage?: (active: boolean) => void
   isCurrentUser: boolean
   currentUser: Member
@@ -44,25 +45,25 @@ type Props = {
 export default function ProfilePage ({
   colors,
   setProfilePage,
+  member,
   isCurrentUser,
   currentUser,
   setPage
 }: Props) {
-  const profile = useAppSelector(state => state.user)
-  const { data, refetch } = useQuery(GETUSERLISTS, {
-    variables: { id: profile.id }
-  })
-  useEffect(() => {
-    refetch()
-    console.log(data.lists)
-    dispatch(setLists(data.getUser.lists))
-  }, [])
+  const profile = isCurrentUser ? useAppSelector(state => state.user) : member
+
+  // const { data, refetch } = useQuery<{ getUser: Member }>(GETUSER, {
+  //   variables: { id: profile?.id }
+  // // })
+  // useEffect(() => {
+  //   refetch()
+  // }, [profile])
 
   const [selection, setSelection] = useState<number>(0)
   const [selectedList, setSelectedList] = useState<List | undefined>()
   const [profileSelection, setProfileSelection] = useState<Member | undefined>()
 
-  const contact = useAppSelector(state => state.contact[profile.id])
+  const contact = useAppSelector(state => state.contact[profile?.id])
 
   const dispatch = useAppDispatch()
   const [newList, setNewList] = useState<boolean>()

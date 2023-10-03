@@ -1,6 +1,7 @@
 type Message = {
-  id?: string | number[]
-  userId: string
-  dateSent: Date
-  text: string
+  id: string
+  to: string[]
+  from: string
+  message: string
+  dateCreated: string
 }

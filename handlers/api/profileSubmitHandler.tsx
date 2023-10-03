@@ -1,4 +1,4 @@
-import { NewProfile } from '../../types/newProfile'
+import { NewProfile } from '../../types/NewProfile'
 import { profilePicRef } from '../../assets/config/firebaseConfig'
 import { getDownloadURL, uploadBytes } from 'firebase/storage'
 import { userCache } from '../../assets/caches/userCache'

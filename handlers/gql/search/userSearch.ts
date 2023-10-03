@@ -10,6 +10,12 @@ export const USERSEARCH = gql(`
             countries
             following
             followers
+            checkInLocation {
+                names {
+                    main_text
+                    secondary_text
+                }
+            }
             lists {
                 id
                 displayName
