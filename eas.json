@@ -16,12 +16,16 @@
       }
     },
     "production": {
+      "env": {
+        "EAS_BUILD_DISABLE_NPM_CACHE": "1"
+      },
       "extends": "base",
       "distribution": "store",
       "releaseChannel": "stable",
       "android": {
         "buildType": "app-bundle"
-      }
+      },
+      "channel": "main"
     },
     "development-simulator": {
       "developmentClient": true,

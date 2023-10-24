@@ -1,12 +1,5 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Image,
-  Pressable
-} from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, View, Dimensions, Pressable } from 'react-native'
+import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import Selector from '../search/Selector'
 import profileButton from '../../assets/variables/profileButton'
@@ -24,10 +17,6 @@ import ChatScreen from '../messaging/ChatScreen'
 import NewListPage from '../newList/NewListPage'
 import ProfileInfoLine from './ProfileInfoLine'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { useQuery } from '@apollo/client'
-import { setUser } from '../../redux/slices/userSlice'
-import { GETUSER } from '../../handlers/gql/users/getUser'
-import { setContact } from '../../redux/slices/contactSlice'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width

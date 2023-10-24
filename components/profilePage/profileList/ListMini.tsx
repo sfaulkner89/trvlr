@@ -1,13 +1,13 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Colors } from '../../../types/colors'
 import { List } from '../../../types/List'
 import MapView from 'react-native-maps'
 import { winHeight, winWidth } from '../../../assets/variables/height-width'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'
 import placeShim from '../../../assets/tools/placeShim'
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { useAppSelector } from '../../../redux/hooks'
+import { useMutation, useQuery } from '@apollo/client'
 import { ADDPLACETOLIST } from '../../../handlers/gql/lists/addPlaceToList'
 import { addToListHandler } from '../../../handlers/api/addToListHandler'
 import { CHECKDUPLICATEPLACE } from '../../../handlers/api/checkDuplicatePlace'
@@ -20,6 +20,8 @@ type Props = {
   selectedList: List
   addToList: boolean
   setAddToList: (set: boolean) => void
+  noteRequested: boolean
+  setNoteScreen: (set: boolean) => void
 }
 
 const iconSize = winWidth * 0.04
@@ -29,9 +31,12 @@ export default function ListMini ({
   list,
   setSelectedList,
   addToList,
-  setAddToList
+  setAddToList,
+  noteRequested,
+  setNoteScreen
 }: Props) {
   const selectedPlace = useAppSelector(state => state.results.selectedPlace)
+
   const [placeAdder] = useMutation(ADDPLACETOLIST)
 
   const { data: duplicate, refetch } = useQuery(CHECKDUPLICATEPLACE, {
@@ -41,9 +46,22 @@ export default function ListMini ({
     }
   })
 
+  const [noteAdded, setNoteAdded] = useState(false)
+
   useEffect(() => {
     refetch()
   }, [addToList])
+
+  const pressHandler = async () => {
+    console.log(noteRequested)
+    if (noteRequested) {
+      setSelectedList({ ...list, places: placeShim(list.places) })
+      setNoteScreen(true)
+      setNoteAdded(true)
+    } else if (addToList || noteAdded) {
+      await addToListHandler(placeAdder, selectedPlace, list, setAddToList)
+    } else setSelectedList({ ...list, places: placeShim(list.places) })
+  }
 
   return (
     <Pressable
@@ -56,17 +74,7 @@ export default function ListMini ({
             : colors.darkColor,
         borderColor: colors.lightColor
       }}
-      onPress={
-        addToList
-          ? async () =>
-              await addToListHandler(
-                placeAdder,
-                selectedPlace,
-                list,
-                setAddToList
-              )
-          : () => setSelectedList({ ...list, places: placeShim(list.places) })
-      }
+      onPress={pressHandler}
     >
       {list.photo ? (
         <Image source={list.photo} style={styles.photo} />

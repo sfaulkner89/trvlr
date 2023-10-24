@@ -1,5 +1,12 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableWithoutFeedback
+} from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { Colors } from '../../types/colors'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { List } from '../../types/List'
@@ -32,6 +39,7 @@ export default function ListPage ({
   isCurrentUser,
   setPage
 }: Props) {
+  const placesListHolder = React.useRef<View>(null)
   const [listSelection, setListSelection] = useState<List | undefined>()
   const [placeSelection, setPlaceSelection] = useState<
     PlaceDetails | undefined
@@ -90,12 +98,14 @@ export default function ListPage ({
             </MapView>
           )}
         </View>
+
         <ScrollView>
           <View
             style={{
               ...styles.container,
               backgroundColor: colors.midColor
             }}
+            ref={placesListHolder}
           >
             {list.places.map((place, i) => {
               return (
@@ -111,6 +121,7 @@ export default function ListPage ({
             })}
           </View>
         </ScrollView>
+
         <Pressable
           style={{
             ...styles.addPlaceButton,

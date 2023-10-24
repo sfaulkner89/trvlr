@@ -5,6 +5,7 @@ export default (places): PlaceDetails[] => {
     return {
       placeId: place.googlePlaceId,
       name: place.name,
+      comment: place.comment,
       location: {
         ...place.location,
         locale: place.city,
