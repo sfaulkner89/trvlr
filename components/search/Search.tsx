@@ -57,16 +57,7 @@ export default function Search ({ colors, currentUser, setPage }: Props) {
   const profile = useAppSelector((store: RootState) => store.profile)
   const dispatch = useDispatch()
 
-  return profilePage && contact ? (
-    <ProfilePage
-      colors={colors}
-      member={profile}
-      setProfilePage={setProfilePage}
-      isCurrentUser={false}
-      currentUser={currentUser}
-      setPage={setPage}
-    />
-  ) : (
+  return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
         <View style={styles.inputContainer}>
@@ -96,15 +87,7 @@ export default function Search ({ colors, currentUser, setPage }: Props) {
         {(users?.userSearch || [])
           .filter((user: Member) => user.id !== currentUser.id)
           .map((user: Member, i: number) => {
-            return (
-              <MemberListItem
-                key={i}
-                member={user}
-                colors={colors}
-                setContact={setContact}
-                setProfilePage={setProfilePage}
-              />
-            )
+            return <MemberListItem key={i} member={user} colors={colors} />
           })}
       </View>
     </TouchableWithoutFeedback>

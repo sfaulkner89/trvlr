@@ -6,19 +6,24 @@ export const contactSlice = createSlice({
   name: 'contact',
   initialState: {
     contactMarker: null,
-    contacts: []
+    selectedContact: null,
+    pageNumber: 0
   },
   reducers: {
     setContacts: (
       state,
       action: PayloadAction<Member & { messages: Message[] }[]>
     ) => Object.assign(state, action.payload),
-    setContact: (state, action: PayloadAction<MessagingGroup>) => {
-      Object.assign(state.contacts[action.payload.id], action.payload.messages)
+    setContact: (state, action: PayloadAction<Member>) => {
+      state.selectedContact = action.payload
     },
-    addMessage: (state, action: PayloadAction<Message>) =>
-      Object.assign(state, [...state.contacts, action.payload]),
-    clearContact: state => Object.assign(state, {}),
+    clearContact: state => {
+      state.selectedContact = null
+      state.pageNumber = 0
+    },
+    changePageNumber: (state, action: PayloadAction<number>) => {
+      state.pageNumber = action.payload
+    },
     contactMarkerVisible: (state, action: PayloadAction<Member>) => {
       state.contactMarker = action.payload
     },
@@ -31,7 +36,7 @@ export const contactSlice = createSlice({
 export const {
   setContact,
   clearContact,
-  addMessage,
+  changePageNumber,
   setContacts,
   contactMarkerVisible
 } = contactSlice.actions

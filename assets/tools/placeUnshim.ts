@@ -11,7 +11,8 @@ export default (places: PlaceDetails[]) => {
       },
       city: place.location.locale,
       country: place.location.area,
-      rating: place.establishment.rating
+      rating: place.establishment.rating,
+      types: place.establishment.types
     }
   })
 }

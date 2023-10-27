@@ -11,30 +11,42 @@ import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
 import uuid from 'react-native-uuid'
+import { useMutation } from '@apollo/client'
+import { CREATE_GROUP } from '../../handlers/gql/messages/creategroup'
+import { useAppSelector } from '../../redux/hooks'
 
 type Props = {
   colors: Colors
-  setCurrentMessages: (newMessage: Message[]) => void
   currentUser: Member
   currentMessages: Message[]
+  newChat: boolean
 }
 
 export default function ChatInput ({
   colors,
-  setCurrentMessages,
+  newChat,
   currentMessages,
   currentUser
 }: Props) {
+  const [createGroup] = useMutation(CREATE_GROUP)
+  const user = useAppSelector(store => store.user)
+  const contact = useAppSelector(store => store.contact.selectedContact)
+
   const [newMessage, setNewMessage] = useState<string>('')
 
   const sendHandler = () => {
-    const messageToAdd: Message = {
-      id: uuid.v4('string'),
-      userId: currentUser.id,
-      dateSent: new Date(),
-      text: newMessage
+    if (!newMessage) return
+
+    if (newChat) {
+      createGroup({
+        variables: {
+          members: [user.id, contact.id],
+          message: newMessage
+        }
+      })
+    } else {
     }
-    setCurrentMessages([...currentMessages, messageToAdd])
+    //setCurrentMessages([...currentMessages, messageToAdd])
     setNewMessage('')
   }
   return (

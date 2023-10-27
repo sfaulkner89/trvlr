@@ -6,18 +6,24 @@ import MapView from 'react-native-maps'
 import { winHeight, winWidth } from '../../../assets/variables/height-width'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'
 import placeShim from '../../../assets/tools/placeShim'
-import { useAppSelector } from '../../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { useMutation, useQuery } from '@apollo/client'
 import { ADDPLACETOLIST } from '../../../handlers/gql/lists/addPlaceToList'
 import { addToListHandler } from '../../../handlers/api/addToListHandler'
 import { CHECKDUPLICATEPLACE } from '../../../handlers/api/checkDuplicatePlace'
 import placeUnshim from '../../../assets/tools/placeUnshim'
+import { selectList } from '../../../redux/slices/listSlice'
+import {
+  Gesture,
+  GestureDetector,
+  Swipeable,
+  TapGestureHandler,
+  GestureHandlerRootView
+} from 'react-native-gesture-handler'
 
 type Props = {
   colors: Colors
   list: List
-  setSelectedList: (list: List) => void
-  selectedList: List
   addToList: boolean
   setAddToList: (set: boolean) => void
   noteRequested: boolean
@@ -29,12 +35,13 @@ const iconSize = winWidth * 0.04
 export default function ListMini ({
   colors,
   list,
-  setSelectedList,
   addToList,
   setAddToList,
   noteRequested,
   setNoteScreen
 }: Props) {
+  const [disabled, setDisabled] = useState(false)
+  const dispatch = useAppDispatch()
   const selectedPlace = useAppSelector(state => state.results.selectedPlace)
 
   const [placeAdder] = useMutation(ADDPLACETOLIST)
@@ -53,84 +60,117 @@ export default function ListMini ({
   }, [addToList])
 
   const pressHandler = async () => {
-    console.log(noteRequested)
     if (noteRequested) {
-      setSelectedList({ ...list, places: placeShim(list.places) })
+      dispatch(selectList({ ...list, places: placeShim(list.places) }))
       setNoteScreen(true)
       setNoteAdded(true)
     } else if (addToList || noteAdded) {
       await addToListHandler(placeAdder, selectedPlace, list, setAddToList)
-    } else setSelectedList({ ...list, places: placeShim(list.places) })
+    } else dispatch(selectList({ ...list, places: placeShim(list.places) }))
+  }
+
+  const renderRightActions = (progress, dragX) => {
+    return (
+      <View
+        style={{
+          ...styles.container,
+          backgroundColor: colors.errorColor
+        }}
+      >
+        <Text>Delete List</Text>
+      </View>
+    )
+  }
+
+  const onSwipeLeft = direction => {
+    setDisabled(true)
+    if (direction === 'right') {
+      console.log('I was swiped right')
+    }
   }
 
   return (
-    <Pressable
-      disabled={addToList && duplicate ? duplicate?.checkDuplicatePlace : false}
-      style={{
-        ...styles.container,
-        backgroundColor:
-          addToList && duplicate?.checkDuplicatePlace
-            ? colors.midColor
-            : colors.darkColor,
-        borderColor: colors.lightColor
-      }}
-      onPress={pressHandler}
-    >
-      {list.photo ? (
-        <Image source={list.photo} style={styles.photo} />
-      ) : (
-        <MapView
-          style={styles.map}
-          region={{
-            latitude: list.location?.latitude ?? 0,
-            longitude: list.location?.longitude ?? 0,
-            latitudeDelta: 0.1,
-            longitudeDelta: 0.1
-          }}
-          loadingEnabled={true}
-        />
-      )}
-      <View style={styles.textHolder}>
-        <Text
+    <GestureHandlerRootView>
+      <Swipeable
+        renderRightActions={renderRightActions}
+        onSwipeableWillOpen={onSwipeLeft}
+        onSwipeableWillClose={() => setDisabled(false)}
+      >
+        <Pressable
+          disabled={
+            disabled ||
+            (addToList && duplicate ? duplicate?.checkDuplicatePlace : false)
+          }
           style={{
-            ...styles.displayName,
-            color:
+            ...styles.container,
+            backgroundColor:
               addToList && duplicate?.checkDuplicatePlace
-                ? colors.darkColor
-                : colors.lightColor
+                ? colors.midColor
+                : colors.darkColor,
+            borderColor: colors.lightColor
           }}
+          onPress={pressHandler}
         >
-          {list.displayName}
-        </Text>
-        {list.country && list.city && (
-          <Text style={{ ...styles.geography, color: colors.lightColor }}>
-            {list.city}, {list.country}
-          </Text>
-        )}
-        {addToList && duplicate && duplicate.checkDuplicatePlace && (
-          <Text
-            style={{
-              color: colors.errorColor
-            }}
-          >
-            Place already on list.
-          </Text>
-        )}
-      </View>
-      <View style={{ ...styles.iconHolder }}>
-        <Text style={{ ...styles.places, color: colors.lightColor }}>
-          {list.places.length}
-        </Text>
-
-        <FontAwesome name='map-pin' size={iconSize} color={colors.lightColor} />
-        <AntDesign
-          name='right'
-          size={iconSize}
-          color={colors.lightColor}
-          style={styles.arrow}
-        />
-      </View>
-    </Pressable>
+          {list.photo ? (
+            <Image source={list.photo} style={styles.photo} />
+          ) : (
+            <MapView
+              style={styles.map}
+              region={{
+                latitude: list.location?.latitude ?? 0,
+                longitude: list.location?.longitude ?? 0,
+                latitudeDelta: 0.1,
+                longitudeDelta: 0.1
+              }}
+              loadingEnabled={true}
+            />
+          )}
+          <View style={styles.textHolder}>
+            <Text
+              style={{
+                ...styles.displayName,
+                color:
+                  addToList && duplicate?.checkDuplicatePlace
+                    ? colors.darkColor
+                    : colors.lightColor
+              }}
+            >
+              {list.displayName}
+            </Text>
+            {list.country && list.city && (
+              <Text style={{ ...styles.geography, color: colors.lightColor }}>
+                {list.city}, {list.country}
+              </Text>
+            )}
+            {addToList && duplicate && duplicate.checkDuplicatePlace && (
+              <Text
+                style={{
+                  color: colors.errorColor
+                }}
+              >
+                Place already on list.
+              </Text>
+            )}
+          </View>
+          <View style={{ ...styles.iconHolder }}>
+            <Text style={{ ...styles.places, color: colors.lightColor }}>
+              {list.places.length}
+            </Text>
+            <FontAwesome
+              name='map-pin'
+              size={iconSize}
+              color={colors.lightColor}
+            />
+            <AntDesign
+              name='right'
+              size={iconSize}
+              color={colors.lightColor}
+              style={styles.arrow}
+            />
+          </View>
+        </Pressable>
+      </Swipeable>
+    </GestureHandlerRootView>
   )
 }
 

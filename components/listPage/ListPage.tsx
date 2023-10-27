@@ -1,17 +1,9 @@
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  TouchableWithoutFeedback
-} from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { List } from '../../types/List'
 import PlaceComponent from './PlaceComponent'
-import { Place } from '../../types/Place'
 import placeOptions from '../../assets/variables/placeOptions'
 import MapView, { Marker } from 'react-native-maps'
 import calculateBound from '../../handlers/calculateBound'
@@ -21,30 +13,25 @@ import ListHeader from './ListHeader'
 import listOptions from '../../assets/variables/listOptions'
 import { MaterialIcons } from '@expo/vector-icons'
 import { PlaceDetails } from 'types/PlaceDetails'
+import { useAppDispatch } from '../../redux/hooks'
+import { deselectList } from '../../redux/slices/listSlice'
 
 type Props = {
   colors: Colors
   list: List
-  setSelectedList: (noList: undefined) => void
-  isCurrentUser: boolean
-  setPage: (set: number) => void
 }
 
 const size = winWidth * 0.06
 
-export default function ListPage ({
-  colors,
-  list,
-  setSelectedList,
-  isCurrentUser,
-  setPage
-}: Props) {
+export default function ListPage ({ colors, list }: Props) {
   const placesListHolder = React.useRef<View>(null)
   const [listSelection, setListSelection] = useState<List | undefined>()
   const [placeSelection, setPlaceSelection] = useState<
     PlaceDetails | undefined
   >()
   const [highlightedPlace, setHighlightedPlace] = useState<number | undefined>()
+
+  const dispatch = useAppDispatch()
 
   const bounds = calculateBound(list.places)
   const center = calculateCenter(list.places)
@@ -55,19 +42,12 @@ export default function ListPage ({
         <Options
           colors={colors}
           options={placeSelection ? placeOptions(colors) : listOptions(colors)}
-          selection={placeSelection ? placeSelection : listSelection}
-          setSelection={placeSelection ? setPlaceSelection : setListSelection}
         />
       ) : (
         <View />
       )}
       <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
-        <ListHeader
-          colors={colors}
-          profile={list}
-          setSelectedList={setSelectedList}
-          setSelection={setListSelection}
-        />
+        <ListHeader colors={colors} profile={list} />
         <View style={{ ...styles.mapHolder, backgroundColor: colors.midColor }}>
           {list.places.length > 0 && (
             <MapView
@@ -128,8 +108,7 @@ export default function ListPage ({
             backgroundColor: colors.lightColor
           }}
           onPress={() => {
-            setSelectedList(undefined)
-            setPage(0)
+            dispatch(deselectList())
           }}
         >
           <MaterialIcons name='place' size={size} color={colors.midColor} />

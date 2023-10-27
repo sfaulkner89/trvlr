@@ -4,12 +4,18 @@ import { FontAwesome } from '@expo/vector-icons'
 import { winWidth } from './height-width'
 import { Colors } from '../../types/colors'
 import { userCache } from '../caches/userCache'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 
 const iconSize = winWidth * 0.1
+
+//const dispatch = useAppDispatch()
+//const contact = useAppSelector(state => state.contact)
 
 const deleteHandler = async () => {
   await userCache.remove('primary')
 }
+
+const logInAsUser = async () => {}
 
 export default (colors: Colors) => [
   {
@@ -36,5 +42,12 @@ export default (colors: Colors) => [
       <FontAwesome name='share' size={iconSize} color={colors.lightColor} />
     ),
     onPress: deleteHandler
+  },
+  {
+    title: 'Log In As User',
+    icon: (
+      <FontAwesome name='share' size={iconSize} color={colors.lightColor} />
+    ),
+    onPress: () => console.log('poo')
   }
 ]

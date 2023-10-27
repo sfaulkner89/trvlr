@@ -17,6 +17,7 @@ import ChatScreen from '../messaging/ChatScreen'
 import NewListPage from '../newList/NewListPage'
 import ProfileInfoLine from './ProfileInfoLine'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { changePageNumber } from '../../redux/slices/contactSlice'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -24,37 +25,22 @@ const size = winWidth * 0.06
 
 type Props = {
   colors: Colors
-  member: Member
-  setProfilePage?: (active: boolean) => void
-  isCurrentUser: boolean
-  currentUser: Member
-  setPage: (set: number) => void
 }
 
-export default function ProfilePage ({
-  colors,
-  setProfilePage,
-  member,
-  isCurrentUser,
-  currentUser,
-  setPage
-}: Props) {
-  const profile = isCurrentUser ? useAppSelector(state => state.user) : member
+export default function ProfilePage ({ colors }: Props) {
+  const currentUser = useAppSelector(state => state.user)
+  const contact = useAppSelector(state => state.contact.selectedContact)
 
-  // const { data, refetch } = useQuery<{ getUser: Member }>(GETUSER, {
-  //   variables: { id: profile?.id }
-  // // })
-  // useEffect(() => {
-  //   refetch()
-  // }, [profile])
+  const isCurrentUser = !contact
 
-  const [selection, setSelection] = useState<number>(0)
+  const profile = isCurrentUser ? currentUser : contact
+
   const [selectedList, setSelectedList] = useState<List | undefined>()
   const [profileSelection, setProfileSelection] = useState<Member | undefined>()
 
-  const contact = useAppSelector(state => state.contact[profile?.id])
-
   const dispatch = useAppDispatch()
+  const page = useAppSelector(state => state.contact.pageNumber)
+
   const [newList, setNewList] = useState<boolean>()
 
   const buttonMap = [
@@ -62,7 +48,6 @@ export default function ProfilePage ({
     <ProfileListPage
       colors={colors}
       member={profile}
-      setSelectedList={setSelectedList}
       isCurrentUser={isCurrentUser}
       selectedList={selectedList}
       setNewList={setNewList}
@@ -73,31 +58,7 @@ export default function ProfilePage ({
     <View />
   ]
 
-  return newList ? (
-    <NewListPage
-      colors={colors}
-      currentUser={currentUser}
-      setNewList={setNewList}
-      setSelectedList={setSelectedList}
-    />
-  ) : contact ? (
-    <ChatScreen profile={profile} colors={colors} currentUser={currentUser} />
-  ) : selectedList ? (
-    <ListPage
-      colors={colors}
-      list={selectedList}
-      setSelectedList={setSelectedList}
-      isCurrentUser={isCurrentUser}
-      setPage={setPage}
-    />
-  ) : profileSelection ? (
-    <Options
-      colors={colors}
-      options={profileOptions(colors)}
-      selection={profileSelection}
-      setSelection={setProfileSelection}
-    />
-  ) : (
+  return (
     <View
       style={{
         ...styles.container,
@@ -107,8 +68,6 @@ export default function ProfilePage ({
       <ProfileHeader
         colors={colors}
         profile={profile}
-        setProfilePage={setProfilePage}
-        setSelection={setProfileSelection}
         isCurrentUser={isCurrentUser}
       />
       <ProfileTopLine colors={colors} profile={profile} />
@@ -121,11 +80,11 @@ export default function ProfilePage ({
       <Selector
         colors={colors}
         buttonList={profileButton}
-        selection={selection}
-        setSelection={setSelection}
+        selection={page}
+        setSelection={i => dispatch(changePageNumber(i))}
       />
-      <View style={styles.selectionHolder}>{buttonMap[selection]}</View>
-      {selection === 1 && isCurrentUser ? (
+      <View style={styles.selectionHolder}>{buttonMap[page]}</View>
+      {page === 1 && isCurrentUser ? (
         <Pressable
           style={{
             ...styles.addListButton,

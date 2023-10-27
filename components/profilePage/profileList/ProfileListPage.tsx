@@ -12,34 +12,30 @@ import { newListOption } from '../../../assets/variables/newListOption'
 import { Entypo } from '@expo/vector-icons'
 import Checkbox from 'expo-checkbox'
 import NoteInputScreen from '../../listPage/NoteInputScreen'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import { hideAddToList, showNewList } from '../../../redux/slices/listSlice'
 
 type Props = {
   colors: Colors
-  member: Member
-  setSelectedList: (list: List) => void
-  selectedList: List
-  isCurrentUser: boolean
   newListProvided: boolean
-  setNewList: (set: boolean) => void
-  setAddToList: (set: boolean) => void
   addToList: boolean
 }
 
 export default function ProfileListPage ({
   colors,
-  member,
-  setSelectedList,
-  selectedList,
   newListProvided,
-  setNewList,
-  setAddToList,
   addToList
 }: Props) {
+  const dispatch = useAppDispatch()
+  const user = useAppSelector(state => state.user)
+  const selectedList = useAppSelector(state => state.list.selectedList)
+
   const { data, refetch } = useQuery(GETUSERLISTS, {
-    variables: { id: member.id }
+    variables: { id: user.id }
   })
   const [noteRequested, setNoteRequested] = useState<boolean>(false)
   const [noteScreen, setNoteScreen] = useState<boolean>(false)
+
   useEffect(() => {
     refetch()
   }, [])
@@ -68,7 +64,7 @@ export default function ProfileListPage ({
             </Pressable>
           )}
           <Pressable
-            onPress={() => setAddToList(false)}
+            onPress={() => dispatch(hideAddToList())}
             style={styles.closeButton}
           >
             <Entypo
@@ -81,7 +77,11 @@ export default function ProfileListPage ({
             <View style={styles.newList}>
               <OptionHolder
                 colors={colors}
-                option={newListOption(setNewList, setAddToList, colors)}
+                option={newListOption(
+                  () => dispatch(showNewList()),
+                  () => dispatch(hideAddToList()),
+                  colors
+                )}
               />
             </View>
           )}
@@ -91,7 +91,7 @@ export default function ProfileListPage ({
         <NoteInputScreen
           list={selectedList}
           colors={colors}
-          setAddToList={setAddToList}
+          setAddToList={() => dispatch(hideAddToList())}
         />
       ) : (
         <ScrollView>
@@ -102,10 +102,8 @@ export default function ProfileListPage ({
                   colors={colors}
                   list={list}
                   key={i}
-                  setSelectedList={setSelectedList}
-                  selectedList={selectedList}
                   addToList={addToList}
-                  setAddToList={setAddToList}
+                  setAddToList={() => dispatch(hideAddToList())}
                   noteRequested={noteRequested}
                   setNoteScreen={setNoteScreen}
                 />

@@ -12,16 +12,19 @@ import { MessagingGroup } from '../../types/MessagingGroup'
 import ImageGroup from './ImageGroup'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { Member } from '../../types/Member'
+import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '../../redux/hooks'
+import { setContacts } from '../../redux/slices/contactSlice'
 
 type Props = {
   colors: Colors
   contact: Member & { messages: Message[] }
-  setContact: (contact: Member & { messages: Message[] }) => void
 }
 
 export default function MessagingMini ({ contact, colors, setContact }: Props) {
   const lastMessage = contact.messages[contact.messages.length - 1]
   const today = new Date().toDateString()
+  const dispatch = useAppDispatch()
   const dateString =
     lastMessage.dateSent.getDay() +
     ' ' +
@@ -40,7 +43,7 @@ export default function MessagingMini ({ contact, colors, setContact }: Props) {
         backgroundColor: colors.midColor,
         borderBottomColor: colors.darkColor
       }}
-      onPress={() => setContact(contact)}
+      onPress={() => dispatch(setContact(contact))}
     >
       {imageSource}
       <View style={styles.dataHolder}>

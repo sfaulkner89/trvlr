@@ -1,5 +1,4 @@
 import { LatLng } from 'react-native-maps'
-import { Location } from './Location'
 
 export type Place = {
   displayName: string

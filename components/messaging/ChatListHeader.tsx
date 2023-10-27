@@ -3,18 +3,20 @@ import React from 'react'
 import { Colors } from '../../types/colors'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { Entypo, AntDesign } from '@expo/vector-icons'
+import { useAppDispatch } from '../../redux/hooks'
+import { hideChatPage } from '../../redux/slices/messageSlice'
 
 type Props = {
   colors: Colors
-  setMessages: (messageState: boolean) => void
 }
 
 const buttonSize = winWidth * 0.05
 
-export default function ChatListHeader ({ colors, setMessages }: Props) {
+export default function ChatListHeader ({ colors }: Props) {
+  const dispatch = useAppDispatch()
   return (
     <View style={styles.container}>
-      <Pressable style={styles.button} onPress={() => setMessages(false)}>
+      <Pressable style={styles.button} onPress={() => dispatch(hideChatPage())}>
         <AntDesign name='left' size={buttonSize} color={colors.lightColor} />
       </Pressable>
 

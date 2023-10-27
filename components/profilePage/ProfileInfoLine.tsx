@@ -12,7 +12,7 @@ import { setUser } from '../../redux/slices/userSlice'
 import { setProfile } from '../../redux/slices/profileSlice'
 import { setContact } from '../../redux/slices/contactSlice'
 import { useAppSelector } from '../../redux/hooks'
-import { setChat } from '../../redux/slices/messageSlice'
+import { setChat, showChatPage } from '../../redux/slices/messageSlice'
 
 type Props = {
   colors: Colors
@@ -37,7 +37,7 @@ export default function ProfileInfoLine ({
   const [follows, setFollows] = useState(
     currentUser.followers.includes(profile.id)
   )
-  const contacts = useAppSelector(state => state.contact)
+  const contact = useAppSelector(state => state.contact)
   const followHandler = () => {
     if (following) {
       unfollow({ variables: { userId: currentUser.id, followId: profile.id } })
@@ -62,15 +62,7 @@ export default function ProfileInfoLine ({
     dispatch(setProfile(profile))
   }
   const chatHandler = () => {
-    const contact = currentUser.chats.find(
-      c => c.contacts.length === 2 && c.contacts.includes(profile.id)
-    )
-    if (contact) {
-      dispatch(setChat(contact))
-    } else {
-      //need to hit the new chat group endpoint and then update local state on success
-      //addNewChat()
-    }
+    dispatch(showChatPage())
   }
 
   console.log(profile)

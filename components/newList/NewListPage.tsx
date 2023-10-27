@@ -17,24 +17,21 @@ import createList from '../../handlers/api/createList'
 import { MutationResult, QueryResult, useMutation } from '@apollo/client'
 import { CREATELIST } from '../../handlers/gql/lists/createList'
 import { PlaceDetails } from 'types/PlaceDetails'
-import { useAppSelector } from '../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import placeShim from '../../assets/tools/placeShim'
+import {
+  deselectList,
+  hideNewList,
+  selectList
+} from '../../redux/slices/listSlice'
 
 type Props = {
   colors: Colors
   currentUser: Member
-  setNewList: (active: boolean) => void
-  setSelectedList: (list: List) => void
   locale?: string
 }
 
-export default function NewListPage ({
-  colors,
-  currentUser,
-  setNewList,
-  setSelectedList,
-  locale
-}: Props) {
+export default function NewListPage ({ colors, currentUser, locale }: Props) {
   const month = new Date().toLocaleString('default', { month: 'long' })
   const year = new Date().toLocaleString('default', { year: 'numeric' })
 
@@ -51,26 +48,34 @@ export default function NewListPage ({
   const [newList] = useMutation(CREATELIST)
 
   const user = useAppSelector(state => state.user)
+  const dispatch = useAppDispatch()
+
   const createHandler = async () => {
     const createdList = await createList(user, listName, selectedPlace, newList)
-    setNewList(false)
+    dispatch(hideNewList())
     const cleanedPlaces = placeShim(createdList.places)
-    setSelectedList({
-      displayName: listName,
-      photo: undefined,
-      location: undefined, // get Coordinates of city if being created from a place.
-      city: locale,
-      country: undefined,
-      dateCreated: new Date(),
-      dateModified: new Date(),
-      places: cleanedPlaces
-    })
+    dispatch(
+      selectList({
+        displayName: listName,
+        photo: undefined,
+        location: undefined, // get Coordinates of city if being created from a place.
+        city: locale,
+        country: undefined,
+        dateCreated: new Date(),
+        dateModified: new Date(),
+        places: cleanedPlaces
+      })
+    )
+  }
+
+  const exitHandler = () => {
+    dispatch(hideNewList())
   }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ ...styles.container, backgroundColor: colors.midColor }}>
-        <Pressable style={styles.exitHolder} onPress={() => setNewList(false)}>
+        <Pressable style={styles.exitHolder} onPress={() => exitHandler()}>
           <Entypo
             name='cross'
             size={winWidth * 0.08}

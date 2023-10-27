@@ -15,6 +15,7 @@ import { useAppSelector } from '../../redux/hooks'
 import { RootState } from '../../redux/store'
 import { useDispatch } from 'react-redux'
 import { setProfile } from '../../redux/slices/profileSlice'
+import { setContact } from '../../redux/slices/contactSlice'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -22,23 +23,14 @@ const winWidth = Dimensions.get('window').width
 type Props = {
   member: Member
   colors: Colors
-  setContact: (contact: Member) => void
-  setProfilePage: (active: boolean) => void
 }
 
-export default function MemberListItem ({
-  member,
-  colors,
-  setContact,
-  setProfilePage
-}: Props) {
+export default function MemberListItem ({ member, colors }: Props) {
   const profile = useAppSelector((store: RootState) => store.profile)
   const dispatch = useDispatch()
 
   const contactHandler = () => {
-    setContact(member)
-    setProfilePage(true)
-    // dispatch(setProfile(member))
+    dispatch(setContact(member))
   }
 
   return (

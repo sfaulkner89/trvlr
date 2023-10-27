@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     height: winHeight * 0.08,
     width: winWidth,
     flexDirection: 'row',
-    opacity: 0.7
+    opacity: 0.8
   },
   button: {
     flex: 1,

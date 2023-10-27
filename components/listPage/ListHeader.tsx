@@ -4,31 +4,34 @@ import { Colors } from '../../types/colors'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { AntDesign, Entypo } from '@expo/vector-icons'
 import { List } from '../../types/List'
+import { useAppDispatch } from '../../redux/hooks'
+import { deselectList, newListHide } from '../../redux/slices/listSlice'
+import { showOptions } from '../../redux/slices/optionsSlice'
 
 type Props = {
   colors: Colors
   profile: List
-  setSelectedList: (active: boolean) => void
-  setSelection: (list: List) => void
 }
 
 const buttonSize = winWidth * 0.05
 
-export default function ListHeader ({
-  colors,
-  profile,
-  setSelectedList,
-  setSelection
-}: Props) {
+export default function ListHeader ({ colors, profile }: Props) {
+  const dispatch = useAppDispatch()
   const [liked, setLiked] = useState(false)
 
   const likeHandler = () => {
     setLiked(!liked)
   }
+
+  const backHandler = () => {
+    dispatch(deselectList())
+    dispatch(newListHide())
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.buttonsHolder}>
-        <Pressable style={styles.button} onPress={() => setSelectedList(false)}>
+        <Pressable style={styles.button} onPress={backHandler}>
           <AntDesign name='left' size={buttonSize} color={colors.lightColor} />
         </Pressable>
       </View>
@@ -52,7 +55,7 @@ export default function ListHeader ({
             name='dots-three-horizontal'
             size={buttonSize}
             color={colors.lightColor}
-            onPress={() => setSelection(profile)}
+            onPress={() => dispatch(showOptions())}
           />
         </Pressable>
       </View>

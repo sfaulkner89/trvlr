@@ -10,28 +10,28 @@ import { Entypo } from '@expo/vector-icons'
 import { Member } from '../../types/Member'
 import { List } from '../../types/List'
 import { PlaceDetails } from 'types/PlaceDetails'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { hideOptions } from '../../redux/slices/optionsSlice'
 
 type Props = {
   colors: Colors
   options: Option[]
-  selection: List | Member | PlaceDetails
-  setSelection:
-    | ((list?: List) => void)
-    | ((place?: PlaceDetails) => void)
-    | ((member?: Member) => void)
 }
 
-export default function Options ({
-  colors,
-  options,
-  selection,
-  setSelection
-}: Props) {
+export default function Options ({ colors, options }: Props) {
+  const optionsType = useAppSelector(state => state.options.optionsType)
+  const contact = useAppSelector(state => state.contact)
+  const dispatch = useAppDispatch()
+
+  const clearOptions = () => {
+    dispatch(hideOptions())
+  }
+
   return (
     <View style={{ ...styles.background, backgroundColor: colors.darkColor }}>
       <View style={{ height: winHeight * 0.05 }}></View>
       <View style={{ ...styles.header, backgroundColor: colors.darkColor }}>
-        <Pressable onPress={() => setSelection()}>
+        <Pressable onPress={clearOptions}>
           <Entypo
             name='cross'
             size={winWidth * 0.08}
@@ -40,7 +40,7 @@ export default function Options ({
           />
         </Pressable>
         <Text style={{ ...styles.name, color: colors.lightColor }}>
-          {selection.name ? selection.name : selection.displayName}
+          {contact.name}
         </Text>
         <View style={{ width: winWidth * 0.2 }}></View>
       </View>

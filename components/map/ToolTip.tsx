@@ -7,6 +7,8 @@ import { AreaNames } from '../../types/AreaNames'
 import { Deltas } from '../../types/Deltas'
 import { PlaceDetails } from '../../types/PlaceDetails'
 import { Colors } from '../../types/colors'
+import { useAppDispatch } from '../../redux/hooks'
+import { newListShow, showAddToList } from '../../redux/slices/listSlice'
 
 type Props = {
   isCurrentUser: true
@@ -28,6 +30,8 @@ export default function ToolTip ({
   setAddToList,
   onCheckInPress
 }: Props) {
+  const dispatch = useAppDispatch()
+
   if (areaNames && !selectedPlace)
     return (
       <View style={{ ...styles.infoBox, backgroundColor: colors.midColor }}>
@@ -83,7 +87,7 @@ export default function ToolTip ({
               ...styles.button,
               backgroundColor: colors.selectedColor
             }}
-            onPress={() => setAddToList(true)}
+            onPress={() => dispatch(showAddToList())}
           >
             <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
               Add To List

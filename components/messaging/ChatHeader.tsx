@@ -6,6 +6,7 @@ import { AntDesign, Entypo } from '@expo/vector-icons'
 import { Member } from '../../types/Member'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { clearContact } from '../../redux/slices/contactSlice'
+import { hideChatPage } from '../../redux/slices/messageSlice'
 
 type Props = {
   colors: Colors
@@ -20,11 +21,11 @@ export default function ChatHeader ({ colors, profile }: Props) {
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.button} onPress={() => dispatch(clearContact())}>
+      <Pressable style={styles.button} onPress={() => dispatch(hideChatPage())}>
         <AntDesign name='left' size={buttonSize} color={colors.lightColor} />
       </Pressable>
       <Text style={{ ...styles.handle, color: colors.lightColor }}>
-        {contact.username}
+        {contact?.username}
       </Text>
       <Pressable style={styles.button}>
         <Entypo

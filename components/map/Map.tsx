@@ -119,60 +119,31 @@ export default function Map ({
 
   return (
     <View style={styles.container}>
-      {newList ? (
-        <NewListPage
+      <React.Fragment>
+        <HeaderBar colors={colors} />
+        <MapPin
           colors={colors}
-          currentUser={currentUser}
-          setNewList={setNewList}
-          setSelectedList={setSelectedList}
-        />
-      ) : addToList ? (
-        <ProfileListPage
-          colors={colors}
-          member={member}
-          isCurrentUser={isCurrentUser}
-          setSelectedList={setSelectedList}
-          newListProvided={true}
+          areaNames={areaNames}
+          deltas={deltas}
+          selectedPlace={selectedPlace}
           setNewList={setNewList}
           setAddToList={setAddToList}
-          addToList={addToList}
-          selectedList={selectedList}
         />
-      ) : selectedList ? (
-        <ListPage
-          colors={colors}
-          list={selectedList}
-          setSelectedList={setSelectedList}
-          isCurrentUser={isCurrentUser}
-          setPage={setPage}
-        />
-      ) : (
-        <React.Fragment>
-          <HeaderBar colors={colors} setMessages={setMessages} />
-          <MapPin
-            colors={colors}
-            areaNames={areaNames}
-            deltas={deltas}
-            selectedPlace={selectedPlace}
-            setNewList={setNewList}
-            setAddToList={setAddToList}
-          />
-          <MapView
-            style={styles.map}
-            region={mapPositionCalibrated}
-            onRegionChange={e => setPosition(e)}
-            onTouchEnd={() => moveHandler()}
-            onTouchMove={() => touchHandler()}
-          >
-            {checkInLocation && !pinAtCheckIn && (
-              <ContactMarker contact={{ ...currentUser, checkInLocation }} />
-            )}
-            {(contactLocations?.getUsers || []).map((contact, i) => {
-              return <ContactMarker key={i} contact={contact} />
-            })}
-          </MapView>
-        </React.Fragment>
-      )}
+        <MapView
+          style={styles.map}
+          region={mapPositionCalibrated}
+          onRegionChange={e => setPosition(e)}
+          onTouchEnd={() => moveHandler()}
+          onTouchMove={() => touchHandler()}
+        >
+          {checkInLocation && !pinAtCheckIn && (
+            <ContactMarker contact={{ ...currentUser, checkInLocation }} />
+          )}
+          {(contactLocations?.getUsers || []).map((contact, i) => {
+            return <ContactMarker key={i} contact={contact} />
+          })}
+        </MapView>
+      </React.Fragment>
     </View>
   )
 }

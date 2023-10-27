@@ -5,12 +5,13 @@ import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { AntDesign, Entypo } from '@expo/vector-icons'
 
 import { Member } from '../../types/Member'
+import { useAppDispatch } from '../../redux/hooks'
+import { setContact } from '../../redux/slices/contactSlice'
+import { showOptions } from '../../redux/slices/optionsSlice'
 
 type Props = {
   colors: Colors
   profile: Member
-  setProfilePage: (active: boolean) => void
-  setSelection: (member: Member) => void
   isCurrentUser: boolean
 }
 
@@ -19,22 +20,22 @@ const buttonSize = winWidth * 0.05
 export default function ProfileHeader ({
   colors,
   profile,
-  setProfilePage,
-  setSelection,
   isCurrentUser
 }: Props) {
+  const dispatch = useAppDispatch()
+
   return (
     <View style={styles.container}>
-      {setProfilePage ? (
-        <View
-          style={{
-            ...styles.buttonHolder,
-            justifyContent: isCurrentUser ? 'flex-end' : 'center'
-          }}
-        >
+      <View
+        style={{
+          ...styles.buttonHolder,
+          justifyContent: isCurrentUser ? 'flex-end' : 'center'
+        }}
+      >
+        {!isCurrentUser && (
           <Pressable
             style={styles.button}
-            onPress={() => setProfilePage(false)}
+            onPress={() => dispatch(setContact(null))}
           >
             <AntDesign
               name='left'
@@ -42,10 +43,8 @@ export default function ProfileHeader ({
               color={colors.lightColor}
             />
           </Pressable>
-        </View>
-      ) : (
-        <View style={styles.buttonHolder} />
-      )}
+        )}
+      </View>
 
       <Text style={{ ...styles.displayName, color: colors.lightColor }}>
         {profile.displayName}
@@ -61,12 +60,12 @@ export default function ProfileHeader ({
             ...styles.button,
             alignItems: isCurrentUser ? 'flex-end' : 'center'
           }}
+          onPress={() => dispatch(showOptions())}
         >
           <Entypo
             name='dots-three-horizontal'
             size={buttonSize}
             color={colors.lightColor}
-            onPress={() => setSelection(profile)}
           />
         </Pressable>
       </View>

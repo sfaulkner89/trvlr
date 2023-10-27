@@ -4,18 +4,18 @@ import { MessagingGroup } from '../../types/MessagingGroup'
 export const messageSlice = createSlice({
   name: 'message',
   initialState: {
-    chat: null
+    chatPage: false
   },
   reducers: {
-    setChat: (state, action: { payload: MessagingGroup }) => {
-      state.chat = action.payload
+    showChatPage: state => {
+      state.chatPage = true
     },
-    unsetChat: state => {
-      state.chat = null
+    hideChatPage: state => {
+      state.chatPage = false
     }
   }
 })
 
-export const { setChat } = messageSlice.actions
+export const { showChatPage, hideChatPage } = messageSlice.actions
 
 export default messageSlice.reducer

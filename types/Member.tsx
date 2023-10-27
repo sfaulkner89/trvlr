@@ -15,5 +15,4 @@ export type Member = {
   followers: string[]
   checkInLocation: PlaceSearchResult
   lists: List[]
-  chats: MessagingGroup[]
 }

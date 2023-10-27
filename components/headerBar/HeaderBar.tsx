@@ -15,16 +15,15 @@ import nearbySearch from '../../handlers/googleServices/nearbySearch'
 import { PlaceSearchResult } from '../../types/PlaceSearchResult'
 import getPlaceDetails from '../../handlers/googleServices/getPlaceDetails'
 import { setSelectedPlace } from '../../redux/slices/resultsSlice'
+import { showChatPage } from '../../redux/slices/messageSlice'
 
 const size = winWidth * 0.06
 
 type Props = {
   colors: Colors
-  setMessages: (active: boolean) => void
 }
 
-export default function HeaderBar ({ colors, setMessages }: Props) {
-  const [search, setSearch] = useState(false)
+export default function HeaderBar ({ colors }: Props) {
   const searchOpen = useAppSelector(state => state.search.searchOpen)
 
   const dispatch = useAppDispatch()
@@ -59,7 +58,7 @@ export default function HeaderBar ({ colors, setMessages }: Props) {
         <React.Fragment>
           <Pressable
             style={{ ...styles.button, backgroundColor: colors.darkColor }}
-            onPress={() => setMessages(true)}
+            onPress={() => dispatch(showChatPage())}
           >
             <AntDesign name='message1' size={size} color={colors.lightColor} />
           </Pressable>

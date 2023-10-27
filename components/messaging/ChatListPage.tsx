@@ -3,8 +3,6 @@ import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
 import MessagingMini from './MessagingMini'
-import currentMessages from '../../assets/data/currentMessages'
-import { MessagingGroup } from '../../types/MessagingGroup'
 import ChatScreen from './ChatScreen'
 import ChatListHeader from './ChatListHeader'
 import { useAppSelector } from '../../redux/hooks'
@@ -15,35 +13,22 @@ const winWidth = Dimensions.get('window').width
 type Props = {
   colors: Colors
   currentUser: Member
-  setMessages: (messageState: boolean) => void
 }
 
-export default function ChatListPage ({
-  colors,
-  currentUser,
-  setMessages
-}: Props) {
-  const [contact, setContact] = useState<
-    (Member & { messages: Message[] }) | undefined
-  >()
-  const contacts = useAppSelector(store => store.contact)
+export default function ChatListPage ({ colors, currentUser }: Props) {
+  const contact = useAppSelector(store => store.contact.selectedContact)
+
+  const user = useAppSelector(store => store.user)
 
   return contact ? (
     <ChatScreen colors={colors} currentUser={currentUser} profile={contact} />
   ) : (
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
-      <ChatListHeader colors={colors} setMessages={setMessages} />
+      <ChatListHeader colors={colors} />
       <ScrollView>
-        {contacts.map(
-          (contact: Member & { messages: Message[] }, i: number) => {
-            return (
-              <MessagingMini
-                colors={colors}
-                contact={contact}
-                setContact={setContact}
-                key={i}
-              />
-            )
+        {(user.groups || []).map(
+          (group: { [key: string]: string }, i: number) => {
+            return <MessagingMini colors={colors} contact={contact} key={i} />
           }
         )}
       </ScrollView>

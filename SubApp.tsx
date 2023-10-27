@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from './redux/hooks'
 import { setUser } from './redux/slices/userSlice'
 import { Colors } from './types/colors'
 import { GETUSER } from './handlers/gql/users/getUser'
+import ModalStack from './components/modals/ModalStack'
 
 export const colors: Colors = {
   darkColor: '#34333a',
@@ -34,37 +35,19 @@ export default function App () {
   useEffect(() => {
     const profileCache = async () => {
       const user = await userCache.get('primary')
+      console.log('USER', user)
       if (user) {
         await getUser({
           variables: { id: JSON.parse(user).id }
+        }).then(res => {
+          dispatch(setUser(res?.data.getUser))
         })
-        dispatch(setUser(data?.getUser))
         setLoggedIn(true)
       }
     }
 
     profileCache()
   }, [])
-
-  // const {data, refetch } = useQuery(GETUSER, {
-  //   variables: { id: user.id }
-  // })
-
-  // useEffect(() => {
-  //   refetch()
-  //   console.log('refetching')
-  //   if (data) dispatch(setUser(data?.getUser))
-  //   if (data) console.log(data.getUser)
-  // }, [user])
-
-  // const messagingContacts: QueryResult<Member[]> = useQuery(GETUSERS, {
-  //   variables: { ids: Object.keys({ messageList }) }
-  // })
-  // const contacts = messagingContacts.data.map(mc => ({
-  //   ...mc,
-  //   messages: messageList[mc.id]
-  // }))
-  // console.log(contacts)
 
   const pages = [
     <Map
@@ -76,24 +59,15 @@ export default function App () {
     />,
     <Search colors={colors} currentUser={user} setPage={setPage} />,
     <ContactScreen colors={colors} currentUser={user} setPage={setPage} />,
-    <ProfilePage
-      colors={colors}
-      member={user}
-      isCurrentUser={true}
-      currentUser={user}
-      setPage={setPage}
-    />
+    <ProfilePage colors={colors} />
   ]
   return !loggedIn ? (
     <SignUpPage colors={colors} setLoggedIn={setLoggedIn} />
   ) : messages ? (
-    <ChatListPage
-      colors={colors}
-      currentUser={user}
-      setMessages={setMessages}
-    />
+    <ChatListPage colors={colors} currentUser={user} />
   ) : (
     <View style={styles.container}>
+      <ModalStack />
       <View style={styles.contentHolder}>{pages[page]}</View>
       <Toolbar colors={colors} page={page} setPage={setPage} />
     </View>

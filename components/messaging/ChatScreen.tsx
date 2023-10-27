@@ -22,11 +22,16 @@ type Props = {
 }
 
 export default function ChatScreen ({ colors, currentUser, profile }: Props) {
-  const chat = useAppSelector<MessagingGroup>(state => state.chat)
+  const contact = useAppSelector(store => store.contact.selectedContact)
+  const user = useAppSelector(store => store.user)
 
-  const [currentMessages, setCurrentMessages] = useState<Message[]>(
-    chat.messages
+  const groupChat = user.groups.find(group =>
+    group.members.includes(contact.id)
   )
+
+  let currentMessages
+
+  const [newChat, setNewChat] = useState<boolean>(!groupChat)
 
   return (
     <KeyboardAvoidingView
@@ -35,7 +40,7 @@ export default function ChatScreen ({ colors, currentUser, profile }: Props) {
     >
       <ChatHeader colors={colors} profile={profile} />
       <ScrollView contentContainerStyle={{ ...styles.messagesHolder }}>
-        {currentMessages.map((message, i) => {
+        {(currentMessages || []).map((message, i) => {
           return (
             <MessageBubble
               key={i}
@@ -48,7 +53,6 @@ export default function ChatScreen ({ colors, currentUser, profile }: Props) {
       </ScrollView>
       <ChatInput
         colors={colors}
-        setCurrentMessages={setCurrentMessages}
         currentMessages={currentMessages}
         currentUser={currentUser}
       />

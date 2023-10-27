@@ -3,7 +3,7 @@ import { Colors } from 'types/colors'
 import { iconSize } from './listOptions'
 
 export const newListOption = (
-  setNewList: (set: boolean) => void,
+  setNewList: () => void,
   setAddToList: (set: boolean) => void,
   colors: Colors
 ) => ({
