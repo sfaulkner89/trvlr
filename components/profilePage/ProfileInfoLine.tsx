@@ -12,7 +12,7 @@ import { setUser } from '../../redux/slices/userSlice'
 import { setProfile } from '../../redux/slices/profileSlice'
 import { setContact } from '../../redux/slices/contactSlice'
 import { useAppSelector } from '../../redux/hooks'
-import { setChat, showChatPage } from '../../redux/slices/messageSlice'
+import { showChatPage } from '../../redux/slices/messageSlice'
 
 type Props = {
   colors: Colors

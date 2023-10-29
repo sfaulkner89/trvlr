@@ -29,23 +29,26 @@ export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
   const dispatch = useAppDispatch()
 
   const [loginUser, { data: user }] = useLazyQuery(LOGINUSER)
-  const loginHandler = async () => {
+  const loginHandler = () => {
     if (email && password) {
-      await loginUser({
+      loginUser({
         variables: {
           email,
           password
         }
-      }).then(() => {
-        if (user) {
-          console.log(user)
-          dispatch(setUser(user.loginUser))
-          setLoggedIn(true)
-          userCache.set('primary', JSON.stringify(user.data.loginUser))
-        } else {
-          console.error('User not found')
-        }
       })
+        .then(res => {
+          const user = res.data.loginUser
+          if (res.data.loginUser?.id) {
+            console.log(user)
+            dispatch(setUser(user))
+            setLoggedIn(true)
+            userCache.set('primary', JSON.stringify(user))
+          } else {
+            console.error('User not found')
+          }
+        })
+        .catch(err => console.error(err))
     }
   }
   return (

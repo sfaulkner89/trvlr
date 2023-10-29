@@ -7,10 +7,18 @@ import { PersistGate } from 'redux-persist/integration/react'
 import 'expo-dev-client'
 //const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 
+const nodeEnv = process.env.NODE_ENV
+
 const uri =
-  process.env.NODE_ENV === 'production' && process.env.API_URL
-    ? `${process.env.API_URL}/graphql`
+  nodeEnv === 'production' && process.env.REACT_APP_PROD_HOST
+    ? `${process.env.REACT_APP_PROD_HOST}/graphql`
     : 'http://localhost:8080/graphql'
+
+console.log(
+  process.env.NODE_ENV === 'production',
+  process.env.REACT_APP_PROD_HOST,
+  uri
+)
 
 const client = new ApolloClient({
   uri,

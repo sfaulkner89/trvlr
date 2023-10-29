@@ -9,7 +9,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "devtools": "react-devtools",
-    "publish": "NODE_ENV=\"production\" eas update"
+    "publish": "NODE_ENV='production' eas update"
   },
   "dependencies": {
     "@apollo/client": "^3.7.1",
