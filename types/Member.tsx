@@ -15,4 +15,5 @@ export type Member = {
   followers: string[]
   checkInLocation: PlaceSearchResult
   lists: List[]
+  admin?: boolean
 }

@@ -33,9 +33,10 @@ const maxDob = new Date(
 type Props = {
   colors: Colors
   setLoggedIn: (fire: boolean) => void
+  setNewUser: (fire: boolean) => void
 }
 
-export default function SignUpPage ({ colors, setLoggedIn }: Props) {
+export default function SignUpPage ({ colors, setLoggedIn, setNewUser }: Props) {
   const [questionNumber, setQuestionNumber] = useState(0)
   const [createUser] = useMutation(CREATE_USER)
   const [userInfo, setUserInfo] = useState<CreateProfileInputs>({
@@ -168,9 +169,16 @@ export default function SignUpPage ({ colors, setLoggedIn }: Props) {
   return (
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
       <View style={{ ...styles.header }}>
-        <View style={{ ...styles.arrowHolder }}>
+        <Pressable
+          style={{ ...styles.arrowHolder }}
+          onPress={() =>
+            questionNumber > 0
+              ? setQuestionNumber(q => q - 1)
+              : setNewUser(false)
+          }
+        >
           <AntDesign name='left' size={buttonSize} color={colors.lightColor} />
-        </View>
+        </Pressable>
         <View style={{ ...styles.headerTitleHolder }}>
           <Text style={{ ...styles.titleText, color: colors.lightColor }}>
             Sign Up For Trvlr.

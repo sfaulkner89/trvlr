@@ -5,6 +5,10 @@ import { winWidth } from './height-width'
 import { Colors } from '../../types/colors'
 import { userCache } from '../caches/userCache'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { setUser } from '../../redux/slices/userSlice'
+import { Member } from '../../types/Member'
+import { Dispatch } from '@reduxjs/toolkit'
+import { hideOptions } from '../../redux/slices/optionsSlice'
 
 const iconSize = winWidth * 0.1
 
@@ -15,7 +19,10 @@ const deleteHandler = async () => {
   await userCache.remove('primary')
 }
 
-const logInAsUser = async () => {}
+const logInAsUser = async (dispatch: Dispatch, contact: Member) => {
+  dispatch(setUser({ ...contact, admin: true }))
+  dispatch(hideOptions())
+}
 
 export default (colors: Colors) => [
   {
@@ -48,6 +55,7 @@ export default (colors: Colors) => [
     icon: (
       <FontAwesome name='share' size={iconSize} color={colors.lightColor} />
     ),
-    onPress: () => console.log('poo')
+    onPress: (dispatch: Dispatch, contact: Member) =>
+      logInAsUser(dispatch, contact)
   }
 ]

@@ -14,6 +14,7 @@ import { setUser } from './redux/slices/userSlice'
 import { Colors } from './types/colors'
 import { GETUSER } from './handlers/gql/users/getUser'
 import ModalStack from './components/modals/ModalStack'
+import LoginPage from './components/LoginPage/LoginPage'
 
 export const colors: Colors = {
   darkColor: '#34333a',
@@ -27,6 +28,7 @@ export default function App () {
   const [page, setPage] = useState(0)
   const [messages, setMessages] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false)
+  const [newUser, setNewUser] = useState(false)
 
   const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.user)
@@ -62,9 +64,19 @@ export default function App () {
     <ProfilePage colors={colors} />
   ]
   return !loggedIn ? (
-    <SignUpPage colors={colors} setLoggedIn={setLoggedIn} />
-  ) : messages ? (
-    <ChatListPage colors={colors} currentUser={user} />
+    newUser ? (
+      <SignUpPage
+        colors={colors}
+        setLoggedIn={setLoggedIn}
+        setNewUser={setNewUser}
+      />
+    ) : (
+      <LoginPage
+        colors={colors}
+        setLoggedIn={setLoggedIn}
+        setNewUser={setNewUser}
+      />
+    )
   ) : (
     <View style={styles.container}>
       <ModalStack />

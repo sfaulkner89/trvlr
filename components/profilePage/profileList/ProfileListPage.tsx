@@ -28,10 +28,13 @@ export default function ProfileListPage ({
 }: Props) {
   const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.user)
+  const contact = useAppSelector(state => state.contact.selectedContact)
   const selectedList = useAppSelector(state => state.list.selectedList)
 
+  const profile = contact ? contact : user
+
   const { data, refetch } = useQuery(GETUSERLISTS, {
-    variables: { id: user.id }
+    variables: { id: profile.id }
   })
   const [noteRequested, setNoteRequested] = useState<boolean>(false)
   const [noteScreen, setNoteScreen] = useState<boolean>(false)

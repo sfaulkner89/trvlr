@@ -47,13 +47,8 @@ export default function ProfilePage ({ colors }: Props) {
     <ProfileMap />,
     <ProfileListPage
       colors={colors}
-      member={profile}
-      isCurrentUser={isCurrentUser}
-      selectedList={selectedList}
-      setNewList={setNewList}
       newListProvided={false}
       addToList={false}
-      setAddToList={() => {}}
     />,
     <View />
   ]

@@ -35,7 +35,7 @@ export default function ProfileInfoLine ({
     currentUser?.following?.includes(profile.id) || false
   )
   const [follows, setFollows] = useState(
-    currentUser.followers.includes(profile.id)
+    currentUser.followers.includes(profile.id) && currentUser.id !== profile.id
   )
   const contact = useAppSelector(state => state.contact)
   const followHandler = () => {

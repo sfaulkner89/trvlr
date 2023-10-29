@@ -3,6 +3,7 @@ import React from 'react'
 import { Option } from '../../types/Option'
 import { Colors } from '../../types/colors'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 
 type Props = {
   colors: Colors
@@ -10,10 +11,12 @@ type Props = {
 }
 
 export default function OptionHolder ({ colors, option }: Props) {
+  const dispatch = useAppDispatch()
+  const contact = useAppSelector(state => state.contact.selectedContact)
   return (
     <Pressable
       style={{ ...styles.container, backgroundColor: colors.midColor }}
-      onPress={option.onPress}
+      onPress={() => option.onPress(dispatch, contact)}
     >
       <View style={styles.contentHolder}>
         <>{option.icon}</>
