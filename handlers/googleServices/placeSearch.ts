@@ -7,8 +7,11 @@ import {
 } from '@env'
 
 export default async (query: string, location: LatLng & Deltas) => {
+  const nodeEnv = process.env.NODE_ENV
   const hostUrl =
-    process.env.API_URL || `${REACT_APP_DEV_HOST}:${REACT_APP_DEV_PORT}`
+    nodeEnv === 'production'
+      ? process.env.REACT_APP_PROD_HOST
+      : `${REACT_APP_DEV_HOST}:${REACT_APP_DEV_PORT}`
 
   if (query.length > 2) {
     const radius = String(location.latitudeDelta + location.longitudeDelta)

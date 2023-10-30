@@ -38,8 +38,9 @@ export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
         }
       })
         .then(res => {
-          const user = res.data.loginUser
-          if (res.data.loginUser?.id) {
+          console.log(res.data)
+          const user = res?.data.loginUser
+          if (res?.data.loginUser?.id) {
             console.log(user)
             dispatch(setUser(user))
             setLoggedIn(true)
