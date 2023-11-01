@@ -14,9 +14,6 @@ const uri =
     ? `${process.env.REACT_APP_PROD_HOST}/graphql`
     : 'http://localhost:8080/graphql'
 
-console.log(nodeEnv)
-console.log(uri)
-
 const client = new ApolloClient({
   uri,
   cache: new InMemoryCache()
