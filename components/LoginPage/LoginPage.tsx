@@ -1,13 +1,16 @@
 import { useLazyQuery } from '@apollo/client'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   Text,
   View,
   StyleSheet,
   TextInput,
   Pressable,
-  Image
+  Image,
+  Animated
 } from 'react-native'
+import pulse from '../../animations/pulse'
+import startShakeAnimation from '../../animations/shake'
 import { userCache } from '../../assets/caches/userCache'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { GETUSER } from '../../handlers/gql/users/getUser'
@@ -25,11 +28,20 @@ type Props = {
 export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
+  const [incorrectDetails, setIncorrectDetails] = React.useState(false)
+
+  useEffect(() => {
+    setIncorrectDetails(false)
+  }, [email, password])
+
+  const shakeAnimation = useRef(new Animated.Value(0)).current
+  const pulseAnimation = useRef(new Animated.Value(1)).current
 
   const dispatch = useAppDispatch()
 
-  const [loginUser, { data: user }] = useLazyQuery(LOGINUSER)
+  const [loginUser] = useLazyQuery(LOGINUSER)
   const loginHandler = () => {
+    pulse(pulseAnimation).start()
     if (email && password) {
       loginUser({
         variables: {
@@ -38,15 +50,15 @@ export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
         }
       })
         .then(res => {
-          console.log(res.data)
           const user = res?.data.loginUser
           if (res?.data.loginUser?.id) {
-            console.log(user)
             dispatch(setUser(user))
             setLoggedIn(true)
             userCache.set('primary', JSON.stringify(user))
           } else {
-            console.error('User not found')
+            pulse(pulseAnimation).stop()
+            setIncorrectDetails(true)
+            startShakeAnimation(shakeAnimation).start()
           }
         })
         .catch(err => console.error(err))
@@ -72,25 +84,54 @@ export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
           value={email}
           onChangeText={setEmail}
           placeholderTextColor={colors.lightColor}
-          style={{ ...styles.emailInput, backgroundColor: colors.midColor }}
+          style={{
+            ...styles.emailInput,
+            backgroundColor: colors.midColor,
+            color: colors.lightColor
+          }}
         />
         <TextInput
           placeholder='Password'
+          secureTextEntry={true}
           autoCapitalize='none'
           value={password}
           onChangeText={setPassword}
           placeholderTextColor={colors.lightColor}
-          style={{ ...styles.emailInput, backgroundColor: colors.midColor }}
-        />
-        <Pressable
-          onPress={loginHandler}
           style={{
-            ...styles.submitButton,
-            backgroundColor: colors.selectedColor
+            ...styles.emailInput,
+            backgroundColor: colors.midColor,
+            color: colors.lightColor
+          }}
+        />
+        <View style={{ ...styles.errorHolder }}>
+          {incorrectDetails && (
+            <Text style={{ color: colors.errorColor }}>
+              Incorrect username or password
+            </Text>
+          )}
+        </View>
+        <Animated.View
+          style={{
+            ...styles.animatedButton,
+            transform: [
+              { translateX: shakeAnimation },
+              { scale: pulseAnimation }
+            ],
+            width: '100%'
           }}
         >
-          <Text>Log In</Text>
-        </Pressable>
+          <Pressable
+            onPress={loginHandler}
+            style={{
+              ...styles.submitButton,
+              backgroundColor: incorrectDetails
+                ? colors.errorColor
+                : colors.selectedColor
+            }}
+          >
+            <Text>Log In</Text>
+          </Pressable>
+        </Animated.View>
         <Pressable>
           <Text
             style={{ ...styles.signUp, color: colors.lightColor }}
@@ -136,5 +177,17 @@ const styles = StyleSheet.create({
   signUp: {
     marginTop: 20,
     fontSize: 20
+  },
+  animatedButton: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  errorHolder: {
+    height: 20,
+    width: '80%',
+    marginTop: 20,
+    display: 'flex',
+    alignItems: 'center'
   }
 })
