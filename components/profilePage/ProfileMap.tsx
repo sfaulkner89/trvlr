@@ -16,7 +16,9 @@ export default function ProfileMap () {
 
   const user = useAppSelector(state => state.user)
 
-  const [region, setRegion] = React.useState(user.countries || [])
+  const [region, setRegion] = React.useState(
+    user.countries.map(c => c.country) || []
+  )
 
   const [putUser] = useMutation(PUT_USER)
 
@@ -24,7 +26,7 @@ export default function ProfileMap () {
 
   const handleMapPress = (country: string) => {
     clearThrottleTimeout()
-    const changedRegions = []
+    const changedRegions: { country: string; visited: boolean }[] = []
     if (region.includes(country)) {
       setRegion(region.filter((item: string) => item !== country))
       changedRegions.push({ country, visited: false })
@@ -32,20 +34,20 @@ export default function ProfileMap () {
       setRegion((region: string[]) => [...region, country])
       changedRegions.push({ country, visited: true })
     }
-    throttleTimeout = setTimeout(() => {
-      putUser({
-        variables: {
-          id: user.id,
-          countries: changedRegions
-        }
+    const variables = {
+      variables: {
+        userId: user.id,
+        countries: changedRegions
+      }
+    }
+    console.log(JSON.stringify(variables))
+    putUser(variables)
+      .then(res => {
+        dispatch(setUser(res.data.putUser))
       })
-        .then(res => {
-          dispatch(setUser(res.data.putUser))
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }, 3000)
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   const clearThrottleTimeout = () => {

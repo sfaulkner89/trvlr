@@ -7,7 +7,10 @@ export const USERSEARCH = gql(`
             username
             displayName
             profileLocation
-            countries
+            countries {
+                country
+                dateAdded
+            }
             following
             followers
             checkInLocation {
