@@ -12,7 +12,10 @@ export const CREATE_USER = gql(`
             profileLocation,
             followers,
             following,
-            countries,
+            countries {
+                country,
+                dateAdded
+            },
             listIds,
             groups {
                 groupName

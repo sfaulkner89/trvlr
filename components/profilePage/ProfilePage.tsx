@@ -49,8 +49,7 @@ export default function ProfilePage ({ colors }: Props) {
       colors={colors}
       newListProvided={false}
       addToList={false}
-    />,
-    <View />
+    />
   ]
 
   return (
@@ -65,13 +64,8 @@ export default function ProfilePage ({ colors }: Props) {
         profile={profile}
         isCurrentUser={isCurrentUser}
       />
-      <ProfileTopLine colors={colors} profile={profile} />
-      <ProfileInfoLine
-        colors={colors}
-        profile={profile}
-        isCurrentUser={isCurrentUser}
-        currentUser={currentUser}
-      />
+      <ProfileTopLine colors={colors} isCurrentUser={isCurrentUser} />
+      <ProfileInfoLine colors={colors} isCurrentUser={isCurrentUser} />
       <Selector
         colors={colors}
         buttonList={profileButton}

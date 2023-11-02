@@ -11,6 +11,11 @@ import { GroupInfo } from '../../types/GroupInfo'
 import { GETUSERS } from '../../handlers/gql/users/getUsers'
 import { useQuery } from '@apollo/client'
 import MemberListItem from './MemberListItem'
+import { GETCONTACTS } from '../../handlers/gql/users/getContacts'
+import sortContactsIntoGroups, {
+  Group
+} from '../../assets/tools/sortContactsIntoGroups'
+import capitalise from '../../assets/tools/capitalise'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -25,34 +30,33 @@ export default function ContactScreen ({ colors, currentUser, setPage }: Props) 
   const [profilePage, setProfilePage] = useState(false)
   const [contact, setContact] = useState<Member | undefined>()
 
-  const { data, refetch } = useQuery<{ getUsers: Member[] }>(GETUSERS, {
-    variables: { ids: currentUser.following }
-  })
+  const user = useAppSelector(state => state.user)
 
-  const contacts = data?.getUsers || []
+  const { data, refetch } = useQuery<{ getContacts: { contacts: Member[] } }>(
+    GETCONTACTS,
+    {
+      variables: { userId: user.id }
+    }
+  )
 
-  return profilePage && contact ? (
-    <ProfilePage
-      colors={colors}
-      member={contact}
-      setProfilePage={setProfilePage}
-      isCurrentUser={false}
-      currentUser={currentUser}
-      setPage={setPage}
-    />
-  ) : (
+  const contacts = data?.getContacts.contacts || []
+
+  const contactGroups = sortContactsIntoGroups(contacts)
+
+  return (
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
       <ContactHeader colors={colors} title='Contacts' />
       <ScrollView>
-        {contacts.map((group: Member, i: number) => {
+        {contactGroups.map((group: Group, i: number) => {
           return (
-            <MemberListItem
-              member={group}
-              colors={colors}
-              key={i}
-              setContact={setContact}
-              setProfilePage={setProfilePage}
-            />
+            <View>
+              <Text style={{ ...styles.groupNameText }}>
+                {capitalise(group.group)}
+              </Text>
+              {group.users.map((user: Member, i: number) => (
+                <MemberListItem member={user} colors={colors} key={i} />
+              ))}
+            </View>
           )
         })}
       </ScrollView>
@@ -65,5 +69,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     width: winWidth
+  },
+  groupNameText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    margin: 10
   }
 })

@@ -6,13 +6,21 @@ import profileStats from '../../assets/variables/profileStats'
 import StatHolder from './StatHolder'
 import { Member } from '../../types/Member'
 import CachedImage from 'react-native-expo-cached-image'
+import { useAppSelector } from '../../redux/hooks'
 
 type Props = {
   colors: Colors
-  profile: Member
+  isCurrentUser: boolean
 }
 
-export default function ProfileTopLine ({ profile, colors }: Props) {
+export default function ProfileTopLine ({ colors, isCurrentUser }: Props) {
+  const contact = useAppSelector(state => state.contact.selectedContact)
+  const user = useAppSelector(state => state.user)
+
+  const profile = isCurrentUser ? user : contact
+
+  console.log(profile)
+
   return (
     <View style={styles.container}>
       <View style={styles.statHolderHolder}>

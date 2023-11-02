@@ -28,10 +28,10 @@ type Props = {
 export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const [incorrectDetails, setIncorrectDetails] = React.useState(false)
+  const [incorrectDetails, setIncorrectDetails] = React.useState('')
 
   useEffect(() => {
-    setIncorrectDetails(false)
+    setIncorrectDetails('')
   }, [email, password])
 
   const shakeAnimation = useRef(new Animated.Value(0)).current
@@ -51,17 +51,22 @@ export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
       })
         .then(res => {
           const user = res?.data.loginUser
-          if (res?.data.loginUser?.id) {
+          if (user.id) {
             dispatch(setUser(user))
             setLoggedIn(true)
             userCache.set('primary', JSON.stringify(user))
           } else {
             pulse(pulseAnimation).stop()
-            setIncorrectDetails(true)
+            setIncorrectDetails('Incorrect username or password')
             startShakeAnimation(shakeAnimation).start()
           }
         })
-        .catch(err => console.error(err))
+        .catch(err => {
+          setIncorrectDetails(
+            "We're having trouble logging you in. Please try again later."
+          )
+          console.error(err)
+        })
     }
   }
   return (
@@ -105,9 +110,7 @@ export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
         />
         <View style={{ ...styles.errorHolder }}>
           {incorrectDetails && (
-            <Text style={{ color: colors.errorColor }}>
-              Incorrect username or password
-            </Text>
+            <Text style={{ color: colors.errorColor }}>{incorrectDetails}</Text>
           )}
         </View>
         <Animated.View

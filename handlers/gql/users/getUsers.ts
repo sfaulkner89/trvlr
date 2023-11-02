@@ -7,7 +7,10 @@ query getUsers ($ids: [String]!) {
         username,
         displayName,
         profileLocation,
-        countries,
+        countries {
+            country,
+            dateAdded
+        },
         following,
         followers,
         checkInLocation {
