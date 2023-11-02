@@ -20,7 +20,7 @@ type GeojsonType = {
 
 const getColor = (country: string, region: string[]) => {
   if (region.includes(country)) {
-    return 'red'
+    return 'darkgreen'
   } else {
     return 'grey'
   }

@@ -14,7 +14,6 @@ import CachedImage from 'react-native-expo-cached-image'
 import { useAppSelector } from '../../redux/hooks'
 import { RootState } from '../../redux/store'
 import { useDispatch } from 'react-redux'
-import { setProfile } from '../../redux/slices/profileSlice'
 import { setContact } from '../../redux/slices/contactSlice'
 
 const winHeight = Dimensions.get('window').height

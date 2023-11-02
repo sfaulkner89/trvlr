@@ -9,63 +9,60 @@ import { FOLLOW } from '../../handlers/gql/follow/follow'
 import { UNFOLLOW } from '../../handlers/gql/follow/unfollow'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../redux/slices/userSlice'
-import { setProfile } from '../../redux/slices/profileSlice'
 import { setContact } from '../../redux/slices/contactSlice'
 import { useAppSelector } from '../../redux/hooks'
 import { showChatPage } from '../../redux/slices/messageSlice'
 
 type Props = {
   colors: Colors
-  profile: Member
   isCurrentUser: boolean
-  currentUser: Member
 }
 const buttonSize = winWidth * 0.05
 
-export default function ProfileInfoLine ({
-  colors,
-  profile,
-  isCurrentUser,
-  currentUser
-}: Props) {
+export default function ProfileInfoLine ({ colors, isCurrentUser }: Props) {
   const [follow] = useMutation(FOLLOW)
   const [unfollow] = useMutation(UNFOLLOW)
   const dispatch = useDispatch()
+
+  const user: Member = useAppSelector(state => state.user)
+  const contact: Member = useAppSelector(state => state.contact.selectedContact)
+
+  const profile = isCurrentUser ? user : contact
+
   const [following, setFollowing] = useState(
-    currentUser?.following?.includes(profile.id) || false
+    user?.following?.includes(contact?.id) || false
   )
   const [follows, setFollows] = useState(
-    currentUser.followers.includes(profile.id) && currentUser.id !== profile.id
+    (user?.followers?.includes(contact?.id) && user.id !== contact?.id) || false
   )
-  const contact = useAppSelector(state => state.contact)
   const followHandler = () => {
+    const currentUser = { ...user }
+    const currentContact = { ...contact }
     if (following) {
-      unfollow({ variables: { userId: currentUser.id, followId: profile.id } })
+      unfollow({
+        variables: { userId: currentUser.id, followId: currentContact.id }
+      })
       setFollowing(false)
       currentUser.following = currentUser.following.filter(
-        f => f !== profile.id
+        f => f !== currentContact.id
       )
-      profile = {
-        ...profile,
-        followers: profile.followers.filter(f => f !== currentUser.id)
-      }
+      currentContact.followers = currentContact.followers.filter(
+        (f: string) => f !== currentUser.id
+      )
     } else {
-      follow({ variables: { userId: currentUser.id, followId: profile.id } })
+      follow({
+        variables: { userId: currentUser.id, followId: currentContact.id }
+      })
       setFollowing(true)
-      currentUser.following = [...currentUser.following, profile.id]
-      profile = {
-        ...profile,
-        followers: [...profile.followers, currentUser.id]
-      }
+      currentUser.following = [...currentUser.following, currentContact.id]
+      currentContact.followers = [...currentContact.followers, currentUser.id]
     }
     dispatch(setUser(currentUser))
-    dispatch(setProfile(profile))
+    dispatch(setContact(currentContact))
   }
   const chatHandler = () => {
     dispatch(showChatPage())
   }
-
-  console.log(profile)
 
   return (
     <View style={{ ...styles.container }}>

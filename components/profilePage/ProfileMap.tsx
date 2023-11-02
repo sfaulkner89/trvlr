@@ -54,30 +54,30 @@ export default function ProfileMap () {
     if (throttleTimeout) clearTimeout(throttleTimeout)
   }
 
-  return (
-    <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: 0,
-          longitude: -60,
-          latitudeDelta: 180,
-          longitudeDelta: 180
-        }}
-      >
-        <Geojson
-          geojson={coloredGeojson(region)}
-          onPress={e =>
-            handleMapPress(
-              e.feature.properties.NAME
-                ? e.feature.properties.NAME
-                : e.feature.properties.name_en
-            )
-          }
-        />
-      </MapView>
-    </View>
+  const memoisedMap = (
+    <MapView
+      style={styles.map}
+      initialRegion={{
+        latitude: 0,
+        longitude: -60,
+        latitudeDelta: 180,
+        longitudeDelta: 180
+      }}
+    >
+      <Geojson
+        geojson={useMemo(() => coloredGeojson(region), [region])}
+        onPress={e =>
+          handleMapPress(
+            e.feature.properties.NAME
+              ? e.feature.properties.NAME
+              : e.feature.properties.name_en
+          )
+        }
+      />
+    </MapView>
   )
+
+  return <View style={styles.container}>{memoisedMap}</View>
 }
 
 const styles = StyleSheet.create({
