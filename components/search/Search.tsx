@@ -5,11 +5,13 @@ import {
   Dimensions,
   TextInput,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  Pressable,
+  ScrollView
 } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Colors } from '../../types/colors'
-import { FontAwesome } from '@expo/vector-icons'
+import { Entypo, FontAwesome } from '@expo/vector-icons'
 import SearchSelector from './Selector'
 import { searchCriteria } from '../../assets/variables/searchCriteria'
 import { useLazyQuery, useQuery } from '@apollo/client'
@@ -29,19 +31,20 @@ const size = winWidth * 0.06
 type Props = {
   colors: Colors
   currentUser: Member
-  setPage: (set: number) => void
 }
 
-export default function Search ({ colors, currentUser, setPage }: Props) {
+export default function Search ({ colors, currentUser }: Props) {
   const [searchType, setSearchType] = useState(0)
   const [query, setQuery] = useState('')
-  const [profilePage, setProfilePage] = useState(false)
-  const [contact, setContact] = useState<Member | undefined>()
   const [userSearch, { loading, data: users, error }] = useLazyQuery(USERSEARCH)
 
+  const [results, setResults] = useState<Member[]>(users || [])
+
   useEffect(() => {
-    console.log(users, loading)
-  }, [users, loading])
+    if (users) {
+      setResults(users.userSearch)
+    }
+  }, [users])
 
   const searchHandler = async (query: string) => {
     setQuery(query)
@@ -54,11 +57,14 @@ export default function Search ({ colors, currentUser, setPage }: Props) {
     }
   }
 
-  const profile = useAppSelector((store: RootState) => store.profile)
-  const dispatch = useDispatch()
+  const dismissHandler = () => {
+    setQuery('')
+    Keyboard.dismiss()
+    setResults([])
+  }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPressIn={Keyboard.dismiss}>
       <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
         <View style={styles.inputContainer}>
           <View
@@ -75,7 +81,20 @@ export default function Search ({ colors, currentUser, setPage }: Props) {
               selectionColor={colors.darkColor}
               onChangeText={q => searchHandler(q)}
               value={query}
-            />
+            ></TextInput>
+
+            <Pressable
+              onPress={dismissHandler}
+              style={{ ...styles.searchCross }}
+            >
+              {query && (
+                <Entypo
+                  name='cross'
+                  size={winWidth * 0.06}
+                  color={colors.darkColor}
+                />
+              )}
+            </Pressable>
           </View>
           <SearchSelector
             colors={colors}
@@ -84,11 +103,18 @@ export default function Search ({ colors, currentUser, setPage }: Props) {
             setSelection={setSearchType}
           />
         </View>
-        {(users?.userSearch || [])
-          .filter((user: Member) => user.id !== currentUser.id)
-          .map((user: Member, i: number) => {
-            return <MemberListItem key={i} member={user} colors={colors} />
-          })}
+
+        <ScrollView
+          onScroll={Keyboard.dismiss}
+          scrollEventThrottle={100}
+          style={{ ...styles.resultsHolder, backgroundColor: colors.midColor }}
+        >
+          {(results || [])
+            .filter((user: Member) => user.id !== currentUser.id)
+            .map((user: Member, i: number) => {
+              return <MemberListItem key={i} member={user} colors={colors} />
+            })}
+        </ScrollView>
       </View>
     </TouchableWithoutFeedback>
   )
@@ -100,7 +126,7 @@ const styles = StyleSheet.create({
     width: winWidth
   },
   input: {
-    width: winWidth * 0.8,
+    width: winWidth * 0.735,
     height: winHeight * 0.04,
     marginLeft: winWidth * 0.03,
     fontSize: winHeight * 0.02
@@ -119,5 +145,13 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginLeft: winWidth * 0.02
+  },
+  searchCross: {
+    height: winHeight * 0.04,
+    width: winHeight * 0.04,
+    borderRadius: winHeight * 0.02,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 100
   }
 })

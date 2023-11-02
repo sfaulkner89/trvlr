@@ -17,6 +17,5 @@ export default (contacts: Member[]): Group[] => {
       groups.push({ group: group, users: [contact] })
     }
   })
-  console.log(groups[0].users)
   return groups
 }

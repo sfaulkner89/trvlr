@@ -59,8 +59,8 @@ export default function App () {
       setMessages={setMessages}
       setPage={setPage}
     />,
-    <Search colors={colors} currentUser={user} setPage={setPage} />,
-    <ContactScreen colors={colors} currentUser={user} setPage={setPage} />,
+    <Search colors={colors} currentUser={user} />,
+    <ContactScreen colors={colors} />,
     <ProfilePage colors={colors} />
   ]
   return !loggedIn ? (

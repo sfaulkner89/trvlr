@@ -1,6 +1,12 @@
 import { StyleSheet, View, Image } from 'react-native'
 import React, { useState } from 'react'
-import MapView, { LatLng, Marker } from 'react-native-maps'
+import MapView, {
+  LatLng,
+  LongPressEvent,
+  MapPressEvent,
+  Marker,
+  PROVIDER_GOOGLE
+} from 'react-native-maps'
 import { Colors } from '../../types/colors'
 import getMapAreaName from '../../handlers/googleServices/getMapAreaName'
 
@@ -75,32 +81,33 @@ export default function Map ({
 
   const member = useAppSelector(state => state.user)
   const moveHandler = async () => {
-    // setDeltas({
-    //   latitudeDelta: position.latitudeDelta,
-    //   longitudeDelta: position.longitudeDelta
-    // })
-    dispatch(changeMapLocation(position))
-    if (position.latitudeDelta + position.longitudeDelta >= 2) {
-      const placeDetails = await getMapAreaName(position)
-      dispatch(setMapBrowseArea(placeDetails))
-    } else {
-      const result: PlaceSearchResult | void = await nearbySearch(position)
-      if (result) {
-        dispatch(
-          changeMapLocation({
-            //changes location to the new place and keeps existing zoom level
-            ...result.location
-            // latitudeDelta: 0.004,
-            // longitudeDelta: 0.004
-          })
-        )
-        dispatch(setNearbyPlace(result))
-        const details = await getPlaceDetails(result)
-        dispatch(
-          setSelectedPlace({ ...result, ...details, placeId: result.placeId })
-        )
-      }
-    }
+    console.log(position)
+    // // setDeltas({
+    // //   latitudeDelta: position.latitudeDelta,
+    // //   longitudeDelta: position.longitudeDelta
+    // // })
+    // dispatch(changeMapLocation(position))
+    // if (position.latitudeDelta + position.longitudeDelta >= 2) {
+    //   const placeDetails = await getMapAreaName(position)
+    //   dispatch(setMapBrowseArea(placeDetails))
+    // } else {
+    //   const result: PlaceSearchResult | void = await nearbySearch(position)
+    //   if (result) {
+    //     dispatch(
+    //       changeMapLocation({
+    //         //changes location to the new place and keeps existing zoom level
+    //         ...result.location
+    //         // latitudeDelta: 0.004,
+    //         // longitudeDelta: 0.004
+    //       })
+    //     )
+    //     dispatch(setNearbyPlace(result))
+    //     const details = await getPlaceDetails(result)
+    //     dispatch(
+    //       setSelectedPlace({ ...result, ...details, placeId: result.placeId })
+    //     )
+    //   }
+    // }
   }
   const touchHandler = () => {
     dispatch(clearMapBrowseArea())
@@ -121,20 +128,21 @@ export default function Map ({
     <View style={styles.container}>
       <React.Fragment>
         <HeaderBar colors={colors} />
-        <MapPin
+        {/* <MapPin
           colors={colors}
           areaNames={areaNames}
           deltas={deltas}
           selectedPlace={selectedPlace}
           setNewList={setNewList}
           setAddToList={setAddToList}
-        />
+        /> */}
         <MapView
           style={styles.map}
+          provider={PROVIDER_GOOGLE}
           region={mapPositionCalibrated}
-          onRegionChange={e => setPosition(e)}
-          onTouchEnd={() => moveHandler()}
-          onTouchMove={() => touchHandler()}
+          onRegionChangeComplete={e => setPosition(e)}
+          onPress={(e: MapPressEvent) => console.log(e)}
+          onLongPress={(e: LongPressEvent) => console.log(e)}
         >
           {checkInLocation && !pinAtCheckIn && (
             <ContactMarker contact={{ ...currentUser, checkInLocation }} />

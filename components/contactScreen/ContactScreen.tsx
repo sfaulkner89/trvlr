@@ -22,14 +22,9 @@ const winWidth = Dimensions.get('window').width
 
 type Props = {
   colors: Colors
-  currentUser: Member
-  setPage: (set: number) => void
 }
 
-export default function ContactScreen ({ colors, currentUser, setPage }: Props) {
-  const [profilePage, setProfilePage] = useState(false)
-  const [contact, setContact] = useState<Member | undefined>()
-
+export default function ContactScreen ({ colors }: Props) {
   const user = useAppSelector(state => state.user)
 
   const { data, refetch } = useQuery<{ getContacts: { contacts: Member[] } }>(
@@ -49,7 +44,7 @@ export default function ContactScreen ({ colors, currentUser, setPage }: Props) 
       <ScrollView>
         {contactGroups.map((group: Group, i: number) => {
           return (
-            <View>
+            <View key={i}>
               <Text style={{ ...styles.groupNameText }}>
                 {capitalise(group.group)}
               </Text>

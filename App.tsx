@@ -12,7 +12,7 @@ const nodeEnv = process.env.NODE_ENV
 const uri =
   nodeEnv === 'production' && process.env.REACT_APP_PROD_HOST
     ? `${process.env.REACT_APP_PROD_HOST}/graphql`
-    : 'http://localhost:8080/graphql'
+    : 'http://192.168.0.88:8080/graphql'
 
 const client = new ApolloClient({
   uri,
