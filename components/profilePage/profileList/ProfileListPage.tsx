@@ -13,107 +13,59 @@ import { Entypo } from '@expo/vector-icons'
 import Checkbox from 'expo-checkbox'
 import NoteInputScreen from '../../listPage/NoteInputScreen'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
-import { hideAddToList, showNewList } from '../../../redux/slices/listSlice'
+import {
+  hideAddToList,
+  hideNoteScreen,
+  showNewList,
+  showNoteScreen
+} from '../../../redux/slices/listSlice'
+import NewListHeader from './NewListHeader'
 
 type Props = {
-  colors: Colors
   newListProvided: boolean
-  addToList: boolean
+  submitHandler?: (list: List) => void
 }
 
 export default function ProfileListPage ({
-  colors,
   newListProvided,
-  addToList
+  submitHandler
 }: Props) {
-  const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.user)
   const contact = useAppSelector(state => state.contact.selectedContact)
-  const selectedList = useAppSelector(state => state.list.selectedList)
+  const colors = useAppSelector(state => state.colors)
 
   const profile = contact ? contact : user
 
   const { data, refetch } = useQuery(GETUSERLISTS, {
     variables: { id: profile.id }
   })
-  const [noteRequested, setNoteRequested] = useState<boolean>(false)
-  const [noteScreen, setNoteScreen] = useState<boolean>(false)
 
   useEffect(() => {
     refetch()
-  }, [])
+  }, [submitHandler])
+
+  const pressHandler = async (list: List) => {
+    submitHandler(list)
+    setTimeout(refetch, 200)
+  }
+
   return (
     <View style={{ ...styles.container, backgroundColor: colors.midColor }}>
-      {newListProvided && (
-        <View>
-          {!noteScreen && (
-            <Pressable
-              style={styles.noteCheckbox}
-              onPress={() => setNoteRequested(r => !r)}
-            >
-              <Checkbox
-                value={noteRequested}
-                color={colors.lightColor}
-                onValueChange={() => setNoteRequested(r => !r)}
+      {newListProvided && <NewListHeader />}
+      <ScrollView>
+        {data &&
+          data.getUser.lists.map((list: List, i: number) => {
+            return (
+              <ListMini
+                list={list}
+                key={i}
+                submitHandler={pressHandler}
+                refetch={refetch}
               />
-              <Text
-                style={{
-                  ...styles.noteCheckboxText,
-                  color: colors.lightColor
-                }}
-              >
-                Add Note?
-              </Text>
-            </Pressable>
-          )}
-          <Pressable
-            onPress={() => dispatch(hideAddToList())}
-            style={styles.closeButton}
-          >
-            <Entypo
-              name='cross'
-              size={winWidth * 0.08}
-              color={colors.lightColor}
-            />
-          </Pressable>
-          {!noteScreen && (
-            <View style={styles.newList}>
-              <OptionHolder
-                colors={colors}
-                option={newListOption(
-                  () => dispatch(showNewList()),
-                  () => dispatch(hideAddToList()),
-                  colors
-                )}
-              />
-            </View>
-          )}
-        </View>
-      )}
-      {noteScreen ? (
-        <NoteInputScreen
-          list={selectedList}
-          colors={colors}
-          setAddToList={() => dispatch(hideAddToList())}
-        />
-      ) : (
-        <ScrollView>
-          {data &&
-            data.getUser.lists.map((list: List, i: number) => {
-              return (
-                <ListMini
-                  colors={colors}
-                  list={list}
-                  key={i}
-                  addToList={addToList}
-                  setAddToList={() => dispatch(hideAddToList())}
-                  noteRequested={noteRequested}
-                  setNoteScreen={setNoteScreen}
-                />
-              )
-            })}
-        </ScrollView>
-      )}
+            )
+          })}
+        <View style={styles.padding} />
+      </ScrollView>
     </View>
   )
 }
@@ -123,30 +75,10 @@ const styles = StyleSheet.create({
     flex: 1,
     width: winWidth
   },
-  newList: {
-    marginTop: winHeight * 0.1,
-    height: winHeight * 0.1,
-    width: winWidth,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  closeButton: {
-    position: 'absolute',
-    top: winHeight * 0.05,
-    right: winWidth * 0.05
-  },
-  noteCheckbox: {
-    position: 'absolute',
-    top: winHeight * 0.06,
-    left: winWidth * 0.05,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  noteCheckboxText: {
-    marginLeft: winWidth * 0.02
-  },
   closeButtonText: {
     fontSize: winWidth * 0.05
+  },
+  padding: {
+    height: winHeight * 0.1
   }
 })

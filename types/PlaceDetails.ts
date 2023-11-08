@@ -1,7 +1,7 @@
 export type PlaceDetails = {
   placeId: string
   name: string
-  comment: string
+  note?: string
   location: {
     latitude: number
     longitude: number
@@ -13,4 +13,5 @@ export type PlaceDetails = {
     rating: number
     types: string[]
   }
+  googlePlaceId?: string
 }

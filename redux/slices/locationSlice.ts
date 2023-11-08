@@ -44,6 +44,7 @@ export const locationSlice = createSlice({
       void Object.assign(state, { ...state, browseArea: null })
     },
     setNearbyPlace: (state, action) => {
+      console.log(action.payload)
       action.payload.location.latitude = action.payload.location.lat
       action.payload.location.longitude = action.payload.location.lng
       delete action.payload.location.lng

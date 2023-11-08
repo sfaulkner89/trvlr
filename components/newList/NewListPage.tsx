@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   View
 } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
@@ -19,57 +19,55 @@ import { CREATELIST } from '../../handlers/gql/lists/createList'
 import { PlaceDetails } from 'types/PlaceDetails'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import placeShim from '../../assets/tools/placeShim'
+import { setListEdit } from '../../redux/slices/listSlice'
 import {
-  deselectList,
-  hideNewList,
-  selectList
-} from '../../redux/slices/listSlice'
+  clearPages,
+  resetListEditor,
+  setListName,
+  setNewList,
+  setNoteScreen
+} from '../../redux/slices/listEditorSlice'
 
 type Props = {
-  colors: Colors
-  currentUser: Member
   locale?: string
+  submitHandler: () => void
 }
 
-export default function NewListPage ({ colors, currentUser, locale }: Props) {
-  const month = new Date().toLocaleString('default', { month: 'long' })
-  const year = new Date().toLocaleString('default', { year: 'numeric' })
-
+export default function NewListPage ({ locale, submitHandler }: Props) {
+  const dispatch = useAppDispatch()
   const selectedPlace: PlaceDetails = useAppSelector(
     state => state.results.selectedPlace
   )
+  const month = new Date().toLocaleString('default', { month: 'long' })
+  const year = new Date().toLocaleString('default', { year: 'numeric' })
 
   const defaultListName = selectedPlace?.location.area
     ? `${selectedPlace.location.area} List ${year}`
     : `${month} ${year} List`
 
-  const [listName, setListName] = useState<string>(defaultListName)
+  dispatch(setListName(defaultListName))
 
-  const [newList] = useMutation(CREATELIST)
+  const colors = useAppSelector(state => state.colors)
 
-  const user = useAppSelector(state => state.user)
-  const dispatch = useAppDispatch()
+  const noteRequested = useAppSelector(state => state.listEditor.noteRequested)
+  const listName = useAppSelector(state => state.listEditor.listName)
 
-  const createHandler = async () => {
-    const createdList = await createList(user, listName, selectedPlace, newList)
-    dispatch(hideNewList())
-    const cleanedPlaces = placeShim(createdList.places)
-    dispatch(
-      selectList({
-        displayName: listName,
-        photo: undefined,
-        location: undefined, // get Coordinates of city if being created from a place.
-        city: locale,
-        country: undefined,
-        dateCreated: new Date(),
-        dateModified: new Date(),
-        places: cleanedPlaces
-      })
-    )
-  }
+  useEffect(() => {
+    dispatch(setNewList(true))
+  }, [])
 
   const exitHandler = () => {
-    dispatch(hideNewList())
+    dispatch(resetListEditor())
+    dispatch(setListEdit(false))
+  }
+
+  const clickHandler = () => {
+    if (noteRequested) {
+      dispatch(clearPages())
+      dispatch(setNoteScreen(true))
+    } else {
+      submitHandler()
+    }
   }
 
   return (
@@ -90,14 +88,14 @@ export default function NewListPage ({ colors, currentUser, locale }: Props) {
             <View style={{ width: winWidth * 0.08 }} />
             <TextInput
               value={listName}
-              onChangeText={setListName}
+              onChangeText={e => dispatch(setListName(e))}
               style={{ ...styles.input, backgroundColor: colors.lightColor }}
               autoFocus
             />
 
             <Pressable
               style={styles.crossHolder}
-              onPress={() => setListName('')}
+              onPress={() => setListName(null)}
             >
               <Entypo
                 name='cross'
@@ -109,7 +107,7 @@ export default function NewListPage ({ colors, currentUser, locale }: Props) {
 
           <Pressable
             style={{ ...styles.button, backgroundColor: colors.selectedColor }}
-            onPress={createHandler}
+            onPress={clickHandler}
           >
             <Text style={{ ...styles.buttonText, color: colors.lightColor }}>
               Create

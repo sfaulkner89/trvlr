@@ -1,5 +1,5 @@
 const Config = {
-  apiUrl: "http://localhost:8080",
+  apiUrl: "http://192.168.0.88:8080",
 };
 
 if (process.env.NODE_ENV === "production") {

@@ -1,43 +1,32 @@
-import { StyleSheet, View, Image } from 'react-native'
+import { StyleSheet, View, Image, Text, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import MapView, {
   LatLng,
   LongPressEvent,
   MapPressEvent,
   Marker,
+  PoiClickEvent,
   PROVIDER_GOOGLE
 } from 'react-native-maps'
 import { Colors } from '../../types/colors'
 import getMapAreaName from '../../handlers/googleServices/getMapAreaName'
 
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import MapPin from './MapPin'
 import { Deltas } from '../../types/Deltas'
 import initialPosition from '../../assets/config/initialPosition'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import {
-  changeMapLocation,
-  clearMapBrowseArea,
-  setMapBrowseArea,
-  setNearbyPlace
-} from '../../redux/slices/locationSlice'
-import {
-  clearSelectedPlace,
-  setSelectedPlace
-} from '../../redux/slices/resultsSlice'
-import NewListPage from '../../components/newList/NewListPage'
+import { setNearbyPlace } from '../../redux/slices/locationSlice'
+import { setSelectedPlace } from '../../redux/slices/resultsSlice'
 import { Member } from '../../types/Member'
-import { List } from '../../types/List'
-import ListPage from '../../components/listPage/ListPage'
 import HeaderBar from '../../components/headerBar/HeaderBar'
 import { PlaceDetails } from 'types/PlaceDetails'
-import ProfileListPage from '../../components/profilePage/profileList/ProfileListPage'
 import getPlaceDetails from '../../handlers/googleServices/getPlaceDetails'
 import nearbySearch from '../../handlers/googleServices/nearbySearch'
 import { PlaceSearchResult } from '../../types/PlaceSearchResult'
 import { useQuery } from '@apollo/client'
 import { GETUSERS } from '../../handlers/gql/users/getUsers'
 import ContactMarker from './ContactMarker'
+import PlaceInfoModal from './PlaceInfoModal'
 
 type Props = {
   colors: Colors
@@ -47,71 +36,38 @@ type Props = {
   setPage: (set: number) => void
 }
 
-export default function Map ({
-  colors,
-  currentUser,
-  isCurrentUser,
-  setMessages,
-  setPage
-}: Props) {
-  const [deltas, setDeltas] = useState<Deltas | undefined>({
-    latitudeDelta: 180,
-    longitudeDelta: 180
-  })
-  const [newList, setNewList] = useState(false)
-  const [selectedList, setSelectedList] = useState<List | undefined>()
-  const [position, setPosition] = useState<LatLng & Deltas>(initialPosition)
-  const [addToList, setAddToList] = useState<boolean>(false)
-
+export default function Map ({ colors, currentUser }: Props) {
+  const [moreDetails, setMoreDetails] = useState(false)
   const dispatch = useAppDispatch()
   const mapPosition = useAppSelector(state => state.location.map)
   const areaNames = useAppSelector(state => state.location.browseArea)
   const checkInLocation = useAppSelector(
     state => state.location.checkInLocation
   )
+  const nearbyPlace: PlaceSearchResult = useAppSelector(
+    state => state.location.nearbyPlace
+  )
   const selectedPlace: PlaceDetails = useAppSelector(
     state => state.results.selectedPlace
   )
-  const { data: contactLocations, refetch } = useQuery<{ getUsers: Member[] }>(
+  const { data: contactLocations } = useQuery<{ getUsers: Member[] }>(
     GETUSERS,
     {
       variables: { ids: currentUser.following }
     }
   )
 
-  const member = useAppSelector(state => state.user)
-  const moveHandler = async () => {
+  const shortPressHandler = async (position: LatLng) => {
     console.log(position)
-    // // setDeltas({
-    // //   latitudeDelta: position.latitudeDelta,
-    // //   longitudeDelta: position.longitudeDelta
-    // // })
-    // dispatch(changeMapLocation(position))
-    // if (position.latitudeDelta + position.longitudeDelta >= 2) {
-    //   const placeDetails = await getMapAreaName(position)
-    //   dispatch(setMapBrowseArea(placeDetails))
-    // } else {
-    //   const result: PlaceSearchResult | void = await nearbySearch(position)
-    //   if (result) {
-    //     dispatch(
-    //       changeMapLocation({
-    //         //changes location to the new place and keeps existing zoom level
-    //         ...result.location
-    //         // latitudeDelta: 0.004,
-    //         // longitudeDelta: 0.004
-    //       })
-    //     )
-    //     dispatch(setNearbyPlace(result))
-    //     const details = await getPlaceDetails(result)
-    //     dispatch(
-    //       setSelectedPlace({ ...result, ...details, placeId: result.placeId })
-    //     )
-    //   }
-    // }
-  }
-  const touchHandler = () => {
-    dispatch(clearMapBrowseArea())
-    dispatch(clearSelectedPlace())
+    const nearby = await nearbySearch(position)
+    dispatch(setNearbyPlace(nearby))
+    const placeDetails = await getPlaceDetails(nearby)
+    dispatch(
+      setSelectedPlace({
+        ...placeDetails,
+        placeId: nearby.placeId
+      })
+    )
   }
 
   const pinAtCheckIn =
@@ -128,20 +84,16 @@ export default function Map ({
     <View style={styles.container}>
       <React.Fragment>
         <HeaderBar colors={colors} />
-        {/* <MapPin
-          colors={colors}
-          areaNames={areaNames}
-          deltas={deltas}
-          selectedPlace={selectedPlace}
-          setNewList={setNewList}
-          setAddToList={setAddToList}
-        /> */}
         <MapView
           style={styles.map}
           provider={PROVIDER_GOOGLE}
           region={mapPositionCalibrated}
-          onRegionChangeComplete={e => setPosition(e)}
-          onPress={(e: MapPressEvent) => console.log(e)}
+          onPress={(e: MapPressEvent) =>
+            shortPressHandler(e.nativeEvent.coordinate)
+          }
+          onPoiClick={(e: PoiClickEvent) =>
+            shortPressHandler(e.nativeEvent.coordinate)
+          }
           onLongPress={(e: LongPressEvent) => console.log(e)}
         >
           {checkInLocation && !pinAtCheckIn && (
@@ -150,7 +102,17 @@ export default function Map ({
           {(contactLocations?.getUsers || []).map((contact, i) => {
             return <ContactMarker key={i} contact={contact} />
           })}
+          {nearbyPlace && (
+            <Marker
+              coordinate={{
+                longitude: nearbyPlace?.location.longitude,
+                latitude: nearbyPlace?.location.latitude
+              }}
+              pinColor={colors.darkColor}
+            />
+          )}
         </MapView>
+        {nearbyPlace && selectedPlace && <PlaceInfoModal />}
       </React.Fragment>
     </View>
   )

@@ -3,8 +3,8 @@ import { Colors } from 'types/colors'
 import { iconSize } from './listOptions'
 
 export const newListOption = (
-  setNewList: () => void,
-  setAddToList: (set: boolean) => void,
+  setNewListScreen: (set: boolean) => void,
+  setNewList: (set: boolean) => void,
   colors: Colors
 ) => ({
   title: 'Create New List',
@@ -16,7 +16,7 @@ export const newListOption = (
     />
   ),
   onPress: () => {
+    setNewListScreen(true)
     setNewList(true)
-    setAddToList(false)
   }
 })

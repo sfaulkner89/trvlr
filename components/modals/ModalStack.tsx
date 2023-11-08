@@ -8,6 +8,7 @@ import Options from '../listPage/Options'
 import profileOptions from '../../assets/variables/profileOptions'
 import ChatListPage from '../messaging/ChatListPage'
 import ProfileListPage from '../profilePage/profileList/ProfileListPage'
+import ListEditor from '../listPage/ListEditor'
 
 export default function ModalStack () {
   const colors = useAppSelector(state => state.colors)
@@ -18,21 +19,16 @@ export default function ModalStack () {
   const optionsVisible = useAppSelector(state => state.options.optionsVisible)
   const chatPage = useAppSelector(state => state.message.chatPage)
   const addToList = useAppSelector(state => state.list.addToList)
+  const listEdit = useAppSelector(state => state.list.listEdit)
 
   return (
-    <View>
+    <View style={{ ...styles.container }}>
       {optionsVisible ? (
         <Options colors={colors} options={profileOptions(colors)} />
       ) : chatPage ? (
         <ChatListPage colors={colors} currentUser={currentUser} />
-      ) : newList ? (
-        <NewListPage colors={colors} currentUser={currentUser} />
-      ) : addToList ? (
-        <ProfileListPage
-          colors={colors}
-          newListProvided={true}
-          addToList={addToList}
-        />
+      ) : listEdit ? (
+        <ListEditor />
       ) : selectedList ? (
         <ListPage colors={colors} list={selectedList} />
       ) : contact ? (
@@ -42,4 +38,8 @@ export default function ModalStack () {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    zIndex: 100000
+  }
+})

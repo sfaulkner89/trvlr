@@ -1,1 +1,1 @@
-export default [{ name: 'map' }, { name: 'lists' }, { name: 'updates' }]
+export default [{ name: 'map' }, { name: 'lists' }]

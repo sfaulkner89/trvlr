@@ -24,6 +24,9 @@ export default async (
           name: initialPlace.name,
           googlePlaceId: initialPlace.placeId,
           types: initialPlace.establishment.types,
+          note: initialPlace.note,
+          rating: initialPlace.establishment.rating,
+          price: initialPlace.establishment.price,
           location: {
             latitude: initialPlace.location.latitude,
             longitude: initialPlace.location.longitude

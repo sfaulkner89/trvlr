@@ -153,5 +153,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 100
-  }
+  },
+  resultsHolder: {}
 })

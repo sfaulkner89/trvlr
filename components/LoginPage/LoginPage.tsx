@@ -80,8 +80,8 @@ export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
 
       <View style={{ ...styles.contentHolder }}>
         <Image
-          source={require('../../assets/trvlr.png')}
-          style={{ width: winWidth }}
+          source={require('../../assets/logo3.png')}
+          style={{ width: winWidth * 0.5, height: winWidth * 0.5 }}
         />
         <TextInput
           placeholder='Email'

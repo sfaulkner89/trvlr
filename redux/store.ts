@@ -13,12 +13,13 @@ import colorSlice from './slices/colorSlice'
 import listSlice from './slices/listSlice'
 import optionsSlice from './slices/optionsSlice'
 import devToolsEnhancer from 'remote-redux-devtools'
+import listEditorSlice from './slices/listEditorSlice'
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2,
-  blacklist: ['results']
+  blacklist: ['results', 'list']
 }
 
 const reducers = combineReducers({
@@ -31,7 +32,8 @@ const reducers = combineReducers({
   colors: colorSlice,
   list: listSlice,
   options: optionsSlice,
-  message: messageSlice
+  message: messageSlice,
+  listEditor: listEditorSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)
