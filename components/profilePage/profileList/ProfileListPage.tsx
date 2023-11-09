@@ -13,12 +13,6 @@ import { Entypo } from '@expo/vector-icons'
 import Checkbox from 'expo-checkbox'
 import NoteInputScreen from '../../listPage/NoteInputScreen'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
-import {
-  hideAddToList,
-  hideNoteScreen,
-  showNewList,
-  showNoteScreen
-} from '../../../redux/slices/listSlice'
 import NewListHeader from './NewListHeader'
 
 type Props = {
@@ -46,11 +40,16 @@ export default function ProfileListPage ({
 
   const pressHandler = async (list: List) => {
     submitHandler(list)
-    setTimeout(refetch, 200)
   }
 
   return (
-    <View style={{ ...styles.container, backgroundColor: colors.midColor }}>
+    <View
+      style={{
+        ...styles.container,
+        backgroundColor: colors.midColor,
+        maxHeight: newListProvided ? null : winHeight * 0.7
+      }}
+    >
       {newListProvided && <NewListHeader />}
       <ScrollView>
         {data &&
@@ -64,7 +63,7 @@ export default function ProfileListPage ({
               />
             )
           })}
-        <View style={styles.padding} />
+        {!newListProvided && <View style={styles.padding} />}
       </ScrollView>
     </View>
   )

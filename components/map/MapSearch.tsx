@@ -41,6 +41,7 @@ export default function MapSearch ({ colors }: Props) {
 
   const changeHandler = async (search: string) => {
     const results = await placeSearch(search, mapLocation)
+    console.log('RESULTS', results)
     if (results) {
       dispatch(changePlaceResults(results))
     }

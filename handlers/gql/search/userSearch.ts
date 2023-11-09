@@ -3,48 +3,52 @@ import { gql } from '@apollo/client'
 export const USERSEARCH = gql(`
     query userSearch ($query: String!) {
         userSearch (query: $query) {
-            id
-            username
-            displayName
-            profileLocation
+            id,
+            username,
+            displayName,
+            profileLocation,
             countries {
-                country
+                country,
                 dateAdded
-            }
-            following
-            followers
+            },
+            following,
+            followers,
             checkInLocation {
                 names {
-                    main_text
+                    main_text,
                     secondary_text
+                }
+                location {
+                    latitude,
+                    longitude
                 }
             }
             lists {
-                id
-                displayName
+                id,
+                displayName,
                 location {
-                    latitude
-                    longitude
-                }
-                city
-                country
-                dateCreated
-                dateModified
+                    latitude,
+                    longitude,
+                },
+                city,
+                country,
+                dateCreated,
+                dateModified,
                 places {
-                    id
-                    name
-                    googlePlaceId
+                    id,
+                    name,
+                    googlePlaceId,
                     location {
-                        latitude
+                        latitude,
                         longitude
                     }
-                    city
-                    country
-                    dateCreated
-                    dateModified
+                    city,
+                    country,
+                    dateCreated,
+                    dateModified,
                     types
                 }
-            }
+            }   
         }
-    }
+     }
 `)

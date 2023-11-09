@@ -45,8 +45,6 @@ export default function NewListPage ({ locale, submitHandler }: Props) {
     ? `${selectedPlace.location.area} List ${year}`
     : `${month} ${year} List`
 
-  dispatch(setListName(defaultListName))
-
   const colors = useAppSelector(state => state.colors)
 
   const noteRequested = useAppSelector(state => state.listEditor.noteRequested)
@@ -54,6 +52,7 @@ export default function NewListPage ({ locale, submitHandler }: Props) {
 
   useEffect(() => {
     dispatch(setNewList(true))
+    dispatch(setListName(defaultListName))
   }, [])
 
   const exitHandler = () => {

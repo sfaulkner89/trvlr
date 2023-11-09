@@ -45,7 +45,7 @@ export default function ProfileMap () {
     }
     putUser(variables)
       .then(res => {
-        dispatch(setUser(res.data.putUser))
+        dispatch(setUser({ ...user, countries: res.data.putUser.countries }))
       })
       .catch(err => {
         console.log(err)

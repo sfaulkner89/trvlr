@@ -8,10 +8,10 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 type Props = {
   colors: Colors
   option: Option
-  type: string
+  type?: string
 }
 
-export default function OptionHolder ({ colors, option }: Props) {
+export default function OptionHolder ({ colors, option, type = 'list' }: Props) {
   const dispatch = useAppDispatch()
   const contact = useAppSelector(state => state.contact.selectedContact)
   const list = useAppSelector(state => state.list.selectedList)

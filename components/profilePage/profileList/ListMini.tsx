@@ -43,7 +43,7 @@ export default function ListMini ({ list, submitHandler, refetch }: Props) {
     !!list.places.find(place => place.googlePlaceId === selectedPlace.placeId)
 
   const [disabled, setDisabled] = useState(placeAlreadyOnList)
-  const [options, setOptions] = useState(false)
+  const [deleteState, setDeleteState] = useState(false)
 
   const pressHandler = async () => {
     dispatch(selectList({ ...list, places: placeShim(list.places) }))
@@ -63,21 +63,10 @@ export default function ListMini ({ list, submitHandler, refetch }: Props) {
     }).then(data => {
       refetch()
     })
-    setOptions(false)
-  }
-
-  if (options) {
-    return (
-      <OptionHolder
-        colors={colors}
-        type='list'
-        option={{
-          title: 'Delete List',
-          icon: <AntDesign name='delete' size={iconSize} color='white' />,
-          onPress: deleteHandler
-        }}
-      />
+    dispatch(
+      setUser({ ...user, lists: user.lists.filter(l => l.id !== list.id) })
     )
+    setDeleteState(false)
   }
 
   return (
@@ -88,10 +77,11 @@ export default function ListMini ({ list, submitHandler, refetch }: Props) {
         backgroundColor: disabled ? colors.midColor : colors.darkColor,
         borderColor: disabled ? colors.darkColor : colors.lightColor,
         borderTopColor: disabled ? colors.darkcolor : 'none',
-        borderTopWidth: disabled ? 1 : 0
+        borderTopWidth: disabled ? 1 : 0,
+        zIndex: deleteState ? 101 : 0
       }}
       onPress={pressHandler}
-      onLongPress={!contact ? () => setOptions(true) : null}
+      onLongPress={!contact ? () => setDeleteState(true) : null}
     >
       {list.photo ? (
         <Image source={list.photo} style={styles.photo} />
@@ -123,22 +113,41 @@ export default function ListMini ({ list, submitHandler, refetch }: Props) {
         )}
       </View>
 
-      <View style={{ ...styles.iconHolder }}>
-        {disabled && (
-          <View style={styles.disabledCheck}>
-            <AntDesign
-              name='checkcircle'
-              size={iconSize * 1.5}
-              color={colors.lightColor}
-              style={styles.arrow}
-            />
-          </View>
-        )}
-        <Text style={{ ...styles.places, color: colors.lightColor }}>
-          {list.places.length}
-        </Text>
-        <FontAwesome name='map-pin' size={iconSize} color={colors.lightColor} />
-      </View>
+      {deleteState ? (
+        <View style={{ ...styles.deleteHolder }}>
+          <Pressable onPress={deleteHandler}>
+            <Text style={{ ...styles.places, color: colors.lightColor }}>
+              Delete
+            </Text>
+          </Pressable>
+          <Pressable onPress={() => setDeleteState(false)}>
+            <Text style={{ ...styles.places, color: colors.lightColor }}>
+              Keep
+            </Text>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={{ ...styles.iconHolder }}>
+          {disabled && (
+            <View style={styles.disabledCheck}>
+              <AntDesign
+                name='checkcircle'
+                size={iconSize * 1.5}
+                color={colors.lightColor}
+                style={styles.arrow}
+              />
+            </View>
+          )}
+          <Text style={{ ...styles.places, color: colors.lightColor }}>
+            {list.places.length}
+          </Text>
+          <FontAwesome
+            name='map-pin'
+            size={iconSize}
+            color={colors.lightColor}
+          />
+        </View>
+      )}
     </Pressable>
   )
 }
@@ -178,6 +187,13 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: winWidth * 0.02
   },
+  deleteHolder: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flex: 1,
+    marginRight: winWidth * 0.02
+  },
   places: {
     fontSize: iconSize,
     marginRight: winWidth * 0.01
@@ -185,5 +201,13 @@ const styles = StyleSheet.create({
   arrow: {
     marginLeft: winWidth * 0.02
   },
-  geography: {}
+  geography: {},
+  sheet: {
+    position: 'absolute',
+    height: winHeight,
+    width: winWidth,
+    top: 0,
+    left: 0,
+    zIndex: 100
+  }
 })

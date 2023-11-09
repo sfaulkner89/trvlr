@@ -9,6 +9,8 @@ import { setUser } from '../../redux/slices/userSlice'
 import { Member } from '../../types/Member'
 import { Dispatch } from '@reduxjs/toolkit'
 import { hideOptions } from '../../redux/slices/optionsSlice'
+import { setCheckInLocation } from '../../redux/slices/locationSlice'
+import { changePageNumber } from '../../redux/slices/contactSlice'
 
 const iconSize = winWidth * 0.1
 
@@ -21,6 +23,7 @@ const deleteHandler = async () => {
 
 const logInAsUser = async (dispatch: Dispatch, contact: Member) => {
   dispatch(setUser({ ...contact, admin: true }))
+  dispatch(setCheckInLocation(contact.checkInLocation))
   dispatch(hideOptions())
 }
 

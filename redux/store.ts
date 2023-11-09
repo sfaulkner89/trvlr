@@ -14,6 +14,7 @@ import listSlice from './slices/listSlice'
 import optionsSlice from './slices/optionsSlice'
 import devToolsEnhancer from 'remote-redux-devtools'
 import listEditorSlice from './slices/listEditorSlice'
+import modalSlice from './slices/modalSlice'
 
 const persistConfig = {
   key: 'root',
@@ -33,7 +34,8 @@ const reducers = combineReducers({
   list: listSlice,
   options: optionsSlice,
   message: messageSlice,
-  listEditor: listEditorSlice
+  listEditor: listEditorSlice,
+  modals: modalSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)

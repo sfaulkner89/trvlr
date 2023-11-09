@@ -12,19 +12,28 @@ import { List } from '../../types/List'
 import { PlaceDetails } from 'types/PlaceDetails'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { hideOptions } from '../../redux/slices/optionsSlice'
+import { exit } from 'process'
 
 type Props = {
   colors: Colors
   options: Option[]
+  type: string
+  exitHandler?: () => void
 }
 
-export default function Options ({ colors, options }: Props) {
+export default function Options ({
+  colors,
+  options,
+  type = 'list',
+  exitHandler
+}: Props) {
   const optionsType = useAppSelector(state => state.options.optionsType)
   const contact = useAppSelector(state => state.contact)
   const dispatch = useAppDispatch()
 
   const clearOptions = () => {
     dispatch(hideOptions())
+    exitHandler && exitHandler()
   }
 
   return (
@@ -48,7 +57,9 @@ export default function Options ({ colors, options }: Props) {
         style={{ ...styles.container, backgroundColor: colors.darkColor }}
       >
         {options.map((option, i) => {
-          return <OptionHolder option={option} colors={colors} key={i} />
+          return (
+            <OptionHolder option={option} colors={colors} key={i} type={type} />
+          )
         })}
       </ScrollView>
     </View>

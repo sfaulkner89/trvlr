@@ -1,5 +1,5 @@
 import { StyleSheet, View, Image, Text, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MapView, {
   LatLng,
   LongPressEvent,
@@ -15,7 +15,7 @@ import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { Deltas } from '../../types/Deltas'
 import initialPosition from '../../assets/config/initialPosition'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { setNearbyPlace } from '../../redux/slices/locationSlice'
+import { setNearbyPlace, setZoom } from '../../redux/slices/locationSlice'
 import { setSelectedPlace } from '../../redux/slices/resultsSlice'
 import { Member } from '../../types/Member'
 import HeaderBar from '../../components/headerBar/HeaderBar'
@@ -27,6 +27,10 @@ import { useQuery } from '@apollo/client'
 import { GETUSERS } from '../../handlers/gql/users/getUsers'
 import ContactMarker from './ContactMarker'
 import PlaceInfoModal from './PlaceInfoModal'
+import PlaceAddedModal from './PlaceAddedModal'
+import { GETCONTACTS } from '../../handlers/gql/users/getContacts'
+import { setMapToast } from '../../redux/slices/modalSlice'
+import { mapToast } from '../../assets/tools/toast'
 
 type Props = {
   colors: Colors
@@ -37,10 +41,11 @@ type Props = {
 }
 
 export default function Map ({ colors, currentUser }: Props) {
-  const [moreDetails, setMoreDetails] = useState(false)
+  const mapRef = React.useRef<MapView>(null)
+
   const dispatch = useAppDispatch()
+
   const mapPosition = useAppSelector(state => state.location.map)
-  const areaNames = useAppSelector(state => state.location.browseArea)
   const checkInLocation = useAppSelector(
     state => state.location.checkInLocation
   )
@@ -50,34 +55,52 @@ export default function Map ({ colors, currentUser }: Props) {
   const selectedPlace: PlaceDetails = useAppSelector(
     state => state.results.selectedPlace
   )
-  const { data: contactLocations } = useQuery<{ getUsers: Member[] }>(
-    GETUSERS,
-    {
-      variables: { ids: currentUser.following }
-    }
-  )
 
+  const modalMessage = useAppSelector(state => state.modals.mapToast)
+  const zoom = useAppSelector(state => state.location.zoom)
+  const { data } = useQuery<{
+    getContacts: { contacts: Member[] }
+  }>(GETCONTACTS, {
+    variables: { userId: currentUser.id }
+  })
   const shortPressHandler = async (position: LatLng) => {
-    console.log(position)
-    const nearby = await nearbySearch(position)
-    dispatch(setNearbyPlace(nearby))
-    const placeDetails = await getPlaceDetails(nearby)
+    if (position) {
+      const nearby = await nearbySearch(position)
+      if (nearby) {
+        dispatch(setNearbyPlace(nearby))
+        const placeDetails = await getPlaceDetails(nearby)
+        dispatch(
+          setSelectedPlace({
+            ...placeDetails,
+            placeId: nearby.placeId,
+            address: nearby.names.secondary_text
+          })
+        )
+      } else {
+        dispatch(setSelectedPlace(null))
+        mapToast(dispatch, 'No nearby places found', 3000)
+      }
+    }
+  }
+
+  const getZoom = async () => {
+    const bounds = await mapRef.current.getMapBoundaries()
     dispatch(
-      setSelectedPlace({
-        ...placeDetails,
-        placeId: nearby.placeId
-      })
+      setZoom(
+        Math.min(
+          bounds.northEast.latitude - bounds.southWest.latitude,
+          bounds.northEast.longitude - bounds.southWest.longitude
+        )
+      )
     )
   }
 
-  const pinAtCheckIn =
-    mapPosition?.longitude === checkInLocation?.location.longitude &&
-    mapPosition?.latitude === checkInLocation?.location.latitude
+  const contactLocations = data?.getContacts?.contacts
 
   const mapPositionCalibrated = {
     ...mapPosition,
-    longitude: mapPosition.longitude - 0.00015,
-    latitude: mapPosition.latitude + 0.00015
+    longitude: mapPosition.longitude,
+    latitude: mapPosition.latitude
   }
 
   return (
@@ -85,6 +108,7 @@ export default function Map ({ colors, currentUser }: Props) {
       <React.Fragment>
         <HeaderBar colors={colors} />
         <MapView
+          ref={mapRef}
           style={styles.map}
           provider={PROVIDER_GOOGLE}
           region={mapPositionCalibrated}
@@ -95,24 +119,40 @@ export default function Map ({ colors, currentUser }: Props) {
             shortPressHandler(e.nativeEvent.coordinate)
           }
           onLongPress={(e: LongPressEvent) => console.log(e)}
+          //onTouchEnd={getZoom}
+          //onRegionChangeComplete={getZoom}
         >
-          {checkInLocation && !pinAtCheckIn && (
-            <ContactMarker contact={{ ...currentUser, checkInLocation }} />
+          {checkInLocation && (
+            <ContactMarker
+              contact={{ ...currentUser, checkInLocation }}
+              isCurrentUser={true}
+              zoom={zoom}
+            />
           )}
-          {(contactLocations?.getUsers || []).map((contact, i) => {
-            return <ContactMarker key={i} contact={contact} />
+          {(contactLocations || []).map((contact, i) => {
+            return (
+              <ContactMarker
+                key={i}
+                contact={contact}
+                isCurrentUser={false}
+                zoom={zoom}
+              />
+            )
           })}
-          {nearbyPlace && (
+          {selectedPlace && (
             <Marker
               coordinate={{
-                longitude: nearbyPlace?.location.longitude,
-                latitude: nearbyPlace?.location.latitude
+                longitude: selectedPlace?.location.longitude,
+                latitude: selectedPlace?.location.latitude
               }}
               pinColor={colors.darkColor}
             />
           )}
         </MapView>
-        {nearbyPlace && selectedPlace && <PlaceInfoModal />}
+        <View style={styles.bottomModals}>
+          <PlaceAddedModal modalMessage={modalMessage} />
+          {nearbyPlace && selectedPlace && <PlaceInfoModal />}
+        </View>
       </React.Fragment>
     </View>
   )
@@ -125,5 +165,15 @@ const styles = StyleSheet.create({
   map: {
     width: winWidth,
     height: winHeight
+  },
+  bottomModals: {
+    width: winWidth,
+    zIndex: 100,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0
   }
 })

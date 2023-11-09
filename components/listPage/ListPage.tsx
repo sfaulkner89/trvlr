@@ -25,10 +25,10 @@ const size = winWidth * 0.06
 
 export default function ListPage ({ colors, list }: Props) {
   const placesListHolder = React.useRef<View>(null)
-  const [listSelection, setListSelection] = useState<List | undefined>()
-  const [placeSelection, setPlaceSelection] = useState<
-    PlaceDetails | undefined
-  >()
+  const [listSelection, setListSelection] = useState<List | null>(null)
+  const [placeSelection, setPlaceSelection] = useState<PlaceDetails | null>(
+    null
+  )
   const [highlightedPlace, setHighlightedPlace] = useState<number | undefined>()
 
   const dispatch = useAppDispatch()
@@ -38,13 +38,17 @@ export default function ListPage ({ colors, list }: Props) {
 
   return (
     <React.Fragment>
-      {listSelection || placeSelection ? (
+      {(listSelection || placeSelection) && (
         <Options
           colors={colors}
           options={placeSelection ? placeOptions(colors) : listOptions(colors)}
+          type={placeSelection ? 'place' : 'list'}
+          exitHandler={
+            placeSelection
+              ? () => setPlaceSelection(null)
+              : () => setListSelection(null)
+          }
         />
-      ) : (
-        <View />
       )}
       <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
         <ListHeader colors={colors} profile={list} />

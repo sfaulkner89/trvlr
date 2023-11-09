@@ -13,6 +13,7 @@ import { ADDPLACETOLIST } from '../../handlers/gql/lists/addPlaceToList'
 import { CREATELIST } from '../../handlers/gql/lists/createList'
 import { resetListEditor } from '../../redux/slices/listEditorSlice'
 import { List } from '../../types/List'
+import { setMapToast } from '../../redux/slices/modalSlice'
 
 export default function ListEditor () {
   const selectedPlace = useAppSelector(state => state.results.selectedPlace)
@@ -43,17 +44,32 @@ export default function ListEditor () {
           userId: user.id,
           place: placeToSend
         }
-      }).catch(err => console.log('POO', err))
+      }).catch(err => console.log(err))
     }
     if (placeToAdd) {
+      dispatch(
+        setMapToast(
+          `${selectedPlace.name} added to ${
+            listTitle
+              ? listTitle
+              : list
+              ? list.displayName
+              : selectedList
+              ? selectedList.displayName
+              : 'list'
+          }`
+        )
+      )
       dispatch(selectList(null))
     }
     dispatch(resetListEditor())
     dispatch(setListEdit(false))
+    setTimeout(() => {
+      dispatch(setMapToast(null))
+    }, 3000)
   }
 
   const createHandler = async () => {
-    console.log('SXSS', selectedPlace)
     const placeWithNote = { ...selectedPlace, note }
     const createdList = await createList(
       user,
@@ -63,17 +79,19 @@ export default function ListEditor () {
     ).catch(err => console.log(err))
     if (createdList) {
       const cleanedPlaces = placeShim(createdList.places)
-      dispatch(
-        selectList({
-          displayName: listTitle,
-          photo: undefined,
-          location: undefined, // get Coordinates of city if being created from a place.
-          country: undefined,
-          dateCreated: new Date(),
-          dateModified: new Date(),
-          places: cleanedPlaces
-        })
-      )
+      if (!placeToAdd) {
+        dispatch(
+          selectList({
+            displayName: listTitle,
+            photo: undefined,
+            location: undefined, // get Coordinates of city if being created from a place.
+            country: undefined,
+            dateCreated: new Date(),
+            dateModified: new Date(),
+            places: cleanedPlaces
+          })
+        )
+      }
     }
   }
 

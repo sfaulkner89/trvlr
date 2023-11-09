@@ -42,25 +42,26 @@ export default function PlaceInfoModal () {
   }, [moreDetails])
 
   const onCheckInPress = () => {
-    console.log('LOCATION', location)
+    console.log('LOCATION', nearbyPlace)
 
     checkIn({
       variables: {
         userId: user.id,
-        checkInLocation: location
+        checkInLocation: nearbyPlace
       }
     }).then(() => {
-      dispatch(setCheckInLocation(location))
+      dispatch(setCheckInLocation(nearbyPlace))
     })
   }
 
   return (
     <Pressable
       onPress={() => setMoreDetails(!moreDetails)}
-      style={{
-        ...styles.nearbyHolder,
-        backgroundColor: colors.lightColor
-      }}
+      style={
+        {
+          // ...styles.nearbyHolder,
+        }
+      }
     >
       <Animated.View
         style={{
@@ -73,9 +74,9 @@ export default function PlaceInfoModal () {
       >
         <View style={styles.addressHolder}>
           <Text style={{ ...styles.nearbyTitle, color: colors.darkColor }}>
-            {nearbyPlace?.names.main_text}
+            {selectedPlace?.name}
           </Text>
-          <Text>{nearbyPlace?.names.secondary_text}</Text>
+          <Text>{selectedPlace?.address}</Text>
         </View>
 
         {moreDetails && (
@@ -109,7 +110,7 @@ export default function PlaceInfoModal () {
                 ...styles.button,
                 backgroundColor: colors.selectedColor
               }}
-              onPress={() => {}}
+              onPress={onCheckInPress}
             >
               {moreDetails ? (
                 <Text style={{ ...styles.buttonText, color: colors.darkColor }}>
@@ -152,8 +153,6 @@ const styles = StyleSheet.create({
     maxWidth: '70%'
   },
   nearbyHolder: {
-    position: 'absolute',
-    bottom: 0,
     width: winWidth,
     height: 50,
     justifyContent: 'center',
@@ -163,8 +162,6 @@ const styles = StyleSheet.create({
     padding: 10
   },
   nearbyHolderExtended: {
-    position: 'absolute',
-    bottom: 0,
     width: winWidth,
     height: 200,
     justifyContent: 'center',

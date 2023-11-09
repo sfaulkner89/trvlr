@@ -4,4 +4,5 @@ export type Colors = {
   lightColor: string
   selectedColor: string
   errorColor?: string
+  whiteColor?: string
 }

@@ -1,6 +1,7 @@
 export type PlaceDetails = {
   placeId: string
   name: string
+  address?: string
   note?: string
   location: {
     latitude: number

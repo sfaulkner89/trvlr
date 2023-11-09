@@ -22,6 +22,7 @@ export default async (
     initialPlace: initialPlace
       ? {
           name: initialPlace.name,
+          address: initialPlace.address,
           googlePlaceId: initialPlace.placeId,
           types: initialPlace.establishment.types,
           note: initialPlace.note,

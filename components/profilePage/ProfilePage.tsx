@@ -37,9 +37,6 @@ export default function ProfilePage ({ colors }: Props) {
 
   const profile = isCurrentUser ? currentUser : contact
 
-  const [selectedList, setSelectedList] = useState<List | undefined>()
-  const [profileSelection, setProfileSelection] = useState<Member | undefined>()
-
   const dispatch = useAppDispatch()
   const page = useAppSelector(state => state.contact.pageNumber)
 

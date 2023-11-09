@@ -21,7 +21,8 @@ export const colors: Colors = {
   midColor: '#4b4a54',
   lightColor: '#cccccc',
   selectedColor: '#98b68a',
-  errorColor: '#ae1d24'
+  errorColor: '#ae1d24',
+  whiteColor: '#ffffff'
 }
 
 export default function App () {
