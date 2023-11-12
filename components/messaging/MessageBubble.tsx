@@ -3,6 +3,7 @@ import React from 'react'
 import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
+import { parse } from 'path'
 
 type Props = {
   colors: Colors
@@ -10,12 +11,10 @@ type Props = {
   message: Message
 }
 
-export default function MessageBubble ({
-  colors,
-  currentUser,
-  message
-}: Props) {
-  const currentUserBoolean = message.userId === currentUser.id
+export default function MessageBubble ({ colors, currentUser, message }: Props) {
+  const dateCreated = new Date(parseInt(message.dateCreated))
+  console.log('MC', dateCreated)
+  const currentUserBoolean = message.from === currentUser.id
   return (
     <View
       style={{
@@ -37,7 +36,7 @@ export default function MessageBubble ({
             color: currentUserBoolean ? colors.darkColor : colors.darkColor
           }}
         >
-          {message.text}
+          {message.message}
         </Text>
         <View style={styles.dateHolder}>
           <Text
@@ -46,7 +45,7 @@ export default function MessageBubble ({
               color: currentUserBoolean ? colors.darkColor : colors.darkColor
             }}
           >
-            {message.dateSent.toLocaleTimeString([], {
+            {dateCreated.toLocaleTimeString([], {
               hour: 'numeric',
               minute: '2-digit'
             })}

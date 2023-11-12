@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery, useSubscription } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { userCache } from './assets/caches/userCache'
@@ -12,9 +12,11 @@ import Toolbar from './components/toolbar/Toolbar'
 import { useAppDispatch, useAppSelector } from './redux/hooks'
 import { setUser } from './redux/slices/userSlice'
 import { Colors } from './types/colors'
-import { GETUSER } from './handlers/gql/users/getUser'
+import { GETUSERPOPULATED } from './handlers/gql/users/getUserPopulated'
 import ModalStack from './components/modals/ModalStack'
 import LoginPage from './components/LoginPage/LoginPage'
+import { NEW_MESSAGES } from './handlers/gql/subscriptions/newMessages'
+import { setMessagingGroups } from './redux/slices/messagingGroupSlice'
 
 export const colors: Colors = {
   darkColor: '#34333a',
@@ -33,17 +35,22 @@ export default function App () {
 
   const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.user)
-  const [getUser, { data }] = useLazyQuery(GETUSER)
+  const [getUser] = useLazyQuery(GETUSERPOPULATED)
+  const { data: messageData } = useSubscription(NEW_MESSAGES, {
+    variables: { ids: [user.id] }
+  })
 
   useEffect(() => {
     const profileCache = async () => {
       const user = await userCache.get('primary')
-      console.log('USER', user)
       if (user) {
+        console.log('user', user)
         await getUser({
-          variables: { id: JSON.parse(user).id }
+          variables: { id: JSON.parse(user).id, populated: true }
         }).then(res => {
+          console.log(res.data)
           dispatch(setUser(res?.data.getUser))
+          dispatch(setMessagingGroups(res?.data.getUser.messagingGroups))
         })
         setLoggedIn(true)
       }

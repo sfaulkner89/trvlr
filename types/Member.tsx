@@ -10,6 +10,7 @@ export type Member = {
   bio: string
   profilePicture: ImageData
   profileLocation: string
+  messagingGroups: MessagingGroup[]
   countries: string[]
   following: string[]
   followers: string[]

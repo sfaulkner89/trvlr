@@ -4,6 +4,8 @@ import { Member } from './Member'
 export type MessagingGroup = {
   id: string
   group?: GroupInfo
-  contacts: string[]
+  members: Member[]
   messages: Message[]
+  dateCreated: string
+  dateModified: string
 }

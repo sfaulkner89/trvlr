@@ -1,9 +1,34 @@
 import { gql } from '@apollo/client'
 
 export const CREATE_GROUP = gql(`
-    mutation createGroup ($members: [String!]!, $message: String, $name: String) {
-        createGroup (members: $members, message: $message, name: $name) {
-            id
+    mutation createGroup ($from: String!, $to: [String]!, $message: String, $name: String) {
+        createGroup (from: $from, to: $to, message: $message, name: $name) {
+            id,
+            name,
+            group,
+            members {
+                id,
+                username,
+                displayName,
+                profileLocation,
+                checkInLocation {
+                    names {
+                        main_text,
+                        secondary_text
+                    }
+                    location {
+                        latitude,
+                        longitude
+                    }
+                }
+            },
+            messages {
+                to,
+                from,
+                message,
+                dateCreated
+            },
+            dateCreated
         }
     }
 `)

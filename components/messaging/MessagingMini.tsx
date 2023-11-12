@@ -13,24 +13,37 @@ import ImageGroup from './ImageGroup'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { Member } from '../../types/Member'
 import { useDispatch } from 'react-redux'
-import { useAppDispatch } from '../../redux/hooks'
-import { setContacts } from '../../redux/slices/contactSlice'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { setContact, setContacts } from '../../redux/slices/contactSlice'
+import { useQuery } from '@apollo/client'
+import { GETUSERS } from '../../handlers/gql/users/getUsers'
+import { selectMessagingGroup } from '../../redux/slices/messagingGroupSlice'
+import CachedImage from 'react-native-expo-cached-image'
+import moment from 'moment'
 
 type Props = {
-  colors: Colors
-  contact: Member & { messages: Message[] }
+  messagingGroup: MessagingGroup
 }
 
-export default function MessagingMini ({ contact, colors, setContact }: Props) {
-  const lastMessage = contact.messages[contact.messages.length - 1]
-  const today = new Date().toDateString()
+export default function MessagingMini ({ messagingGroup }: Props) {
   const dispatch = useAppDispatch()
-  const dateString =
-    lastMessage.dateSent.getDay() +
-    ' ' +
-    lastMessage.dateSent.toLocaleString('default', { month: 'short' })
+  const colors = useAppSelector(store => store.colors)
+
+  const dateCreated = moment(parseInt(messagingGroup.dateCreated))
+  const dateModified = moment(parseInt(messagingGroup.dateModified))
+
+  console.log('DC', dateCreated.format('MMM'))
+
+  const contact = messagingGroup.members[0]
+  const lastMessage =
+    messagingGroup?.messages[messagingGroup?.messages.length - 1]
+
+  const otherDayString = dateModified.format('DD MMM')
+
+  const todayString = dateModified.format('HH:mm')
+
   const imageSource = (
-    <Image
+    <CachedImage
       style={styles.profilePicture}
       source={{ uri: contact.profileLocation }}
     />
@@ -43,7 +56,7 @@ export default function MessagingMini ({ contact, colors, setContact }: Props) {
         backgroundColor: colors.midColor,
         borderBottomColor: colors.darkColor
       }}
-      onPress={() => dispatch(setContact(contact))}
+      onPress={() => dispatch(selectMessagingGroup(messagingGroup))}
     >
       {imageSource}
       <View style={styles.dataHolder}>
@@ -54,9 +67,10 @@ export default function MessagingMini ({ contact, colors, setContact }: Props) {
         </View>
         <View style={styles.handleHolder}>
           <Text style={{ ...styles.handle, color: colors.lightColor }}>
-            {today === lastMessage.dateSent.toDateString()
-              ? lastMessage.dateSent.getHours() + ': ' + lastMessage.text
-              : dateString + ': ' + lastMessage.text}
+            {moment().diff(dateModified, 'days') > 1
+              ? otherDayString
+              : todayString}{' '}
+            {lastMessage?.message}
           </Text>
         </View>
       </View>

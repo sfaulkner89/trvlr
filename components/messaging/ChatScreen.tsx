@@ -15,47 +15,37 @@ import { Member } from 'types/Member'
 import MessageBubble from './MessageBubble'
 import { useAppSelector } from '../../redux/hooks'
 
-type Props = {
-  colors: Colors
-  currentUser: Member
-  profile: Member
-}
+type Props = {}
 
-export default function ChatScreen ({ colors, currentUser, profile }: Props) {
+export default function ChatScreen ({}: Props) {
   const contact = useAppSelector(store => store.contact.selectedContact)
   const user = useAppSelector(store => store.user)
-
-  const groupChat = user.groups.find(group =>
-    group.members.includes(contact.id)
+  const colors = useAppSelector(store => store.colors)
+  const selectedMessagingGroup: MessagingGroup = useAppSelector(
+    store => store.messagingGroups.selectedGroup
   )
 
-  let currentMessages
-
-  const [newChat, setNewChat] = useState<boolean>(!groupChat)
+  const newChat = selectedMessagingGroup.messages.length === 0
 
   return (
     <KeyboardAvoidingView
       behavior='padding'
       style={{ ...styles.container, backgroundColor: colors.midColor }}
     >
-      <ChatHeader colors={colors} profile={profile} />
+      <ChatHeader />
       <ScrollView contentContainerStyle={{ ...styles.messagesHolder }}>
-        {(currentMessages || []).map((message, i) => {
+        {(selectedMessagingGroup?.messages || []).map((message, i) => {
           return (
             <MessageBubble
               key={i}
               colors={colors}
-              currentUser={currentUser}
+              currentUser={user}
               message={message}
             />
           )
         })}
       </ScrollView>
-      <ChatInput
-        colors={colors}
-        currentMessages={currentMessages}
-        currentUser={currentUser}
-      />
+      <ChatInput newChat={newChat} />
     </KeyboardAvoidingView>
   )
 }

@@ -13,38 +13,61 @@ import { Member } from '../../types/Member'
 import uuid from 'react-native-uuid'
 import { useMutation } from '@apollo/client'
 import { CREATE_GROUP } from '../../handlers/gql/messages/creategroup'
-import { useAppSelector } from '../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { setUser } from '../../redux/slices/userSlice'
+import {
+  setMessagingGroups,
+  updateMessagingGroup
+} from '../../redux/slices/messagingGroupSlice'
+import { MessagingGroup } from '../../types/MessagingGroup'
+import { POSTMESSAGE } from '../../handlers/gql/messages/postMessage'
 
 type Props = {
-  colors: Colors
-  currentUser: Member
-  currentMessages: Message[]
   newChat: boolean
 }
 
-export default function ChatInput ({
-  colors,
-  newChat,
-  currentMessages,
-  currentUser
-}: Props) {
+export default function ChatInput ({ newChat }: Props) {
   const [createGroup] = useMutation(CREATE_GROUP)
-  const user = useAppSelector(store => store.user)
-  const contact = useAppSelector(store => store.contact.selectedContact)
+  const [postMessage] = useMutation<{
+    postMessage: { id: string; messages: Message[] }
+  }>(POSTMESSAGE)
+  const user: Member = useAppSelector(store => store.user)
+  const selectedMessagingGroup: MessagingGroup = useAppSelector(
+    store => store.messagingGroups.selectedGroup
+  )
+  const colors = useAppSelector(store => store.colors)
+  const dispatch = useAppDispatch()
 
   const [newMessage, setNewMessage] = useState<string>('')
 
-  const sendHandler = () => {
+  const sendHandler = async () => {
     if (!newMessage) return
 
     if (newChat) {
-      createGroup({
+      const newGroup = await createGroup({
         variables: {
-          members: [user.id, contact.id],
+          from: user.id,
+          to: [selectedMessagingGroup.members.map(m => m.id)],
           message: newMessage
         }
       })
+      console.log('NG', newGroup.data.createGroup)
+      dispatch(
+        setMessagingGroups([...user.messagingGroups, newGroup.data.createGroup])
+      )
     } else {
+      console.log(user.id, selectedMessagingGroup.id, newMessage)
+      const appendedGroup = await postMessage({
+        variables: {
+          groupId: selectedMessagingGroup.id,
+          userId: user.id,
+          message: newMessage
+        }
+      })
+
+      const newMessageList = appendedGroup.data.postMessage
+
+      dispatch(updateMessagingGroup(newMessageList))
     }
     //setCurrentMessages([...currentMessages, messageToAdd])
     setNewMessage('')

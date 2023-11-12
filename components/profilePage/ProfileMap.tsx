@@ -20,7 +20,7 @@ export default function ProfileMap () {
   const profile = contact ? contact : user
 
   const [region, setRegion] = React.useState(
-    profile.countries.map(c => c.country) || []
+    profile.countries?.map(c => c.country) || []
   )
 
   const [putUser] = useMutation(PUT_USER)
