@@ -28,7 +28,8 @@ export const CREATE_GROUP = gql(`
                 message,
                 dateCreated
             },
-            dateCreated
+            dateCreated,
+            dateModified
         }
     }
 `)

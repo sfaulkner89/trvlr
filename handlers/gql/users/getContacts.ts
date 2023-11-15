@@ -25,6 +25,7 @@ query getContacts ($userId: String!) {
                 }
             },
             group,
+            visible,
             lists {
                 id,
                 displayName,

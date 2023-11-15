@@ -23,9 +23,13 @@ export default function ChatListPage ({ colors, currentUser }: Props) {
   )
   const messagingGroups = useAppSelector(store => store.messagingGroups.groups)
 
-  const user = useAppSelector(store => store.user)
+  const sortedMessagingGroups = [...messagingGroups]
+    .filter(x => x)
+    .sort((a, b) => {
+      return b.dateModified - a.dateModified
+    })
 
-  console.log('MG', messagingGroups)
+  const user = useAppSelector(store => store.user)
 
   return selectedMessagingGroup ? (
     <ChatScreen />
@@ -33,7 +37,7 @@ export default function ChatListPage ({ colors, currentUser }: Props) {
     <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
       <ChatListHeader colors={colors} />
       <ScrollView>
-        {(user.messagingGroups || []).map(
+        {(sortedMessagingGroups || []).map(
           (messagingGroup: MessagingGroup, i: number) => {
             return <MessagingMini key={i} messagingGroup={messagingGroup} />
           }

@@ -23,6 +23,10 @@ export const GETUSERPOPULATED = gql(`
                     longitude
                 }
             },
+            contactIds {
+                id,
+                group
+            },
             messagingGroups {
                 id,
                 name,

@@ -3,19 +3,10 @@ import React, { useState } from 'react'
 import { Colors } from '../../types/colors'
 import MapSearch from '../map/MapSearch'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { AntDesign, Entypo } from '@expo/vector-icons'
+import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import {
-  changeMapLocation,
-  setMapBrowseArea,
-  setNearbyPlace
-} from '../../redux/slices/locationSlice'
-import getMapAreaName from '../../handlers/googleServices/getMapAreaName'
-import nearbySearch from '../../handlers/googleServices/nearbySearch'
-import { PlaceSearchResult } from '../../types/PlaceSearchResult'
-import getPlaceDetails from '../../handlers/googleServices/getPlaceDetails'
-import { setSelectedPlace } from '../../redux/slices/resultsSlice'
 import { showChatPage } from '../../redux/slices/messageSlice'
+import { setNotificationScreen } from '../../redux/slices/notificationSlice'
 
 const size = winWidth * 0.06
 
@@ -27,29 +18,6 @@ export default function HeaderBar ({ colors }: Props) {
   const searchOpen = useAppSelector(state => state.search.searchOpen)
 
   const dispatch = useAppDispatch()
-  const checkInLocation = useAppSelector(
-    state => state.location.checkInLocation
-  )
-
-  const homeHandler = async () => {
-    const position = {
-      longitude: checkInLocation.location.longitude,
-      latitude: checkInLocation.location.latitude,
-      latitudeDelta: 0.005,
-      longitudeDelta: 0.005
-    }
-    dispatch(changeMapLocation(position))
-    const placeDetails = await getMapAreaName(position)
-    dispatch(setMapBrowseArea(placeDetails))
-    const result: PlaceSearchResult | void = await nearbySearch(position)
-    if (result) {
-      dispatch(setNearbyPlace(result))
-      const details = await getPlaceDetails(result)
-      dispatch(
-        setSelectedPlace({ ...result, ...details, placeId: result.placeId })
-      )
-    }
-  }
 
   return (
     <View style={{ ...styles.container, backgroundColor: 'transparent' }}>
@@ -62,16 +30,22 @@ export default function HeaderBar ({ colors }: Props) {
           >
             <AntDesign name='message1' size={size} color={colors.lightColor} />
           </Pressable>
-          {checkInLocation && (
-            <Pressable
-              onPress={homeHandler}
-              style={{ ...styles.button, backgroundColor: colors.darkColor }}
-            >
-              <Entypo name='home' size={24} color={colors.lightColor} />
-            </Pressable>
-          )}
         </React.Fragment>
       )}
+      <Pressable
+        style={{ ...styles.button, backgroundColor: colors.darkColor }}
+        onPress={() => {
+          console.log('notif')
+          dispatch(setNotificationScreen(true))
+        }}
+      >
+        <Ionicons
+          name='notifications-outline'
+          size={size}
+          color={colors.lightColor}
+        />
+        <View style={styles.notificationDot}></View>
+      </Pressable>
     </View>
   )
 }
@@ -88,8 +62,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   button: {
-    opacity: 0.7,
+    opacity: 0.8,
     padding: winWidth * 0.02,
     borderRadius: size
+  },
+  notificationDot: {
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
+    backgroundColor: 'red',
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    opacity: 1
   }
 })

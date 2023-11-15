@@ -1,13 +1,17 @@
 import { gql } from '@apollo/client'
 
 export const NEW_MESSAGES = gql(`
-subscription newMessages($ids: [String]!) {
-    newMessages(ids: $ids) {
+subscription newMessages($id: String) {
+    newMessages(id: $id) {
         id,
         messages {
-            message,
-            to
-        }
+          to,
+          from,
+          message,
+          dateCreated,
+        },
+        dateCreated,
+        dateModified,
     }
 }
 `)

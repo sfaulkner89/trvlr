@@ -13,7 +13,6 @@ type Props = {
 
 export default function MessageBubble ({ colors, currentUser, message }: Props) {
   const dateCreated = new Date(parseInt(message.dateCreated))
-  console.log('MC', dateCreated)
   const currentUserBoolean = message.from === currentUser.id
   return (
     <View
@@ -59,7 +58,8 @@ export default function MessageBubble ({ colors, currentUser, message }: Props) 
 const styles = StyleSheet.create({
   messageContainer: {
     flex: 1,
-    maxHeight: winHeight * 0.06
+    maxHeight: winHeight * 0.06,
+    marginBottom: winHeight * 0.01
   },
   bubble: {
     padding: winWidth * 0.02,

@@ -8,6 +8,8 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { clearContact, setContact } from '../../redux/slices/contactSlice'
 import { hideChatPage } from '../../redux/slices/messageSlice'
 import { selectMessagingGroup } from '../../redux/slices/messagingGroupSlice'
+import { MessagingGroup } from '../../types/MessagingGroup'
+import CachedImage from 'react-native-expo-cached-image'
 
 type Props = {}
 
@@ -18,11 +20,14 @@ export default function ChatHeader ({}: Props) {
     store => store.messagingGroups.selectedGroup
   )
   const colors = useAppSelector(store => store.colors)
+  const user = useAppSelector(store => store.user)
   const dispatch = useAppDispatch()
 
-  const group = selectedMessagingGroup.group
+  const group: MessagingGroup = selectedMessagingGroup.group
 
-  const contact = selectedMessagingGroup.members[0]
+  const contact: Member | null = selectedMessagingGroup.members.filter(
+    m => m.id !== user.id
+  )[0]
 
   return (
     <View style={styles.container}>
@@ -32,9 +37,15 @@ export default function ChatHeader ({}: Props) {
       >
         <AntDesign name='left' size={buttonSize} color={colors.lightColor} />
       </Pressable>
-      <Text style={{ ...styles.handle, color: colors.lightColor }}>
-        {contact?.username}
-      </Text>
+      <Pressable style={styles.contactHolder}>
+        <CachedImage
+          style={styles.profilePic}
+          source={{ uri: contact?.profileLocation }}
+        />
+        <Text style={{ ...styles.handle, color: colors.lightColor }}>
+          {contact?.username}
+        </Text>
+      </Pressable>
       <Pressable style={styles.button}>
         <Entypo
           name='dots-three-horizontal'
@@ -49,20 +60,30 @@ export default function ChatHeader ({}: Props) {
 const styles = StyleSheet.create({
   container: {
     height: winHeight * 0.09,
+    width: winWidth,
     alignItems: 'flex-end',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     marginBottom: winHeight * 0.02,
     flexDirection: 'row'
   },
   handle: {
-    marginTop: winHeight * 0.01,
     fontSize: winWidth * 0.035,
     fontWeight: 'bold',
-    width: winWidth * 0.76,
     textAlign: 'center'
   },
   button: {
     width: winWidth * 0.12,
     alignItems: 'center'
+  },
+  profilePic: {
+    width: winWidth * 0.09,
+    aspectRatio: 1,
+    borderRadius: winWidth * 0.06
+  },
+  contactHolder: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: winWidth * 0.25
   }
 })

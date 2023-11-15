@@ -23,9 +23,17 @@ const uri =
     ? `${process.env.REACT_APP_PROD_HOST}/graphql`
     : 'http://192.168.0.88:8080/graphql'
 
+const wsUrl =
+  nodeEnv === 'production' && process.env.REACT_APP_PROD_HOST_WS
+    ? `${process.env.REACT_APP_PROD_HOST_WS}/graphql`
+    : `${process.env.REACT_APP_DEV_HOST_WS}:${process.env.REACT_APP_DEV_PORT}/graphql`
+
+console.log('Web Socket Url', wsUrl)
+console.log('Http Url', uri)
+
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://localhost:4000/graphql'
+    url: wsUrl
   })
 )
 

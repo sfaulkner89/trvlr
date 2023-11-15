@@ -16,12 +16,13 @@ import devToolsEnhancer from 'remote-redux-devtools'
 import listEditorSlice from './slices/listEditorSlice'
 import modalSlice from './slices/modalSlice'
 import messagingGroupSlice from './slices/messagingGroupSlice'
+import notificationSlice from './slices/notificationSlice'
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2,
-  blacklist: ['results', 'list']
+  blacklist: ['results', 'list', 'options']
 }
 
 const reducers = combineReducers({
@@ -37,7 +38,8 @@ const reducers = combineReducers({
   message: messageSlice,
   listEditor: listEditorSlice,
   modals: modalSlice,
-  messagingGroups: messagingGroupSlice
+  messagingGroups: messagingGroupSlice,
+  notification: notificationSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)

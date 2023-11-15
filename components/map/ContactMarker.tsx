@@ -34,8 +34,8 @@ const ContactMarker = ({ contact, isCurrentUser, zoom }: Props) => {
       <Marker
         style={{ zIndex: 100 }}
         coordinate={{
-          latitude: contact.checkInLocation.location.latitude,
-          longitude: contact.checkInLocation.location.longitude
+          latitude: contact?.checkInLocation?.location.latitude,
+          longitude: contact?.checkInLocation?.location.longitude
         }}
       >
         <Pressable onPress={pressHandler}>

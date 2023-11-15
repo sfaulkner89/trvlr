@@ -1,11 +1,12 @@
 import {
+  Keyboard,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
   Text,
   View
 } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Colors } from '../../types/colors'
 import { MessagingGroup } from '../../types/MessagingGroup'
 import ChatInput from './ChatInput'
@@ -25,6 +26,18 @@ export default function ChatScreen ({}: Props) {
     store => store.messagingGroups.selectedGroup
   )
 
+  useEffect(() => {
+    setTimeout(() => {
+      scrollRef.current?.scrollToEnd()
+    }, 100)
+  }, [selectedMessagingGroup.messages.length])
+
+  Keyboard.addListener('keyboardDidShow', () => {
+    scrollRef.current?.scrollToEnd({ animated: true })
+  })
+
+  const scrollRef = React.useRef(null)
+
   const newChat = selectedMessagingGroup.messages.length === 0
 
   return (
@@ -33,18 +46,20 @@ export default function ChatScreen ({}: Props) {
       style={{ ...styles.container, backgroundColor: colors.midColor }}
     >
       <ChatHeader />
-      <ScrollView contentContainerStyle={{ ...styles.messagesHolder }}>
-        {(selectedMessagingGroup?.messages || []).map((message, i) => {
-          return (
-            <MessageBubble
-              key={i}
-              colors={colors}
-              currentUser={user}
-              message={message}
-            />
-          )
-        })}
-      </ScrollView>
+      <View style={{ ...styles.messagesHolder }}>
+        <ScrollView ref={scrollRef}>
+          {(selectedMessagingGroup?.messages || []).map((message, i) => {
+            return (
+              <MessageBubble
+                key={i}
+                colors={colors}
+                currentUser={user}
+                message={message}
+              />
+            )
+          })}
+        </ScrollView>
+      </View>
       <ChatInput newChat={newChat} />
     </KeyboardAvoidingView>
   )
@@ -57,6 +72,7 @@ const styles = StyleSheet.create({
   },
   messagesHolder: {
     flex: 1,
+    // height: winHeight * 0.8,
     width: winWidth * 0.98,
     justifyContent: 'flex-start'
   },

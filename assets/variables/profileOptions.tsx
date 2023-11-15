@@ -11,14 +11,17 @@ import { Dispatch } from '@reduxjs/toolkit'
 import { hideOptions } from '../../redux/slices/optionsSlice'
 import { setCheckInLocation } from '../../redux/slices/locationSlice'
 import { changePageNumber } from '../../redux/slices/contactSlice'
+import { setMessagingGroups } from '../../redux/slices/messagingGroupSlice'
 
 const iconSize = winWidth * 0.1
 
-//const dispatch = useAppDispatch()
+// const dispatch = useAppDispatch()
 //const contact = useAppSelector(state => state.contact)
 
-const deleteHandler = async () => {
+const deleteHandler = async (dispatch: Dispatch) => {
   await userCache.remove('primary')
+  dispatch(setUser(null))
+  dispatch(setMessagingGroups([]))
 }
 
 const logInAsUser = async (dispatch: Dispatch, contact: Member) => {
@@ -51,7 +54,7 @@ export default (colors: Colors) => [
     icon: (
       <FontAwesome name='share' size={iconSize} color={colors.lightColor} />
     ),
-    onPress: deleteHandler
+    onPress: (dispatch: Dispatch) => deleteHandler(dispatch)
   },
   {
     title: 'Log In As User',

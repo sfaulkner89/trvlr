@@ -45,6 +45,8 @@ export default function ListMini ({ list, submitHandler, refetch }: Props) {
   const [disabled, setDisabled] = useState(placeAlreadyOnList)
   const [deleteState, setDeleteState] = useState(false)
 
+  console.log(list.places)
+
   const pressHandler = async () => {
     dispatch(selectList({ ...list, places: placeShim(list.places) }))
     if (noteRequested) {

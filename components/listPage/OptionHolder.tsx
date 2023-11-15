@@ -48,6 +48,8 @@ const styles = StyleSheet.create({
     width: winWidth * 0.4
   },
   title: {
-    fontSize: winWidth * 0.04
+    marginLeft: winWidth * 0.05,
+    fontSize: winWidth * 0.04,
+    width: winWidth * 0.4
   }
 })

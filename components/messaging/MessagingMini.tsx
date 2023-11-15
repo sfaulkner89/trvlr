@@ -1,22 +1,8 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Dimensions,
-  Pressable
-} from 'react-native'
+import { StyleSheet, Text, View, Pressable } from 'react-native'
 import React from 'react'
-import { Colors } from '../../types/colors'
 import { MessagingGroup } from '../../types/MessagingGroup'
-import ImageGroup from './ImageGroup'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { Member } from '../../types/Member'
-import { useDispatch } from 'react-redux'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { setContact, setContacts } from '../../redux/slices/contactSlice'
-import { useQuery } from '@apollo/client'
-import { GETUSERS } from '../../handlers/gql/users/getUsers'
 import { selectMessagingGroup } from '../../redux/slices/messagingGroupSlice'
 import CachedImage from 'react-native-expo-cached-image'
 import moment from 'moment'
@@ -28,13 +14,11 @@ type Props = {
 export default function MessagingMini ({ messagingGroup }: Props) {
   const dispatch = useAppDispatch()
   const colors = useAppSelector(store => store.colors)
+  const user = useAppSelector(store => store.user)
 
-  const dateCreated = moment(parseInt(messagingGroup.dateCreated))
   const dateModified = moment(parseInt(messagingGroup.dateModified))
 
-  console.log('DC', dateCreated.format('MMM'))
-
-  const contact = messagingGroup.members[0]
+  const contact = messagingGroup.members.find(x => x.id !== user.id)
   const lastMessage =
     messagingGroup?.messages[messagingGroup?.messages.length - 1]
 
@@ -67,7 +51,7 @@ export default function MessagingMini ({ messagingGroup }: Props) {
         </View>
         <View style={styles.handleHolder}>
           <Text style={{ ...styles.handle, color: colors.lightColor }}>
-            {moment().diff(dateModified, 'days') > 1
+            {!moment().isSame(dateModified, 'day')
               ? otherDayString
               : todayString}{' '}
             {lastMessage?.message}
@@ -89,7 +73,8 @@ const styles = StyleSheet.create({
   profilePicture: {
     width: 0.13 * winWidth,
     aspectRatio: 1,
-    marginLeft: winWidth * 0.02
+    marginLeft: winWidth * 0.02,
+    borderRadius: winWidth * 0.13 * 0.5
   },
   dataHolder: {
     flexDirection: 'column',

@@ -15,7 +15,12 @@ import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { Deltas } from '../../types/Deltas'
 import initialPosition from '../../assets/config/initialPosition'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { setNearbyPlace, setZoom } from '../../redux/slices/locationSlice'
+import {
+  changeMapLocation,
+  setMapBrowseArea,
+  setNearbyPlace,
+  setZoom
+} from '../../redux/slices/locationSlice'
 import { setSelectedPlace } from '../../redux/slices/resultsSlice'
 import { Member } from '../../types/Member'
 import HeaderBar from '../../components/headerBar/HeaderBar'
@@ -31,6 +36,8 @@ import PlaceAddedModal from './PlaceAddedModal'
 import { GETCONTACTS } from '../../handlers/gql/users/getContacts'
 import { setMapToast } from '../../redux/slices/modalSlice'
 import { mapToast } from '../../assets/tools/toast'
+import { Entypo } from '@expo/vector-icons'
+import MapFooter from './MapFooter'
 
 type Props = {
   colors: Colors
@@ -49,14 +56,10 @@ export default function Map ({ colors, currentUser }: Props) {
   const checkInLocation = useAppSelector(
     state => state.location.checkInLocation
   )
-  const nearbyPlace: PlaceSearchResult = useAppSelector(
-    state => state.location.nearbyPlace
-  )
   const selectedPlace: PlaceDetails = useAppSelector(
     state => state.results.selectedPlace
   )
 
-  const modalMessage = useAppSelector(state => state.modals.mapToast)
   const zoom = useAppSelector(state => state.location.zoom)
   const { data } = useQuery<{
     getContacts: { contacts: Member[] }
@@ -149,10 +152,7 @@ export default function Map ({ colors, currentUser }: Props) {
             />
           )}
         </MapView>
-        <View style={styles.bottomModals}>
-          <PlaceAddedModal modalMessage={modalMessage} />
-          {nearbyPlace && selectedPlace && <PlaceInfoModal />}
-        </View>
+        <MapFooter />
       </React.Fragment>
     </View>
   )
@@ -165,15 +165,5 @@ const styles = StyleSheet.create({
   map: {
     width: winWidth,
     height: winHeight
-  },
-  bottomModals: {
-    width: winWidth,
-    zIndex: 100,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 0
   }
 })
