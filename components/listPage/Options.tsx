@@ -11,27 +11,87 @@ import { Member } from '../../types/Member'
 import { List } from '../../types/List'
 import { PlaceDetails } from 'types/PlaceDetails'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { hideOptions } from '../../redux/slices/optionsSlice'
+import {
+  clearOptions,
+  setNameChange,
+  setOptionsType
+} from '../../redux/slices/optionsSlice'
+import { exit } from 'process'
+import { list } from 'firebase/storage'
+import listOptions from '../../assets/variables/listOptions'
+import contactOptions from '../../assets/variables/contactOptions'
+import NameChange from '../shared/NameChange'
+import { useMutation } from '@apollo/client'
+import { PUTCONTACT } from '../../handlers/gql/users/putContact'
+import { setUser } from '../../redux/slices/userSlice'
 
 type Props = {
   colors: Colors
-  options: Option[]
+  type?: string
+  exitHandler?: () => void
 }
 
-export default function Options ({ colors, options }: Props) {
+export default function Options ({ colors, type = 'list' }: Props) {
   const optionsType = useAppSelector(state => state.options.optionsType)
-  const contact = useAppSelector(state => state.contact)
+  const optionsTarget = useAppSelector(state => state.options.optionsTarget)
+  const nameChange = useAppSelector(state => state.options.nameChange)
+  const user = useAppSelector<Member>(state => state.user)
   const dispatch = useAppDispatch()
+  const [putContact] = useMutation<{ putContact: { id: string } }>(PUTCONTACT)
 
-  const clearOptions = () => {
-    dispatch(hideOptions())
+  let nameChangeSubmit = (name: string) => {}
+  let optionsList
+  let nameChangeMessage
+  let defaultName
+
+  switch (optionsType) {
+    case 'list':
+      optionsList = listOptions(colors)
+    case 'contact':
+      optionsList = contactOptions(colors, dispatch)
+      nameChangeSubmit = (name: string) => {
+        putContact({
+          variables: {
+            userId: user.id,
+            contactIds: [optionsTarget.id],
+            groupName: name
+          }
+        })
+        const updatedContact = {
+          ...user.contacts.find(c => c.id === optionsTarget.id)
+        }
+        updatedContact.group = name
+        dispatch(
+          setUser({
+            ...user,
+            contacts: [
+              ...user.contacts.filter(c => c.id !== optionsTarget.id),
+              updatedContact
+            ]
+          })
+        )
+        dispatch(clearOptions())
+      }
+      nameChangeMessage = 'Which group would you like to add this contact to?'
+      defaultName = user.contactIds.find(c => c.id === optionsTarget.id)?.group
+  }
+
+  if (nameChange) {
+    return (
+      <NameChange
+        submitHandler={nameChangeSubmit}
+        exitHandler={() => dispatch(setNameChange(null))}
+        defaultValue={defaultName}
+        nameChangeMessage={nameChangeMessage}
+      />
+    )
   }
 
   return (
     <View style={{ ...styles.background, backgroundColor: colors.darkColor }}>
       <View style={{ height: winHeight * 0.05 }}></View>
       <View style={{ ...styles.header, backgroundColor: colors.darkColor }}>
-        <Pressable onPress={clearOptions}>
+        <Pressable onPress={() => dispatch(clearOptions())}>
           <Entypo
             name='cross'
             size={winWidth * 0.08}
@@ -40,15 +100,17 @@ export default function Options ({ colors, options }: Props) {
           />
         </Pressable>
         <Text style={{ ...styles.name, color: colors.lightColor }}>
-          {contact.name}
+          {optionsTarget.username}
         </Text>
         <View style={{ width: winWidth * 0.2 }}></View>
       </View>
       <ScrollView
         style={{ ...styles.container, backgroundColor: colors.darkColor }}
       >
-        {options.map((option, i) => {
-          return <OptionHolder option={option} colors={colors} key={i} />
+        {optionsList.map((option, i) => {
+          return (
+            <OptionHolder option={option} colors={colors} key={i} type={type} />
+          )
         })}
       </ScrollView>
     </View>

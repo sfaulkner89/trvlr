@@ -5,7 +5,7 @@ import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { AntDesign, Entypo } from '@expo/vector-icons'
 import { List } from '../../types/List'
 import { useAppDispatch } from '../../redux/hooks'
-import { deselectList, newListHide } from '../../redux/slices/listSlice'
+import { deselectList, hideNewList } from '../../redux/slices/listSlice'
 import { showOptions } from '../../redux/slices/optionsSlice'
 
 type Props = {
@@ -25,7 +25,7 @@ export default function ListHeader ({ colors, profile }: Props) {
 
   const backHandler = () => {
     dispatch(deselectList())
-    dispatch(newListHide())
+    dispatch(hideNewList())
   }
 
   return (

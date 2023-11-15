@@ -2,12 +2,12 @@ import { StyleSheet, Text, View } from 'react-native'
 import * as React from 'react'
 import ProfilePage from '../profilePage/ProfilePage'
 import { useAppSelector } from '../../redux/hooks'
-import NewListPage from '../newList/NewListPage'
 import ListPage from '../listPage/ListPage'
 import Options from '../listPage/Options'
 import profileOptions from '../../assets/variables/profileOptions'
 import ChatListPage from '../messaging/ChatListPage'
-import ProfileListPage from '../profilePage/profileList/ProfileListPage'
+import ListEditor from '../listPage/ListEditor'
+import NotificationScreen from '../notificationScreen/NotificationScreen'
 
 export default function ModalStack () {
   const colors = useAppSelector(state => state.colors)
@@ -15,24 +15,24 @@ export default function ModalStack () {
   const currentUser = useAppSelector(state => state.user)
   const newList = useAppSelector(state => state.list.newList)
   const selectedList = useAppSelector(state => state.list.selectedList)
-  const optionsVisible = useAppSelector(state => state.options.optionsVisible)
+  const optionsType = useAppSelector(state => state.options.optionsType)
   const chatPage = useAppSelector(state => state.message.chatPage)
   const addToList = useAppSelector(state => state.list.addToList)
+  const listEdit = useAppSelector(state => state.list.listEdit)
+  const notificationScreen = useAppSelector(
+    state => state.notification.notificationScreen
+  )
 
   return (
-    <View>
-      {optionsVisible ? (
-        <Options colors={colors} options={profileOptions(colors)} />
+    <View style={{ ...styles.container }}>
+      {optionsType ? (
+        <Options colors={colors} />
+      ) : notificationScreen ? (
+        <NotificationScreen />
       ) : chatPage ? (
         <ChatListPage colors={colors} currentUser={currentUser} />
-      ) : newList ? (
-        <NewListPage colors={colors} currentUser={currentUser} />
-      ) : addToList ? (
-        <ProfileListPage
-          colors={colors}
-          newListProvided={true}
-          addToList={addToList}
-        />
+      ) : listEdit ? (
+        <ListEditor />
       ) : selectedList ? (
         <ListPage colors={colors} list={selectedList} />
       ) : contact ? (
@@ -42,4 +42,8 @@ export default function ModalStack () {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    zIndex: 100000
+  }
+})

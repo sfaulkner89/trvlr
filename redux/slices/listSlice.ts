@@ -5,8 +5,12 @@ export const listSlice = createSlice({
   name: 'list',
   initialState: {
     newList: false,
+    existingList: true,
     selectedList: null,
-    addToList: false
+    addToList: false,
+    noteRequested: false,
+    noteScreen: false,
+    listEdit: false
   },
   reducers: {
     showNewList: state => {
@@ -26,6 +30,25 @@ export const listSlice = createSlice({
     },
     deselectList: state => {
       state.selectedList = null
+    },
+    toggleNote: state => {
+      state.noteRequested = !state.noteRequested
+    },
+
+    showNoteScreen: state => {
+      state.noteScreen = true
+    },
+    hideNoteScreen: state => {
+      state.noteScreen = false
+    },
+    isExistingList: state => {
+      state.existingList = true
+    },
+    isNotExistingList: state => {
+      state.existingList = false
+    },
+    setListEdit: (state, action: PayloadAction<boolean>) => {
+      state.listEdit = action.payload
     }
   }
 })
@@ -36,7 +59,13 @@ export const {
   showAddToList,
   hideAddToList,
   selectList,
-  deselectList
+  deselectList,
+  toggleNote,
+  showNoteScreen,
+  hideNoteScreen,
+  isExistingList,
+  isNotExistingList,
+  setListEdit
 } = listSlice.actions
 
 export default listSlice.reducer

@@ -10,9 +10,10 @@ export default (places: PlaceDetails[]) => {
         longitude: place.location.longitude
       },
       city: place.location.locale,
-      country: place.location.area,
-      rating: place.establishment.rating,
-      types: place.establishment.types
+      country: place.location.area || null,
+      rating: place.establishment.rating || null,
+      types: place.establishment.types || null,
+      note: place.note
     }
   })
 }

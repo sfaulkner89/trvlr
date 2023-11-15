@@ -15,9 +15,12 @@ export default function ProfileMap () {
   const dispatch = useAppDispatch()
 
   const user = useAppSelector(state => state.user)
+  const contact = useAppSelector(state => state.contact.selectedContact)
+
+  const profile = contact ? contact : user
 
   const [region, setRegion] = React.useState(
-    user.countries.map(c => c.country) || []
+    profile.countries?.map(c => c.country) || []
   )
 
   const [putUser] = useMutation(PUT_USER)
@@ -36,14 +39,13 @@ export default function ProfileMap () {
     }
     const variables = {
       variables: {
-        userId: user.id,
+        userId: profile.id,
         countries: changedRegions
       }
     }
-    console.log(JSON.stringify(variables))
     putUser(variables)
       .then(res => {
-        dispatch(setUser(res.data.putUser))
+        dispatch(setUser({ ...user, countries: res.data.putUser.countries }))
       })
       .catch(err => {
         console.log(err)

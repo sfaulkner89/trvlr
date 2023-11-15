@@ -39,7 +39,13 @@ export default function ResultsHolder ({ results, colors }: Props) {
     dispatch(clearPlaceResults())
     dispatch(clearMapBrowseArea())
     dispatch(closeSearch())
-    dispatch(setSelectedPlace({ ...details, placeId }))
+    dispatch(
+      setSelectedPlace({
+        ...details,
+        placeId,
+        address: result.names.secondary_text
+      })
+    )
   }
 
   return (

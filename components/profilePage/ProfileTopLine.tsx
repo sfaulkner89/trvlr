@@ -19,8 +19,6 @@ export default function ProfileTopLine ({ colors, isCurrentUser }: Props) {
 
   const profile = isCurrentUser ? user : contact
 
-  console.log(profile)
-
   return (
     <View style={styles.container}>
       <View style={styles.statHolderHolder}>

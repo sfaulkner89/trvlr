@@ -13,7 +13,6 @@ import pulse from '../../animations/pulse'
 import startShakeAnimation from '../../animations/shake'
 import { userCache } from '../../assets/caches/userCache'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { GETUSER } from '../../handlers/gql/users/getUser'
 import { LOGINUSER } from '../../handlers/gql/users/loginUser'
 import { useAppDispatch } from '../../redux/hooks'
 import { setUser } from '../../redux/slices/userSlice'
@@ -43,6 +42,7 @@ export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
   const loginHandler = () => {
     pulse(pulseAnimation).start()
     if (email && password) {
+      console.log(email, password)
       loginUser({
         variables: {
           email,
@@ -50,8 +50,9 @@ export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
         }
       })
         .then(res => {
+          console.log(res?.data.loginUser)
           const user = res?.data.loginUser
-          if (user.id) {
+          if (user?.id) {
             dispatch(setUser(user))
             setLoggedIn(true)
             userCache.set('primary', JSON.stringify(user))
@@ -80,8 +81,8 @@ export default function LoginPage ({ colors, setNewUser, setLoggedIn }: Props) {
 
       <View style={{ ...styles.contentHolder }}>
         <Image
-          source={require('../../assets/trvlr.png')}
-          style={{ width: winWidth }}
+          source={require('../../assets/logo3.png')}
+          style={{ width: winWidth * 0.5, height: winWidth * 0.5 }}
         />
         <TextInput
           placeholder='Email'

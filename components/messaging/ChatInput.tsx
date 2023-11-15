@@ -1,51 +1,66 @@
-import {
-  Button,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View
-} from 'react-native'
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-import { Colors } from '../../types/colors'
 import { Member } from '../../types/Member'
-import uuid from 'react-native-uuid'
 import { useMutation } from '@apollo/client'
 import { CREATE_GROUP } from '../../handlers/gql/messages/creategroup'
-import { useAppSelector } from '../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import {
+  addMessagingGroup,
+  selectMessagingGroup,
+  setMessagingGroups
+} from '../../redux/slices/messagingGroupSlice'
+import { MessagingGroup } from '../../types/MessagingGroup'
+import { POSTMESSAGE } from '../../handlers/gql/messages/postMessage'
+import { sendPushNotification } from '../../assets/config/pushNotifications'
 
 type Props = {
-  colors: Colors
-  currentUser: Member
-  currentMessages: Message[]
   newChat: boolean
 }
 
-export default function ChatInput ({
-  colors,
-  newChat,
-  currentMessages,
-  currentUser
-}: Props) {
+export default function ChatInput ({ newChat }: Props) {
   const [createGroup] = useMutation(CREATE_GROUP)
-  const user = useAppSelector(store => store.user)
-  const contact = useAppSelector(store => store.contact.selectedContact)
+  const [postMessage] = useMutation<{
+    postMessage: { id: string; messages: Message[] }
+  }>(POSTMESSAGE)
+  const user: Member = useAppSelector(store => store.user)
+  const pushToken = useAppSelector(store => store.notification.token)
+  const selectedMessagingGroup: MessagingGroup = useAppSelector(
+    store => store.messagingGroups.selectedGroup
+  )
+  const colors = useAppSelector(store => store.colors)
+  const dispatch = useAppDispatch()
 
   const [newMessage, setNewMessage] = useState<string>('')
 
-  const sendHandler = () => {
+  const sendHandler = async () => {
     if (!newMessage) return
 
-    if (newChat) {
-      createGroup({
+    if (selectedMessagingGroup.messages.length === 0) {
+      const newGroup = await createGroup({
         variables: {
-          members: [user.id, contact.id],
+          from: user.id,
+          to: [...selectedMessagingGroup.members.map(m => m.id)],
+          message: newMessage
+        }
+      }).catch(err => console.log(err))
+      if (newGroup && newGroup.data.createGroup) {
+        dispatch(addMessagingGroup(newGroup.data.createGroup as MessagingGroup))
+        dispatch(
+          selectMessagingGroup(newGroup.data.createGroup as MessagingGroup)
+        )
+      }
+    } else {
+      const appendedGroup = await postMessage({
+        variables: {
+          groupId: selectedMessagingGroup.id,
+          userId: user.id,
           message: newMessage
         }
       })
-    } else {
     }
+    console.log('PUSH TOKEN', pushToken)
+    if (pushToken) sendPushNotification(pushToken)
     //setCurrentMessages([...currentMessages, messageToAdd])
     setNewMessage('')
   }

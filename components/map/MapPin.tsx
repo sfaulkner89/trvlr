@@ -34,18 +34,6 @@ export default function MapPin ({
   const user = useAppSelector(state => state.user)
   const searchOpen = useAppSelector(state => state.search.searchOpen)
   const dispatch = useAppDispatch()
-  const [checkIn] = useMutation(PUT_USER)
-
-  const onCheckInPress = () => {
-    console.log('LOCATION', location)
-    dispatch(setCheckInLocation(location))
-    checkIn({
-      variables: {
-        userId: user.id,
-        checkInLocation: location
-      }
-    })
-  }
 
   return (
     <React.Fragment>

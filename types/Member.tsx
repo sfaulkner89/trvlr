@@ -10,11 +10,15 @@ export type Member = {
   bio: string
   profilePicture: ImageData
   profileLocation: string
+  messagingGroups: MessagingGroup[]
+  contactIds: { id: string; group: string }[]
+  contacts: Member[]
   countries: string[]
   following: string[]
   followers: string[]
   checkInLocation: PlaceSearchResult
   lists: List[]
   group?: string
+  visible: boolean
   admin?: boolean
 }

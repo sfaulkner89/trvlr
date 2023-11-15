@@ -23,6 +23,39 @@ export const LOGINUSER = gql(`
                     longitude
                 }
             },
+            messagingGroups {
+                id,
+                name,
+                group,
+                members {
+                    id,
+                    username,
+                    displayName,
+                    profileLocation,
+                    countries {
+                        country,
+                        dateAdded
+                    },
+                    checkInLocation {
+                        names {
+                            main_text,
+                            secondary_text
+                        }
+                        location {
+                            latitude,
+                            longitude
+                        }
+                    }
+                }
+                messages {
+                    to,
+                    from,
+                    message,
+                    dateCreated
+                },
+                dateCreated,
+                dateModified
+            },
             lists {
                 id,
                 displayName,

@@ -1,11 +1,12 @@
 import {
+  Keyboard,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
   Text,
   View
 } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Colors } from '../../types/colors'
 import { MessagingGroup } from '../../types/MessagingGroup'
 import ChatInput from './ChatInput'
@@ -15,47 +16,51 @@ import { Member } from 'types/Member'
 import MessageBubble from './MessageBubble'
 import { useAppSelector } from '../../redux/hooks'
 
-type Props = {
-  colors: Colors
-  currentUser: Member
-  profile: Member
-}
+type Props = {}
 
-export default function ChatScreen ({ colors, currentUser, profile }: Props) {
+export default function ChatScreen ({}: Props) {
   const contact = useAppSelector(store => store.contact.selectedContact)
   const user = useAppSelector(store => store.user)
-
-  const groupChat = user.groups.find(group =>
-    group.members.includes(contact.id)
+  const colors = useAppSelector(store => store.colors)
+  const selectedMessagingGroup: MessagingGroup = useAppSelector(
+    store => store.messagingGroups.selectedGroup
   )
 
-  let currentMessages
+  useEffect(() => {
+    setTimeout(() => {
+      scrollRef.current?.scrollToEnd()
+    }, 100)
+  }, [selectedMessagingGroup.messages.length])
 
-  const [newChat, setNewChat] = useState<boolean>(!groupChat)
+  Keyboard.addListener('keyboardDidShow', () => {
+    scrollRef.current?.scrollToEnd({ animated: true })
+  })
+
+  const scrollRef = React.useRef(null)
+
+  const newChat = selectedMessagingGroup.messages.length === 0
 
   return (
     <KeyboardAvoidingView
       behavior='padding'
       style={{ ...styles.container, backgroundColor: colors.midColor }}
     >
-      <ChatHeader colors={colors} profile={profile} />
-      <ScrollView contentContainerStyle={{ ...styles.messagesHolder }}>
-        {(currentMessages || []).map((message, i) => {
-          return (
-            <MessageBubble
-              key={i}
-              colors={colors}
-              currentUser={currentUser}
-              message={message}
-            />
-          )
-        })}
-      </ScrollView>
-      <ChatInput
-        colors={colors}
-        currentMessages={currentMessages}
-        currentUser={currentUser}
-      />
+      <ChatHeader />
+      <View style={{ ...styles.messagesHolder }}>
+        <ScrollView ref={scrollRef}>
+          {(selectedMessagingGroup?.messages || []).map((message, i) => {
+            return (
+              <MessageBubble
+                key={i}
+                colors={colors}
+                currentUser={user}
+                message={message}
+              />
+            )
+          })}
+        </ScrollView>
+      </View>
+      <ChatInput newChat={newChat} />
     </KeyboardAvoidingView>
   )
 }
@@ -67,6 +72,7 @@ const styles = StyleSheet.create({
   },
   messagesHolder: {
     flex: 1,
+    // height: winHeight * 0.8,
     width: winWidth * 0.98,
     justifyContent: 'flex-start'
   },

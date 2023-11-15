@@ -12,6 +12,10 @@ import { setUser } from '../../redux/slices/userSlice'
 import { setContact } from '../../redux/slices/contactSlice'
 import { useAppSelector } from '../../redux/hooks'
 import { showChatPage } from '../../redux/slices/messageSlice'
+import {
+  selectMessagingGroup,
+  selectOrCreateMessagingGroup
+} from '../../redux/slices/messagingGroupSlice'
 
 type Props = {
   colors: Colors
@@ -62,6 +66,7 @@ export default function ProfileInfoLine ({ colors, isCurrentUser }: Props) {
   }
   const chatHandler = () => {
     dispatch(showChatPage())
+    dispatch(selectOrCreateMessagingGroup(contact))
   }
 
   return (

@@ -22,11 +22,13 @@ const initialState: {
   browseArea: PlaceDetails[] | null
   nearbyPlace: CheckInLocation | null
   checkInLocation: CheckInLocation | null
+  zoom: number
 } = {
   map: initialPosition,
   browseArea: null,
   nearbyPlace: null,
-  checkInLocation: null
+  checkInLocation: null,
+  zoom: 5
 }
 
 export const locationSlice = createSlice({
@@ -44,6 +46,7 @@ export const locationSlice = createSlice({
       void Object.assign(state, { ...state, browseArea: null })
     },
     setNearbyPlace: (state, action) => {
+      console.log(action.payload)
       action.payload.location.latitude = action.payload.location.lat
       action.payload.location.longitude = action.payload.location.lng
       delete action.payload.location.lng
@@ -52,6 +55,9 @@ export const locationSlice = createSlice({
     },
     setCheckInLocation: (state, action) => {
       void Object.assign(state, { ...state, checkInLocation: action.payload })
+    },
+    setZoom: (state, action: PayloadAction<number>) => {
+      void Object.assign(state, { ...state, zoom: action.payload })
     }
   }
 })
@@ -62,7 +68,8 @@ export const {
   setMapBrowseArea,
   clearMapBrowseArea,
   setCheckInLocation,
-  setNearbyPlace
+  setNearbyPlace,
+  setZoom
 } = locationSlice.actions
 
 export default locationSlice.reducer

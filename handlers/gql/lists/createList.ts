@@ -7,6 +7,7 @@ export const CREATELIST = gql(`
             places {
                 id
                 name
+                address
                 googlePlaceId
                 location {
                   latitude

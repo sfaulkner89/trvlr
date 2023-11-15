@@ -8,11 +8,13 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 type Props = {
   colors: Colors
   option: Option
+  type?: string
 }
 
-export default function OptionHolder ({ colors, option }: Props) {
+export default function OptionHolder ({ colors, option, type = 'list' }: Props) {
   const dispatch = useAppDispatch()
   const contact = useAppSelector(state => state.contact.selectedContact)
+  const list = useAppSelector(state => state.list.selectedList)
   return (
     <Pressable
       style={{ ...styles.container, backgroundColor: colors.midColor }}
@@ -46,6 +48,8 @@ const styles = StyleSheet.create({
     width: winWidth * 0.4
   },
   title: {
-    fontSize: winWidth * 0.04
+    marginLeft: winWidth * 0.05,
+    fontSize: winWidth * 0.04,
+    width: winWidth * 0.4
   }
 })

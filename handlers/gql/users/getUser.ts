@@ -23,6 +23,10 @@ export const GETUSER = gql(`
                     longitude
                 }
             },
+            contactIds {
+                id,
+                group
+            },
             lists {
                 id,
                 displayName,

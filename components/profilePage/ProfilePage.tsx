@@ -18,6 +18,8 @@ import NewListPage from '../newList/NewListPage'
 import ProfileInfoLine from './ProfileInfoLine'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { changePageNumber } from '../../redux/slices/contactSlice'
+import { setNewList, setPlaceToAdd } from '../../redux/slices/listEditorSlice'
+import { setListEdit } from '../../redux/slices/listSlice'
 
 const winHeight = Dimensions.get('window').height
 const winWidth = Dimensions.get('window').width
@@ -35,22 +37,19 @@ export default function ProfilePage ({ colors }: Props) {
 
   const profile = isCurrentUser ? currentUser : contact
 
-  const [selectedList, setSelectedList] = useState<List | undefined>()
-  const [profileSelection, setProfileSelection] = useState<Member | undefined>()
-
   const dispatch = useAppDispatch()
   const page = useAppSelector(state => state.contact.pageNumber)
 
-  const [newList, setNewList] = useState<boolean>()
-
   const buttonMap = [
     <ProfileMap />,
-    <ProfileListPage
-      colors={colors}
-      newListProvided={false}
-      addToList={false}
-    />
+    <ProfileListPage newListProvided={false} />
   ]
+
+  const pressHandler = () => {
+    dispatch(setPlaceToAdd(false))
+    dispatch(setListEdit(true))
+    dispatch(setNewList(true))
+  }
 
   return (
     <View
@@ -79,7 +78,7 @@ export default function ProfilePage ({ colors }: Props) {
             ...styles.addListButton,
             backgroundColor: colors.lightColor
           }}
-          onPress={() => setNewList(true)}
+          onPress={pressHandler}
         >
           <AntDesign name='addfile' size={size} color={colors.midColor} />
         </Pressable>

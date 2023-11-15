@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery, useSubscription } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { userCache } from './assets/caches/userCache'
@@ -12,16 +12,29 @@ import Toolbar from './components/toolbar/Toolbar'
 import { useAppDispatch, useAppSelector } from './redux/hooks'
 import { setUser } from './redux/slices/userSlice'
 import { Colors } from './types/colors'
-import { GETUSER } from './handlers/gql/users/getUser'
+import { GETUSERPOPULATED } from './handlers/gql/users/getUserPopulated'
 import ModalStack from './components/modals/ModalStack'
 import LoginPage from './components/LoginPage/LoginPage'
+import { NEW_MESSAGES } from './handlers/gql/subscriptions/newMessages'
+import {
+  selectMessagingGroup,
+  setLastUpdated,
+  setMessagingGroups,
+  setMessagingGroupsShallow,
+  updateMessagingGroup
+} from './redux/slices/messagingGroupSlice'
+import { registerForPushNotificationsAsync } from './assets/config/pushNotifications'
+import * as Notifications from 'expo-notifications'
+import { setToken } from './redux/slices/notificationSlice'
+import { FOLLOW_CHANGE } from './handlers/gql/subscriptions/followChange'
 
 export const colors: Colors = {
   darkColor: '#34333a',
   midColor: '#4b4a54',
   lightColor: '#cccccc',
   selectedColor: '#98b68a',
-  errorColor: '#ae1d24'
+  errorColor: '#ae1d24',
+  whiteColor: '#ffffff'
 }
 
 export default function App () {
@@ -30,25 +43,90 @@ export default function App () {
   const [loggedIn, setLoggedIn] = useState(false)
   const [newUser, setNewUser] = useState(false)
 
+  const [notification, setNotification] = useState(null)
+
+  const notificationListener = React.useRef(null)
+  const responseListener = React.useRef(null)
+
   const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.user)
-  const [getUser, { data }] = useLazyQuery(GETUSER)
+  const selectedMessagingGroup = useAppSelector(
+    state => state.messagingGroups.selectedGroup
+  )
+  const lastUpdated = useAppSelector(state => state.messagingGroups.lastUpdated)
+  const [getUser] = useLazyQuery(GETUSERPOPULATED)
+  const { data: messageData } = useSubscription(NEW_MESSAGES, {
+    variables: { id: user.id },
+    onData: async ({}) => {
+      console.log('DATA' + user.displayName)
+    },
+    onComplete: () => {
+      console.log('subscribed to new messages')
+    },
+    onError: err => {
+      console.log('ERROR', err)
+    }
+  })
+
+  const { data: followData } = useSubscription(FOLLOW_CHANGE, {
+    variables: { id: user.id },
+    onData: async ({}) => {
+      console.log('FOLLOW DATA' + user.displayName)
+    }
+  })
+
+  useEffect(() => {
+    if (messageData) {
+      console.log(JSON.stringify(messageData).length)
+      dispatch(setMessagingGroupsShallow(messageData.newMessages))
+      if (selectedMessagingGroup) {
+        dispatch(updateMessagingGroup(messageData.newMessages))
+      }
+    }
+  }, [messageData])
+
+  useEffect(() => {
+    const followInfo = followData?.followChange
+    if (followInfo?.follow) {
+    }
+  }, [followData])
 
   useEffect(() => {
     const profileCache = async () => {
       const user = await userCache.get('primary')
-      console.log('USER', user)
       if (user) {
         await getUser({
-          variables: { id: JSON.parse(user).id }
+          variables: { id: JSON.parse(user).id, populated: true }
         }).then(res => {
           dispatch(setUser(res?.data.getUser))
+          if (res?.data.getUser?.messagingGroups) {
+            dispatch(setMessagingGroups(res?.data.getUser.messagingGroups))
+          }
         })
         setLoggedIn(true)
       }
     }
-
+    dispatch(setLastUpdated(new Date()))
     profileCache()
+  }, [])
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => dispatch(setToken(token)))
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(notification => {
+        setNotification(notification)
+      })
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener(response => {
+        console.log(response)
+      })
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current)
+      Notifications.removeNotificationSubscription(responseListener.current)
+    }
   }, [])
 
   const pages = [
@@ -59,8 +137,8 @@ export default function App () {
       setMessages={setMessages}
       setPage={setPage}
     />,
-    <Search colors={colors} currentUser={user} setPage={setPage} />,
-    <ContactScreen colors={colors} currentUser={user} setPage={setPage} />,
+    <Search colors={colors} currentUser={user} />,
+    <ContactScreen colors={colors} />,
     <ProfilePage colors={colors} />
   ]
   return !loggedIn ? (
