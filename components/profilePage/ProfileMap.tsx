@@ -1,14 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React, { useMemo } from 'react'
 import MapView, { Geojson } from 'react-native-maps'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
-
-import { features } from 'process'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { PUT_USER } from '../../handlers/gql/users/putUser'
 import { useMutation } from '@apollo/client'
 import { coloredGeojson } from '../../assets/data/geoJsons'
-import { clear } from 'console'
 import { setUser } from '../../redux/slices/userSlice'
 
 export default function ProfileMap () {

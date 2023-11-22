@@ -7,7 +7,7 @@ import { AntDesign, Entypo } from '@expo/vector-icons'
 import { Member } from '../../types/Member'
 import { useAppDispatch } from '../../redux/hooks'
 import { setContact } from '../../redux/slices/contactSlice'
-import { showOptions } from '../../redux/slices/optionsSlice'
+import { setOptionsType, showOptions } from '../../redux/slices/optionsSlice'
 
 type Props = {
   colors: Colors
@@ -60,7 +60,7 @@ export default function ProfileHeader ({
             ...styles.button,
             alignItems: isCurrentUser ? 'flex-end' : 'center'
           }}
-          onPress={() => dispatch(showOptions())}
+          onPress={() => dispatch(setOptionsType('profile'))}
         >
           <Entypo
             name='dots-three-horizontal'

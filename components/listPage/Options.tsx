@@ -44,6 +44,8 @@ export default function Options ({ colors, type = 'list' }: Props) {
   let nameChangeMessage
   let defaultName
 
+  console.log(optionsType)
+
   switch (optionsType) {
     case 'list':
       optionsList = listOptions(colors)

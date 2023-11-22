@@ -38,18 +38,6 @@ export default function ListPage ({ colors, list }: Props) {
 
   return (
     <React.Fragment>
-      {(listSelection || placeSelection) && (
-        <Options
-          colors={colors}
-          options={placeSelection ? placeOptions(colors) : listOptions(colors)}
-          type={placeSelection ? 'place' : 'list'}
-          exitHandler={
-            placeSelection
-              ? () => setPlaceSelection(null)
-              : () => setListSelection(null)
-          }
-        />
-      )}
       <View style={{ ...styles.container, backgroundColor: colors.darkColor }}>
         <ListHeader colors={colors} profile={list} />
         <View style={{ ...styles.mapHolder, backgroundColor: colors.midColor }}>

@@ -4,9 +4,13 @@ import { Colors } from '../../types/colors'
 import { winHeight, winWidth } from '../../assets/variables/height-width'
 import { AntDesign, Entypo } from '@expo/vector-icons'
 import { List } from '../../types/List'
-import { useAppDispatch } from '../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { deselectList, hideNewList } from '../../redux/slices/listSlice'
-import { showOptions } from '../../redux/slices/optionsSlice'
+import {
+  setOptionsTarget,
+  setOptionsType,
+  showOptions
+} from '../../redux/slices/optionsSlice'
 
 type Props = {
   colors: Colors
@@ -18,6 +22,7 @@ const buttonSize = winWidth * 0.05
 export default function ListHeader ({ colors, profile }: Props) {
   const dispatch = useAppDispatch()
   const [liked, setLiked] = useState(false)
+  const list = useAppSelector(state => state.list.selectedList)
 
   const likeHandler = () => {
     setLiked(!liked)
@@ -55,7 +60,10 @@ export default function ListHeader ({ colors, profile }: Props) {
             name='dots-three-horizontal'
             size={buttonSize}
             color={colors.lightColor}
-            onPress={() => dispatch(showOptions())}
+            onPress={() => {
+              dispatch(setOptionsType('list'))
+              dispatch(setOptionsTarget(list))
+            }}
           />
         </Pressable>
       </View>
